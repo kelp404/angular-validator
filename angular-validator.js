@@ -1,5 +1,9 @@
 (function() {
+  var a;
 
+  a = angular.module('validator.directive', []);
+
+  a.directive('validator', function() {});
 
 }).call(this);
 
@@ -9,6 +13,8 @@
 }).call(this);
 
 (function() {
+  var a;
 
+  a = angular.module('validator.provider', []);
 
 }).call(this);
