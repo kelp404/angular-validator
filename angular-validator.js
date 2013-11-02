@@ -12,9 +12,9 @@
         $validator = $injector.get('$validator');
         $parse = $injector.get('$parse');
         model = $parse(attrs.ngModel);
-        validate = function(rule, isFromWatch) {
+        validate = function(rule) {
           model.assign(scope, rule.filter(model(scope)));
-          return rule.validator(model(scope), scope, element, attrs, isFromWatch);
+          return rule.validator(model(scope), element, attrs);
         };
         return scope.$watch(attrs.ngModel, function(newValue, oldValue) {
           var match, name, regex, rule, ruleNames, _i, _len;
@@ -88,6 +88,7 @@
       */
 
       result = {
+        enableError: false,
         invoke: object.invoke,
         filter: object.filter,
         validator: object.validator,
@@ -110,6 +111,7 @@
       if (result.error == null) {
         result.error = '';
       }
+      result.enableError = __indexOf.call(result.invoke, 'watch') >= 0;
       if (result.error.constructor === String) {
         errorMessage = result.error;
         result.error = function(element, attrs) {
@@ -137,10 +139,11 @@
             _ref = parent.find('label');
             for (_j = 0, _len = _ref.length; _j < _len; _j++) {
               label = _ref[_j];
-              if ($(label).hasClass('error')) {
-                label.remove();
-                break;
+              if (!($(label).hasClass('error'))) {
+                continue;
               }
+              label.remove();
+              break;
             }
             break;
           }
@@ -159,14 +162,11 @@
       }
       if (result.validator.constructor === RegExp) {
         regex = result.validator;
-        result.validator = function(value, scope, element, attrs, isFromWatch) {
-          if (isFromWatch == null) {
-            isFromWatch = false;
-          }
+        result.validator = function(value, element, attrs) {
           if (regex.test(value)) {
             return result.success(element, attrs);
           } else {
-            if (isFromWatch && __indexOf.call(result.invoke, 'watch') >= 0) {
+            if (result.enableError) {
               return result.error(element, attrs);
             }
           }
@@ -178,12 +178,12 @@
             isFromWatch = false;
           }
           func.$injectx = {
+            $http: $injector.get('$http'),
             value: value,
             scope: scope,
             element: element,
             attrs: attrs,
-            isFromWatch: isFromWatch,
-            $http: $injector.get('$http')
+            isFromWatch: isFromWatch
           };
           return $injector.invoke(func);
         };
@@ -200,7 +200,7 @@
       @params object:
           invoke: ['watch', 'blur'] or undefined(validator by yourself)
           filter: function(input)
-          validator: RegExp() or function(value, element, attrs)
+          validator: RegExp() or function(value, element, attrs, $injector)
           error: string or function(element, attrs)
           success: function(element, attrs)
       */

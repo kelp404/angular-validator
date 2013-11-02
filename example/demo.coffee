@@ -4,7 +4,9 @@ a = angular.module 'app', ['validator']
 a.config ($validatorProvider) ->
     $validatorProvider.register 'backendWatch',
         invoke: ['watch']
-        validator: ($http) ->
+        validator: ($injector, value) ->
+            $http = $injector.get '$http'
+            console.log value
             h = $http.get 'example/data.json'
             h.success (data) ->
                 console.log data

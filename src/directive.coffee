@@ -19,9 +19,9 @@ validator = ($injector) ->
         # ----------------------------
         # functions
         # ----------------------------
-        validate = (rule, isFromWatch) ->
+        validate = (rule) ->
             model.assign scope, rule.filter(model(scope))
-            rule.validator model(scope), scope, element, attrs, isFromWatch
+            rule.validator model(scope), element, attrs
 #            rule.validator.$inject =
 #                value: model(scope)
 #                scope: scope

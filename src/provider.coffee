@@ -35,6 +35,7 @@ a.provider '$validator', ->
         Convert the rule object.
         ###
         result =
+            enableError: false
             invoke: object.invoke
             filter: object.filter
             validator: object.validator
@@ -45,6 +46,7 @@ a.provider '$validator', ->
         result.filter ?= (input) -> input
         result.validator ?= -> true
         result.error ?= ''
+        result.enableError = 'watch' in result.invoke
 
         # convert error
         if result.error.constructor is String
@@ -64,10 +66,9 @@ a.provider '$validator', ->
             for index in [1..3]
                 if parent.hasClass('has-error')
                     parent.removeClass('has-error')
-                    for label in parent.find('label')
-                        if $(label).hasClass 'error'
-                            label.remove()
-                            break
+                    for label in parent.find('label') when $(label).hasClass 'error'
+                        label.remove()
+                        break
                     break
                 parent = parent.parent()
         if result.success and typeof(result.success) is 'function'
@@ -83,22 +84,23 @@ a.provider '$validator', ->
         # convert validator
         if result.validator.constructor is RegExp
             regex = result.validator
-            result.validator = (value, scope, element, attrs, isFromWatch=false) ->
+            result.validator = (value, element, attrs) ->
                 if regex.test value
                     result.success element, attrs
                 else
-                    if isFromWatch and 'watch' in result.invoke
+                    if result.enableError
                         result.error element, attrs
+
         else if typeof(result.validator) is 'function' or result.validator.constructor is Array
             func = result.validator
             result.validator = (value, scope, element, attrs, isFromWatch=false) ->
                 func.$injectx =
+                    $http: $injector.get '$http'
                     value: value
                     scope: scope
                     element: element
                     attrs: attrs
                     isFromWatch: isFromWatch
-                    $http: $injector.get '$http'
 #                if result.validator.$inject
 #                    if result.validator.$inject.constructor is Array
 #                        for item in result.validator.$inject.constructor
@@ -115,7 +117,7 @@ a.provider '$validator', ->
         @params object:
             invoke: ['watch', 'blur'] or undefined(validator by yourself)
             filter: function(input)
-            validator: RegExp() or function(value, element, attrs)
+            validator: RegExp() or function(value, element, attrs, $injector)
             error: string or function(element, attrs)
             success: function(element, attrs)
         ###
