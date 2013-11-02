@@ -19,14 +19,13 @@ validator = ($injector) ->
         # ----------------------------
         # functions
         # ----------------------------
-        validat = (ruleName) ->
-            rule = $validator.rules[ruleName]
-            return true if not rule
-            if rule.filter
-                model.assign scope, rule.filter(model(scope))
-            true
+        validate = (rule, isFromWatch) ->
+            model.assign scope, rule.filter(model(scope))
+            rule.validator model(scope), scope, element, attrs, isFromWatch
 
-        scope.$watch attrs.ngModel, ->
+        scope.$watch attrs.ngModel, (newValue, oldValue) ->
+            return if newValue is oldValue  # first
+
             # validat by RegExp
             match = attrs.validator.match(RegExp('^/(.*)/$'))
             if match
@@ -38,8 +37,8 @@ validator = ($injector) ->
             if match
                 ruleNames = match[1].split(',')
                 for name in ruleNames
-                    name = name.trim()
-                    break if not validat name
+                    rule = $validator.getRule name.trim()
+                    validate rule, true if rule
                 return
 
 

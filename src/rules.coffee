@@ -6,9 +6,16 @@ config = ($validatorProvider) ->
         all: ->
             do @[x] for x of @ when x isnt 'all'
             return
+
         required: ->
             $validatorProvider.register 'required',
-                filter: (input) -> input.toLowerCase()
+                invoke: ['watch']
+                validator: RegExp "^.+$"
+                error: 'This field is required.'
+
+        trim: ->
+            $validatorProvider.register 'trim',
+                filter: (input) -> input.trim()
 
     do rules.all
 config.$inject = ['$validatorProvider']

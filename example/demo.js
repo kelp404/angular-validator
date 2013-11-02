@@ -3,8 +3,10 @@
 
   a = angular.module('app', ['validator']);
 
-  a.controller('HomeController', function($scope) {
-    return $scope.name = 'name';
+  a.controller('DemoController', function($scope) {
+    return $scope.formWatch = {
+      required: ''
+    };
   });
 
 }).call(this);

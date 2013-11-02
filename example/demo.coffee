@@ -1,5 +1,6 @@
 
 a = angular.module 'app', ['validator']
 
-a.controller 'HomeController', ($scope) ->
-    $scope.name = 'name'
+a.controller 'DemoController', ($scope) ->
+    $scope.formWatch =
+        required: ''
