@@ -4,7 +4,7 @@
   a = angular.module('app', ['validator']);
 
   a.controller('HomeController', function($scope) {
-    return $scope.name = 'xx';
+    return $scope.name = 'name';
   });
 
 }).call(this);

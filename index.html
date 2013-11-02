@@ -6,21 +6,21 @@
     <link type="text/css" rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css"/>
     <link type="text/css" rel="stylesheet" href="/example/site.css"/>
     <script type="text/javascript" src="/submodules/angularjs/angular.1.1.5.min.js"></script>
+    <script type="text/javascript" src="/angular-validator.js"></script>
     <script type="text/javascript" src="/example/demo.js"></script>
-    <script type="text/javascript" src="/angular-validator.min.js"></script>
 </head>
 <body class="container">
     <div class="row">
-        <div class="col-md-12" ng-controller="HomeController">
+        <div class="col-md-10" ng-controller="HomeController">
             <div class="panel panel-default">
                 <div class="panel-heading">
                     <h3 class="panel-title">Panel title</h3>
                 </div>
                 <form class="form-horizontal panel-body">
                     <div class="form-group">
-                        <label for="name0" class="col-md-2 control-label">Email</label>
+                        <label for="name0" class="col-md-2 control-label">Name</label>
                         <div class="col-md-10">
-                            <input type="email" ng-model="name" class="form-control" id="name0" placeholder="Email">
+                            <input type="text" ng-model="name" validator="[required]" class="form-control" id="name0" placeholder="Name">
                         </div>
                     </div>
                 </form>
