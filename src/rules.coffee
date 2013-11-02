@@ -2,21 +2,19 @@
 a = angular.module 'validator.rules', ['validator.provider']
 
 config = ($validatorProvider) ->
-    rules =
-        all: ->
-            do @[x] for x of @ when x isnt 'all'
-            return
+    # ----------------------------
+    # required
+    # ----------------------------
+    $validatorProvider.register 'required',
+        invoke: ['watch']
+        validator: RegExp "^.+$"
+        error: 'This field is required.'
 
-        required: ->
-            $validatorProvider.register 'required',
-                invoke: ['watch']
-                validator: RegExp "^.+$"
-                error: 'This field is required.'
+    # ----------------------------
+    # trim
+    # ----------------------------
+    $validatorProvider.register 'trim',
+        filter: (input) -> input.trim()
 
-        trim: ->
-            $validatorProvider.register 'trim',
-                filter: (input) -> input.trim()
-
-    do rules.all
 config.$inject = ['$validatorProvider']
 a.config config

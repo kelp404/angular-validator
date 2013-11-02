@@ -62,7 +62,8 @@
   a = angular.module('validator.provider', []);
 
   a.provider('$validator', function() {
-    var init;
+    var $injector, init, setupProviders;
+    $injector = null;
     this.rules = {};
     init = {
       all: function() {
@@ -73,6 +74,9 @@
           }
         }
       }
+    };
+    setupProviders = function(injector) {
+      return $injector = injector;
     };
     this.convertRule = function(object) {
       var errorMessage, func, regex, result, successFunc;
@@ -128,16 +132,16 @@
         parent = $(element).parent();
         _results = [];
         for (index = _i = 1; _i <= 3; index = ++_i) {
-          _ref = parent.find('label');
-          for (_j = 0, _len = _ref.length; _j < _len; _j++) {
-            label = _ref[_j];
-            if ($(label).hasClass('error')) {
-              label.remove();
-              break;
-            }
-          }
           if (parent.hasClass('has-error')) {
             parent.removeClass('has-error');
+            _ref = parent.find('label');
+            for (_j = 0, _len = _ref.length; _j < _len; _j++) {
+              label = _ref[_j];
+              if ($(label).hasClass('error')) {
+                label.remove();
+                break;
+              }
+            }
             break;
           }
           _results.push(parent = parent.parent());
@@ -166,6 +170,22 @@
               return result.error(element, attrs);
             }
           }
+        };
+      } else if (typeof result.validator === 'function' || result.validator.constructor === Array) {
+        func = result.validator;
+        result.validator = function(value, scope, element, attrs, isFromWatch) {
+          if (isFromWatch == null) {
+            isFromWatch = false;
+          }
+          func.$injectx = {
+            value: value,
+            scope: scope,
+            element: element,
+            attrs: attrs,
+            isFromWatch: isFromWatch,
+            $http: $injector.get('$http')
+          };
+          return $injector.invoke(func);
         };
       }
       return result;
@@ -196,6 +216,7 @@
     };
     this.validate = function(scope) {};
     this.get = function($injector) {
+      setupProviders($injector);
       init.all();
       return {
         rules: this.rules,
@@ -215,32 +236,16 @@
   a = angular.module('validator.rules', ['validator.provider']);
 
   config = function($validatorProvider) {
-    var rules;
-    rules = {
-      all: function() {
-        var x;
-        for (x in this) {
-          if (x !== 'all') {
-            this[x]();
-          }
-        }
-      },
-      required: function() {
-        return $validatorProvider.register('required', {
-          invoke: ['watch'],
-          validator: RegExp("^.+$"),
-          error: 'This field is required.'
-        });
-      },
-      trim: function() {
-        return $validatorProvider.register('trim', {
-          filter: function(input) {
-            return input.trim();
-          }
-        });
+    $validatorProvider.register('required', {
+      invoke: ['watch'],
+      validator: RegExp("^.+$"),
+      error: 'This field is required.'
+    });
+    return $validatorProvider.register('trim', {
+      filter: function(input) {
+        return input.trim();
       }
-    };
-    return rules.all();
+    });
   };
 
   config.$inject = ['$validatorProvider'];

@@ -4,6 +4,11 @@ a = angular.module 'validator.provider', []
 
 a.provider '$validator', ->
     # ----------------------------
+    # providers
+    # ----------------------------
+    $injector = null
+
+    # ----------------------------
     # properties
     # ----------------------------
     @rules = {}
@@ -19,6 +24,8 @@ a.provider '$validator', ->
     # ----------------------------
     # private functions
     # ----------------------------
+    setupProviders = (injector) ->
+        $injector = injector
 
     # ----------------------------
     # public functions
@@ -55,12 +62,12 @@ a.provider '$validator', ->
         successFunc = (element, attrs) ->
             parent = $(element).parent()
             for index in [1..3]
-                for label in parent.find('label')
-                    if $(label).hasClass 'error'
-                        label.remove()
-                        break
                 if parent.hasClass('has-error')
                     parent.removeClass('has-error')
+                    for label in parent.find('label')
+                        if $(label).hasClass 'error'
+                            label.remove()
+                            break
                     break
                 parent = parent.parent()
         if result.success and typeof(result.success) is 'function'
@@ -82,6 +89,22 @@ a.provider '$validator', ->
                 else
                     if isFromWatch and 'watch' in result.invoke
                         result.error element, attrs
+        else if typeof(result.validator) is 'function' or result.validator.constructor is Array
+            func = result.validator
+            result.validator = (value, scope, element, attrs, isFromWatch=false) ->
+                func.$injectx =
+                    value: value
+                    scope: scope
+                    element: element
+                    attrs: attrs
+                    isFromWatch: isFromWatch
+                    $http: $injector.get '$http'
+#                if result.validator.$inject
+#                    if result.validator.$inject.constructor is Array
+#                        for item in result.validator.$inject.constructor
+#                            func.$inject[item] = $injector.get item
+                $injector.invoke(func)
+
 
         result
 
@@ -109,6 +132,7 @@ a.provider '$validator', ->
     # $get
     # ----------------------------
     @get = ($injector) ->
+        setupProviders $injector
         do init.all
 
         rules: @rules
