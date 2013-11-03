@@ -13,8 +13,15 @@ describe "validator.provider", ->
 
         it "check $validator.rules is empty", inject ($validator) ->
             expect(0).toBe Object.keys($validator.rules).length
-            
+
 
     describe '$validator.rules', ->
         it "check $validator.rules is empty", inject ($validator) ->
             expect(0).toBe Object.keys($validator.rules).length
+
+    describe '$validator.broadcastChannel', ->
+        it "check $validator.broadcastChannel property", inject ($validator) ->
+            expect
+                prepare: '$validateStartPrepare'
+                start: '$validateStartStart'
+            .toEqual $validator.broadcastChannel
