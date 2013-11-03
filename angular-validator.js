@@ -62,8 +62,9 @@
   a = angular.module('validator.provider', []);
 
   a.provider('$validator', function() {
-    var $injector, init, setupProviders;
+    var $injector, $q, init, setupProviders;
     $injector = null;
+    $q = null;
     this.rules = {};
     init = {
       all: function() {
@@ -76,7 +77,8 @@
       }
     };
     setupProviders = function(injector) {
-      return $injector = injector;
+      $injector = injector;
+      return $q = $injector.get('$q');
     };
     this.convertRule = function(object) {
       var errorMessage, func, regex, result, successFunc;
@@ -171,21 +173,18 @@
             }
           }
         };
-      } else if (typeof result.validator === 'function' || result.validator.constructor === Array) {
+      } else if (typeof result.validator === 'function') {
         func = result.validator;
-        result.validator = function(value, scope, element, attrs, isFromWatch) {
-          if (isFromWatch == null) {
-            isFromWatch = false;
-          }
-          func.$injectx = {
-            $http: $injector.get('$http'),
-            value: value,
-            scope: scope,
-            element: element,
-            attrs: attrs,
-            isFromWatch: isFromWatch
-          };
-          return $injector.invoke(func);
+        result.validator = function(value, element, attrs) {
+          var q;
+          q = $q.all([func(value, element, attrs, $injector)]);
+          return q.then(function(objects) {
+            if (objects && objects.length > 0 && objects[0]) {
+              return result.success(element, attrs);
+            } else {
+              return result.error(element, attrs);
+            }
+          });
         };
       }
       return result;
@@ -220,6 +219,7 @@
       init.all();
       return {
         rules: this.rules,
+        convertRule: this.convertRule,
         getRule: this.getRule,
         validate: this.validate
       };

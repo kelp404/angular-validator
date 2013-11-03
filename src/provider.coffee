@@ -7,6 +7,7 @@ a.provider '$validator', ->
     # providers
     # ----------------------------
     $injector = null
+    $q = null
 
     # ----------------------------
     # properties
@@ -26,6 +27,7 @@ a.provider '$validator', ->
     # ----------------------------
     setupProviders = (injector) ->
         $injector = injector
+        $q = $injector.get '$q'
 
     # ----------------------------
     # public functions
@@ -91,21 +93,15 @@ a.provider '$validator', ->
                     if result.enableError
                         result.error element, attrs
 
-        else if typeof(result.validator) is 'function' or result.validator.constructor is Array
+        else if typeof(result.validator) is 'function'
             func = result.validator
-            result.validator = (value, scope, element, attrs, isFromWatch=false) ->
-                func.$injectx =
-                    $http: $injector.get '$http'
-                    value: value
-                    scope: scope
-                    element: element
-                    attrs: attrs
-                    isFromWatch: isFromWatch
-#                if result.validator.$inject
-#                    if result.validator.$inject.constructor is Array
-#                        for item in result.validator.$inject.constructor
-#                            func.$inject[item] = $injector.get item
-                $injector.invoke(func)
+            result.validator = (value, element, attrs) ->
+                q = $q.all [func(value, element, attrs, $injector)]
+                q.then (objects) ->
+                    if objects and objects.length > 0 and objects[0]
+                        result.success element, attrs
+                    else
+                        result.error element, attrs
 
 
         result
@@ -138,6 +134,7 @@ a.provider '$validator', ->
         do init.all
 
         rules: @rules
+        convertRule: @convertRule
         getRule: @getRule
         validate: @validate
     @get.$inject = ['$injector']

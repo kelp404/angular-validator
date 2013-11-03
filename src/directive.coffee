@@ -22,13 +22,6 @@ validator = ($injector) ->
         validate = (rule) ->
             model.assign scope, rule.filter(model(scope))
             rule.validator model(scope), element, attrs
-#            rule.validator.$inject =
-#                value: model(scope)
-#                scope: scope
-#                element: element
-#                attrs: attrs
-#                isFromWatch: isFromWatch
-#            $injector.invoke rule.validator
 
         scope.$watch attrs.ngModel, (newValue, oldValue) ->
             return if newValue is oldValue  # first
