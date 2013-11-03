@@ -13,6 +13,9 @@ a.provider '$validator', ->
     # properties
     # ----------------------------
     @rules = {}
+    @broadcastChannel =
+        prepare: '$validateStartPrepare'
+        start: '$validateStartStart'
 
     # ----------------------------
     # init
@@ -57,9 +60,10 @@ a.provider '$validator', ->
             result.error = (element, attrs) ->
                 parent = $(element).parent()
                 for index in [1..3]
-                    if parent.hasClass('form-group')
+                    if parent.hasClass 'form-group'
+                        return if parent.hasClass 'has-error'
                         $(element).parent().append "<label class='control-label error'>#{errorMessage}</label>"
-                        parent.addClass('has-error')
+                        parent.addClass 'has-error'
                         break
                     parent = parent.parent()
 
@@ -67,8 +71,8 @@ a.provider '$validator', ->
         successFunc = (element, attrs) ->
             parent = $(element).parent()
             for index in [1..3]
-                if parent.hasClass('has-error')
-                    parent.removeClass('has-error')
+                if parent.hasClass 'has-error'
+                    parent.removeClass 'has-error'
                     for label in parent.find('label') when $(label).hasClass 'error'
                         label.remove()
                         break
@@ -96,11 +100,10 @@ a.provider '$validator', ->
         else if typeof(result.validator) is 'function'
             func = result.validator
             result.validator = (value, element, attrs) ->
-                q = $q.all [func(value, element, attrs, $injector)]
-                q.then (objects) ->
+                $q.all([func(value, element, attrs, $injector)]).then (objects) ->
                     if objects and objects.length > 0 and objects[0]
                         result.success element, attrs
-                    else
+                    else if result.enableError
                         result.error element, attrs
 
         result
@@ -122,8 +125,35 @@ a.provider '$validator', ->
     @getRule = (name) ->
         if @rules[name] then @rules[name] else null
 
-    @validate = (scope, model) ->
+    @validate = (scope, model) =>
+        deferred = $q.defer()
+        promise = deferred.promise
+        count =
+            total: 0
+            success: 0
+            error: 0
+        func =
+            success: ->
+            error: ->
+            accept: -> count.total++
+            validatedSuccess: -> func.success() if ++count.success is count.total
+            validatedError: -> func.error() if count.error++ is 0
+        promise.success = (fn) -> func.success = fn
+        promise.error = (fn) -> func.error = fn
 
+        brocadcastObject =
+            model: model
+            accept: func.accept
+            success: func.validatedSuccess
+            error: func.validatedError
+
+        scope.$broadcast @broadcastChannel.prepare, brocadcastObject
+        setTimeout ->
+            $validator = $injector.get '$validator'
+            scope.$broadcast $validator.broadcastChannel.start, brocadcastObject
+        , 0
+
+        promise
 
 
     # ----------------------------
@@ -134,6 +164,7 @@ a.provider '$validator', ->
         do init.all
 
         rules: @rules
+        broadcastChannel: @broadcastChannel
         convertRule: @convertRule
         getRule: @getRule
         validate: @validate

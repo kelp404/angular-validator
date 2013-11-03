@@ -51,7 +51,7 @@
                     <div class="form-group">
                         <label for="required2" class="col-md-2 control-label">Required</label>
                         <div class="col-md-10">
-                            <input type="text" ng-model="formSubmit.required" validator="[submitRequired]" class="form-control" id="required2" placeholder="Required"/>
+                            <input type="text" ng-model="formSubmit.required" validator="[requiredSubmit]" class="form-control" id="required2" placeholder="Required"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -63,7 +63,7 @@
                     <div class="form-group">
                         <label for="http2" class="col-md-2 control-label">$http</label>
                         <div class="col-md-10">
-                            <input type="text" ng-model="formSubmit.http" validator="[backendWatch]" class="form-control" id="http2" placeholder="do not use 'Kelp' or 'x'"/>
+                            <input type="text" ng-model="formSubmit.http" validator="[backendSubmit]" class="form-control" id="http2" placeholder="do not use 'Kelp' or 'x'"/>
                         </div>
                     </div>
                     <div class="form-group">

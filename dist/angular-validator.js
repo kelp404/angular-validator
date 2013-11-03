@@ -8,40 +8,64 @@
       restrict: 'A',
       require: 'ngModel',
       link: function(scope, element, attrs) {
-        var $parse, $validator, model, validate;
+        var $parse, $validator, match, model, name, rule, ruleNames, rules, validate, _i, _len;
         $validator = $injector.get('$validator');
         $parse = $injector.get('$parse');
         model = $parse(attrs.ngModel);
-        validate = function(rule) {
-          model.assign(scope, rule.filter(model(scope)));
-          return rule.validator(model(scope), element, attrs);
+        rules = [];
+        validate = function(from) {
+          var result, rule, _i, _len;
+          for (_i = 0, _len = rules.length; _i < _len; _i++) {
+            rule = rules[_i];
+            if (from === 'broadcast') {
+              rule.enableError = true;
+            }
+            model.assign(scope, rule.filter(model(scope)));
+            result = rule.validator(model(scope), element, attrs);
+            if (!result) {
+              return false;
+            }
+          }
+          return true;
         };
+        match = attrs.validator.match(RegExp('^/(.*)/$'));
+        if (match) {
+          rule = $validator.convertRule({
+            validator: RegExp(match[1]),
+            invoke: attrs.validatorInvoke,
+            error: attrs.validatorError
+          });
+          rules.push(rule);
+        }
+        match = attrs.validator.match(RegExp('^\\[(.*)\\]$'));
+        if (match) {
+          ruleNames = match[1].split(',');
+          for (_i = 0, _len = ruleNames.length; _i < _len; _i++) {
+            name = ruleNames[_i];
+            rules.push($validator.getRule(name.trim()));
+          }
+        }
+        scope.$on($validator.broadcastChannel.prepare, function(self, object) {
+          if (object.model && attrs.ngModel.indexOf(object.model) !== 0) {
+            return;
+          }
+          return object.accept();
+        });
+        scope.$on($validator.broadcastChannel.start, function(self, object) {
+          if (object.model && attrs.ngModel.indexOf(object.model) !== 0) {
+            return;
+          }
+          if (validate('broadcast')) {
+            return object.success();
+          } else {
+            return object.error();
+          }
+        });
         return scope.$watch(attrs.ngModel, function(newValue, oldValue) {
-          var match, name, rule, ruleNames, _i, _len;
           if (newValue === oldValue) {
             return;
           }
-          match = attrs.validator.match(RegExp('^/(.*)/$'));
-          if (match) {
-            rule = $validator.convertRule({
-              validator: RegExp(match[1]),
-              invoke: attrs.validatorInvoke,
-              error: attrs.validatorError
-            });
-            validate(rule);
-            return;
-          }
-          match = attrs.validator.match(RegExp('^\\[(.*)\\]$'));
-          if (match) {
-            ruleNames = match[1].split(',');
-            for (_i = 0, _len = ruleNames.length; _i < _len; _i++) {
-              name = ruleNames[_i];
-              rule = $validator.getRule(name.trim());
-              if (rule) {
-                validate(rule);
-              }
-            }
-          }
+          return validate();
         });
       }
     };
@@ -67,10 +91,15 @@
   a = angular.module('validator.provider', []);
 
   a.provider('$validator', function() {
-    var $injector, $q, init, setupProviders;
+    var $injector, $q, init, setupProviders,
+      _this = this;
     $injector = null;
     $q = null;
     this.rules = {};
+    this.broadcastChannel = {
+      prepare: '$validateStartPrepare',
+      start: '$validateStartStart'
+    };
     init = {
       all: function() {
         var x;
@@ -125,18 +154,19 @@
       if (result.error.constructor === String) {
         errorMessage = result.error;
         result.error = function(element, attrs) {
-          var index, parent, _i, _results;
+          var index, parent, _i;
           parent = $(element).parent();
-          _results = [];
           for (index = _i = 1; _i <= 3; index = ++_i) {
             if (parent.hasClass('form-group')) {
+              if (parent.hasClass('has-error')) {
+                return;
+              }
               $(element).parent().append("<label class='control-label error'>" + errorMessage + "</label>");
               parent.addClass('has-error');
               break;
             }
-            _results.push(parent = parent.parent());
+            parent = parent.parent();
           }
-          return _results;
         };
       }
       successFunc = function(element, attrs) {
@@ -182,12 +212,10 @@
       } else if (typeof result.validator === 'function') {
         func = result.validator;
         result.validator = function(value, element, attrs) {
-          var q;
-          q = $q.all([func(value, element, attrs, $injector)]);
-          return q.then(function(objects) {
+          return $q.all([func(value, element, attrs, $injector)]).then(function(objects) {
             if (objects && objects.length > 0 && objects[0]) {
               return result.success(element, attrs);
-            } else {
+            } else if (result.enableError) {
               return result.error(element, attrs);
             }
           });
@@ -219,12 +247,58 @@
         return null;
       }
     };
-    this.validate = function(scope, model) {};
+    this.validate = function(scope, model) {
+      var brocadcastObject, count, deferred, func, promise;
+      deferred = $q.defer();
+      promise = deferred.promise;
+      count = {
+        total: 0,
+        success: 0,
+        error: 0
+      };
+      func = {
+        success: function() {},
+        error: function() {},
+        accept: function() {
+          return count.total++;
+        },
+        validatedSuccess: function() {
+          if (++count.success === count.total) {
+            return func.success();
+          }
+        },
+        validatedError: function() {
+          if (count.error++ === 0) {
+            return func.error();
+          }
+        }
+      };
+      promise.success = function(fn) {
+        return func.success = fn;
+      };
+      promise.error = function(fn) {
+        return func.error = fn;
+      };
+      brocadcastObject = {
+        model: model,
+        accept: func.accept,
+        success: func.validatedSuccess,
+        error: func.validatedError
+      };
+      scope.$broadcast(_this.broadcastChannel.prepare, brocadcastObject);
+      setTimeout(function() {
+        var $validator;
+        $validator = $injector.get('$validator');
+        return scope.$broadcast($validator.broadcastChannel.start, brocadcastObject);
+      }, 0);
+      return promise;
+    };
     this.get = function($injector) {
       setupProviders($injector);
       init.all();
       return {
         rules: this.rules,
+        broadcastChannel: this.broadcastChannel,
         convertRule: this.convertRule,
         getRule: this.getRule,
         validate: this.validate

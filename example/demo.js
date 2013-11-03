@@ -34,7 +34,36 @@
       },
       error: "do not use 'Kelp' or 'x'"
     });
-    return $validatorProvider.register('submitRequired', {
+    $validatorProvider.register('backendSubmit', {
+      validator: function(value, element, attrs, $injector) {
+        var $http, h;
+        console.log('----------');
+        $http = $injector.get('$http');
+        h = $http.get('example/data.json');
+        return h.then(function(data) {
+          var x;
+          if (data && data.status < 400 && data.data) {
+            if (__indexOf.call((function() {
+              var _i, _len, _ref, _results;
+              _ref = data.data;
+              _results = [];
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                x = _ref[_i];
+                _results.push(x.name);
+              }
+              return _results;
+            })(), value) >= 0) {
+              return false;
+            }
+            return true;
+          } else {
+            return false;
+          }
+        });
+      },
+      error: "do not use 'Kelp' or 'x'"
+    });
+    return $validatorProvider.register('requiredSubmit', {
       validator: RegExp("^.+$"),
       error: 'This field is required.'
     });
