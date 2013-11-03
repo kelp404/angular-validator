@@ -65,14 +65,21 @@ a.controller 'DemoController', ($scope, $validator) ->
         regexp: ''
         http: ''
 
+    # the form model
     $scope.formSubmit =
         required: ''
         regexp: ''
         http: ''
+
+    # the submit function
     $scope.submit = ->
         v = $validator.validate $scope, 'formSubmit'
-        v.success -> console.log 'success'
-        v.error -> console.log 'error'
+        v.success ->
+            # validated success
+            console.log 'success'
+        v.error ->
+            # validated error
+            console.log 'error'
 
     $scope.formBlur =
         required: ''

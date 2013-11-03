@@ -111,7 +111,7 @@ a.provider '$validator', ->
 
     @register = (name, object={}) ->
         ###
-        Register the rules.
+        Register the rule.
         @params name: The rule name.
         @params object:
             invoke: 'watch' or 'blur' or undefined(validator by yourself)

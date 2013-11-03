@@ -14,6 +14,16 @@
     "name": "Kelp",
     "url": "https://github.com/kelp404"
   },
+  "contributors": [
+    {
+      "name": "Jia-Yu",
+      "url": "https://github.com/Jia-Yu"
+    },
+    {
+      "name": "others",
+      "url": "https://github.com/kelp404/angular-validator/graphs/contributors"
+    }
+  ],
   "licenses": [
     {
       "type": "MIT",
