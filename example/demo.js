@@ -84,7 +84,7 @@
       regexp: '',
       http: ''
     };
-    return $scope.submit = function() {
+    $scope.submit = function() {
       var v;
       v = $validator.validate($scope, 'formSubmit');
       v.success(function() {
@@ -93,6 +93,11 @@
       return v.error(function() {
         return console.log('error');
       });
+    };
+    return $scope.formBlur = {
+      required: '',
+      regexp: '',
+      http: ''
     };
   });
 

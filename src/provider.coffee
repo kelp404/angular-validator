@@ -52,7 +52,7 @@ a.provider '$validator', ->
         result.filter ?= (input) -> input
         result.validator ?= -> true
         result.error ?= ''
-        result.enableError = 'watch' in result.invokes
+        result.enableError = 'watch' in result.invokes or 'blur' in result.invokes
 
         # convert error
         if result.error.constructor is String

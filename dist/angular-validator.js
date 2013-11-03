@@ -1,5 +1,8 @@
 (function() {
-  var a, validator;
+  var $, a, validator,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+
+  $ = angular.element;
 
   a = angular.module('validator.directive', []);
 
@@ -27,6 +30,9 @@
             rule = rules[_i];
             if (from === 'broadcast') {
               rule.enableError = true;
+            }
+            if (__indexOf.call(rule.invokes, from) < 0 && from !== 'broadcast') {
+              continue;
             }
             model.assign(scope, rule.filter(model(scope)));
             _results.push(rule.validator(model(scope), element, attrs, {
@@ -74,11 +80,16 @@
             error: object.error
           });
         });
-        return scope.$watch(attrs.ngModel, function(newValue, oldValue) {
+        scope.$watch(attrs.ngModel, function(newValue, oldValue) {
           if (newValue === oldValue) {
             return;
           }
           return validate();
+        });
+        return $(element).bind('blur', function() {
+          return scope.$apply(function() {
+            return validate('blur');
+          });
         });
       }
     };
@@ -163,7 +174,7 @@
       if (result.error == null) {
         result.error = '';
       }
-      result.enableError = __indexOf.call(result.invokes, 'watch') >= 0;
+      result.enableError = __indexOf.call(result.invokes, 'watch') >= 0 || __indexOf.call(result.invokes, 'blur') >= 0;
       if (result.error.constructor === String) {
         errorMessage = result.error;
         result.error = function(element, attrs) {

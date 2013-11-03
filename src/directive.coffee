@@ -1,4 +1,4 @@
-
+$ = angular.element
 a = angular.module 'validator.directive', []
 
 validator = ($injector) ->
@@ -27,6 +27,7 @@ validator = ($injector) ->
             successCount = 0
             for rule in rules
                 rule.enableError = true if from is 'broadcast'
+                continue if from not in rule.invokes and from isnt 'broadcast'
                 model.assign scope, rule.filter(model(scope))
                 rule.validator model(scope), element, attrs,
                     success: ->
@@ -63,6 +64,10 @@ validator = ($injector) ->
         scope.$watch attrs.ngModel, (newValue, oldValue) ->
             return if newValue is oldValue  # first
             validate()
+
+        # blur
+        $(element).bind 'blur', ->
+            scope.$apply -> validate 'blur'
 
 
 validator.$inject = ['$injector']

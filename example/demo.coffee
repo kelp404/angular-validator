@@ -13,7 +13,7 @@ a.config ($validatorProvider) ->
             h = $http.get 'example/data.json'
             h.then (data) ->
                 if data and data.status < 400 and data.data
-                    if value in (x.name for x in data.data) then return false
+                    return false if value in (x.name for x in data.data)
                     return true
                 else
                     return false
@@ -25,7 +25,7 @@ a.config ($validatorProvider) ->
             h = $http.get 'example/data.json'
             h.then (data) ->
                 if data and data.status < 400 and data.data
-                    if value in (x.name for x in data.data) then return false
+                    return false if value in (x.name for x in data.data)
                     return true
                 else
                     return false
@@ -60,3 +60,8 @@ a.controller 'DemoController', ($scope, $validator) ->
         v = $validator.validate $scope, 'formSubmit'
         v.success -> console.log 'success'
         v.error -> console.log 'error'
+
+    $scope.formBlur =
+        required: ''
+        regexp: ''
+        http: ''
