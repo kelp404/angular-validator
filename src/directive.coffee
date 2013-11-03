@@ -26,8 +26,8 @@ validator = ($injector) ->
                 error: ->
             successCount = 0
             for rule in rules
-                rule.enableError = true if from is 'broadcast'
-                continue if from not in rule.invokes and from isnt 'broadcast'
+                rule.enableError = true if from in ['broadcast', 'blur']
+                continue if from isnt 'broadcast' and from isnt rule.invoke
                 model.assign scope, rule.filter(model(scope))
                 rule.validator model(scope), element, attrs,
                     success: ->
@@ -39,7 +39,7 @@ validator = ($injector) ->
         if match
             rule = $validator.convertRule
                 validator: RegExp match[1]
-                invokes: attrs.validatorInvokes
+                invoke: attrs.validatorInvoke
                 error: attrs.validatorError
             rules.push rule
 
@@ -63,7 +63,7 @@ validator = ($injector) ->
         # watch
         scope.$watch attrs.ngModel, (newValue, oldValue) ->
             return if newValue is oldValue  # first
-            validate()
+            validate 'watch'
 
         # blur
         $(element).bind 'blur', ->

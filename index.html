@@ -28,7 +28,7 @@
                     <div class="form-group">
                         <label for="regexp0" class="col-md-2 control-label">RegExp [a-z]</label>
                         <div class="col-md-10">
-                            <input type="text" ng-model="formWatch.regexp" validator="/[a-z]/" validator-invokes="watch" validator-error="it should be /[a-z]/" class="form-control" id="regexp0" placeholder="RegExp [a-z]"/>
+                            <input type="text" ng-model="formWatch.regexp" validator="/[a-z]/" validator-invoke="watch" validator-error="it should be /[a-z]/" class="form-control" id="regexp0" placeholder="RegExp [a-z]"/>
                         </div>
                     </div>
                     <div class="form-group">
@@ -83,21 +83,21 @@
                 </div>
                 <form class="form-horizontal panel-body">
                     <div class="form-group">
-                        <label for="required0" class="col-md-2 control-label">Required</label>
+                        <label for="required1" class="col-md-2 control-label">Required</label>
                         <div class="col-md-10">
-                            <input type="text" ng-model="formBlur.required" validator="[requiredBlur]" class="form-control" id="required0" placeholder="Required" />
+                            <input type="text" ng-model="formBlur.required" validator="[requiredBlur]" class="form-control" id="required1" placeholder="Required" />
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="regexp0" class="col-md-2 control-label">RegExp [a-z]</label>
+                        <label for="regexp1" class="col-md-2 control-label">RegExp [a-z]</label>
                         <div class="col-md-10">
-                            <input type="text" ng-model="formBlur.regexp" validator="/[a-z]/" validator-invokes="blur" validator-error="it should be /[a-z]/" class="form-control" id="regexp0" placeholder="RegExp [a-z]"/>
+                            <input type="text" ng-model="formBlur.regexp" validator="/[a-z]/" validator-invoke="blur" validator-error="it should be /[a-z]/" class="form-control" id="regexp1" placeholder="RegExp [a-z]"/>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="http0" class="col-md-2 control-label">$http</label>
+                        <label for="http1" class="col-md-2 control-label">$http</label>
                         <div class="col-md-10">
-                            <input type="text" ng-model="formBlur.http" validator="[backendWatch]" class="form-control" id="http0" placeholder="do not use 'Kelp' or 'x'"/>
+                            <input type="text" ng-model="formBlur.http" validator="[backendBlur]" class="form-control" id="http1" placeholder="do not use 'Kelp' or 'x'"/>
                         </div>
                     </div>
                 </form>

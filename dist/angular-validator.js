@@ -1,6 +1,5 @@
 (function() {
-  var $, a, validator,
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  var $, a, validator;
 
   $ = angular.element;
 
@@ -28,10 +27,10 @@
           _results = [];
           for (_i = 0, _len = rules.length; _i < _len; _i++) {
             rule = rules[_i];
-            if (from === 'broadcast') {
+            if (from === 'broadcast' || from === 'blur') {
               rule.enableError = true;
             }
-            if (__indexOf.call(rule.invokes, from) < 0 && from !== 'broadcast') {
+            if (from !== 'broadcast' && from !== rule.invoke) {
               continue;
             }
             model.assign(scope, rule.filter(model(scope)));
@@ -52,7 +51,7 @@
         if (match) {
           rule = $validator.convertRule({
             validator: RegExp(match[1]),
-            invokes: attrs.validatorInvokes,
+            invoke: attrs.validatorInvoke,
             error: attrs.validatorError
           });
           rules.push(rule);
@@ -84,7 +83,7 @@
           if (newValue === oldValue) {
             return;
           }
-          return validate();
+          return validate('watch');
         });
         return $(element).bind('blur', function() {
           return scope.$apply(function() {
@@ -107,8 +106,7 @@
 }).call(this);
 
 (function() {
-  var $, a,
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  var $, a;
 
   $ = angular.element;
 
@@ -148,19 +146,13 @@
       */
 
       result = {
-        enableError: false,
-        invokes: object.invokes,
+        enableError: object.invoke === 'watch',
+        invoke: object.invoke,
         filter: object.filter,
         validator: object.validator,
         error: object.error,
         success: object.success
       };
-      if (result.invokes == null) {
-        result.invokes = [];
-      }
-      if (result.invokes.constructor === String) {
-        result.invokes = result.invokes.split(',');
-      }
       if (result.filter == null) {
         result.filter = function(input) {
           return input;
@@ -174,7 +166,6 @@
       if (result.error == null) {
         result.error = '';
       }
-      result.enableError = __indexOf.call(result.invokes, 'watch') >= 0 || __indexOf.call(result.invokes, 'blur') >= 0;
       if (result.error.constructor === String) {
         errorMessage = result.error;
         result.error = function(element, attrs) {
@@ -263,7 +254,7 @@
       Register the rules.
       @params name: The rule name.
       @params object:
-          invokes: ['watch', 'blur'] or undefined(validator by yourself)
+          invoke: 'watch' or 'blur' or undefined(validator by yourself)
           filter: function(input)
           validator: RegExp() or function(value, element, attrs, $injector)
           error: string or function(element, attrs)
