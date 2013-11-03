@@ -13,20 +13,34 @@
         $parse = $injector.get('$parse');
         model = $parse(attrs.ngModel);
         rules = [];
-        validate = function(from) {
-          var result, rule, _i, _len;
+        validate = function(from, funcs) {
+          var rule, successCount, _i, _len, _results;
+          if (funcs == null) {
+            funcs = {
+              success: function() {},
+              error: function() {}
+            };
+          }
+          successCount = 0;
+          _results = [];
           for (_i = 0, _len = rules.length; _i < _len; _i++) {
             rule = rules[_i];
             if (from === 'broadcast') {
               rule.enableError = true;
             }
             model.assign(scope, rule.filter(model(scope)));
-            result = rule.validator(model(scope), element, attrs);
-            if (!result) {
-              return false;
-            }
+            _results.push(rule.validator(model(scope), element, attrs, {
+              success: function() {
+                if (++successCount === rules.length) {
+                  return funcs.success();
+                }
+              },
+              error: function() {
+                return funcs.error();
+              }
+            }));
           }
-          return true;
+          return _results;
         };
         match = attrs.validator.match(RegExp('^/(.*)/$'));
         if (match) {
@@ -55,11 +69,10 @@
           if (object.model && attrs.ngModel.indexOf(object.model) !== 0) {
             return;
           }
-          if (validate('broadcast')) {
-            return object.success();
-          } else {
-            return object.error();
-          }
+          return validate('broadcast', {
+            success: object.success,
+            error: object.error
+          });
         });
         return scope.$watch(attrs.ngModel, function(newValue, oldValue) {
           if (newValue === oldValue) {
@@ -202,21 +215,29 @@
       }
       if (result.validator.constructor === RegExp) {
         regex = result.validator;
-        result.validator = function(value, element, attrs) {
+        result.validator = function(value, element, attrs, funcs) {
           if (regex.test(value)) {
-            return result.success(element, attrs);
-          } else if (result.enableError) {
-            return result.error(element, attrs);
+            result.success(element, attrs);
+            return typeof funcs.success === "function" ? funcs.success() : void 0;
+          } else {
+            if (result.enableError) {
+              result.error(element, attrs);
+            }
+            return typeof funcs.error === "function" ? funcs.error() : void 0;
           }
         };
       } else if (typeof result.validator === 'function') {
         func = result.validator;
-        result.validator = function(value, element, attrs) {
+        result.validator = function(value, element, attrs, funcs) {
           return $q.all([func(value, element, attrs, $injector)]).then(function(objects) {
             if (objects && objects.length > 0 && objects[0]) {
-              return result.success(element, attrs);
-            } else if (result.enableError) {
-              return result.error(element, attrs);
+              result.success(element, attrs);
+              return typeof funcs.success === "function" ? funcs.success() : void 0;
+            } else {
+              if (result.enableError) {
+                result.error(element, attrs);
+              }
+              return typeof funcs.error === "function" ? funcs.error() : void 0;
             }
           });
         };

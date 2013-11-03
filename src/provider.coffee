@@ -91,20 +91,24 @@ a.provider '$validator', ->
         # convert validator
         if result.validator.constructor is RegExp
             regex = result.validator
-            result.validator = (value, element, attrs) ->
+            result.validator = (value, element, attrs, funcs) ->
                 if regex.test value
                     result.success element, attrs
-                else if result.enableError
-                    result.error element, attrs
+                    funcs.success?()
+                else
+                    result.error element, attrs if result.enableError
+                    funcs.error?()
 
         else if typeof(result.validator) is 'function'
             func = result.validator
-            result.validator = (value, element, attrs) ->
+            result.validator = (value, element, attrs, funcs) ->
                 $q.all([func(value, element, attrs, $injector)]).then (objects) ->
                     if objects and objects.length > 0 and objects[0]
                         result.success element, attrs
-                    else if result.enableError
-                        result.error element, attrs
+                        funcs.success?()
+                    else
+                        result.error element, attrs if result.enableError
+                        funcs.error?()
 
         result
 

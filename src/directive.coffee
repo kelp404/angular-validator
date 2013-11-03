@@ -20,13 +20,18 @@ validator = ($injector) ->
         # ----------------------------
         # functions
         # ----------------------------
-        validate = (from) ->
+        validate = (from, funcs) ->
+            funcs ?=
+                success: ->
+                error: ->
+            successCount = 0
             for rule in rules
                 rule.enableError = true if from is 'broadcast'
                 model.assign scope, rule.filter(model(scope))
-                result = rule.validator model(scope), element, attrs
-                return false if !result
-            true
+                rule.validator model(scope), element, attrs,
+                    success: ->
+                        funcs.success() if ++successCount is rules.length
+                    error: -> funcs.error()
 
         # validat by RegExp
         match = attrs.validator.match(RegExp('^/(.*)/$'))
@@ -47,15 +52,17 @@ validator = ($injector) ->
         # listen
         scope.$on $validator.broadcastChannel.prepare, (self, object) ->
             return if object.model and attrs.ngModel.indexOf(object.model) isnt 0
-            do object.accept
+            object.accept()
         scope.$on $validator.broadcastChannel.start, (self, object) ->
             return if object.model and attrs.ngModel.indexOf(object.model) isnt 0
-            if validate('broadcast') then object.success() else object.error()
+            validate 'broadcast',
+                success: object.success
+                error: object.error
 
         # watch
         scope.$watch attrs.ngModel, (newValue, oldValue) ->
             return if newValue is oldValue  # first
-            do validate
+            validate()
 
 
 validator.$inject = ['$injector']
