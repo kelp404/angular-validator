@@ -37,7 +37,6 @@
     $validatorProvider.register('backendSubmit', {
       validator: function(value, element, attrs, $injector) {
         var $http, h;
-        console.log('----------');
         $http = $injector.get('$http');
         h = $http.get('example/data.json');
         return h.then(function(data) {

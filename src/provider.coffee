@@ -149,8 +149,9 @@ a.provider '$validator', ->
 
         scope.$broadcast @broadcastChannel.prepare, brocadcastObject
         setTimeout ->
-            $validator = $injector.get '$validator'
-            scope.$broadcast $validator.broadcastChannel.start, brocadcastObject
+            scope.$apply ->
+                $validator = $injector.get '$validator'
+                scope.$broadcast $validator.broadcastChannel.start, brocadcastObject
         , 0
 
         promise

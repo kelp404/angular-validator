@@ -287,9 +287,11 @@
       };
       scope.$broadcast(_this.broadcastChannel.prepare, brocadcastObject);
       setTimeout(function() {
-        var $validator;
-        $validator = $injector.get('$validator');
-        return scope.$broadcast($validator.broadcastChannel.start, brocadcastObject);
+        return scope.$apply(function() {
+          var $validator;
+          $validator = $injector.get('$validator');
+          return scope.$broadcast($validator.broadcastChannel.start, brocadcastObject);
+        });
       }, 0);
       return promise;
     };

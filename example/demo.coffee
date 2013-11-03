@@ -21,7 +21,6 @@ a.config ($validatorProvider) ->
 
     $validatorProvider.register 'backendSubmit',
         validator: (value, element, attrs, $injector) ->
-            console.log '----------'
             $http = $injector.get '$http'
             h = $http.get 'example/data.json'
             h.then (data) ->
