@@ -13,7 +13,10 @@ module.exports = (grunt) ->
         coffee:
             source:
                 files:
-                    './angular-validator.js': ['./src/*.coffee']
+                    './dist/angular-validator.js': ['./src/*.coffee']
+            rules:
+                files:
+                    './dist/angular-validator-rules.js': ['./rules/*.coffee']
             demo:
                 files:
                     './example/demo.js': './example/demo.coffee'
@@ -25,7 +28,7 @@ module.exports = (grunt) ->
                 options:
                     spawn: false
             coffee:
-                files: ['./src/*.coffee', './example/*.coffee']
+                files: ['./src/*.coffee', './rules/*.coffee', './example/*.coffee']
                 tasks: ['coffee']
                 options:
                     spawn: false

@@ -1,5 +1,5 @@
 
-a = angular.module 'validator.rules', ['validator.provider']
+a = angular.module 'validator.rules', ['validator']
 
 config = ($validatorProvider) ->
     # ----------------------------

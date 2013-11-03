@@ -1,5 +1,5 @@
 
-a = angular.module 'app', ['validator']
+a = angular.module 'app', ['validator', 'validator.rules']
 
 a.config ($validatorProvider) ->
     $validatorProvider.register 'backendWatch',
