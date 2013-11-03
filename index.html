@@ -25,6 +25,12 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="regexp0" class="col-md-2 control-label">RegExp [a-z]</label>
+                        <div class="col-md-10">
+                            <input type="text" ng-model="formWatch.regexp" validator="/[a-z]/" validator-invoke="watch" validator-error="it should be /[a-z]/" class="form-control" id="regexp0" placeholder="RegExp [a-z]">
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="http0" class="col-md-2 control-label">$http</label>
                         <div class="col-md-10">
                             <input type="text" ng-model="formWatch.http" validator="[backendWatch]" class="form-control" id="http0" placeholder="do not use 'Kelp' or 'x'">

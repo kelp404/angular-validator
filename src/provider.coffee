@@ -45,6 +45,7 @@ a.provider '$validator', ->
             success: object.success
 
         result.invoke ?= []
+        result.invoke = result.invoke.split(',') if result.invoke.constructor is String
         result.filter ?= (input) -> input
         result.validator ?= -> true
         result.error ?= ''

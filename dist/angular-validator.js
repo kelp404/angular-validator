@@ -17,13 +17,18 @@
           return rule.validator(model(scope), element, attrs);
         };
         return scope.$watch(attrs.ngModel, function(newValue, oldValue) {
-          var match, name, regex, rule, ruleNames, _i, _len;
+          var match, name, rule, ruleNames, _i, _len;
           if (newValue === oldValue) {
             return;
           }
           match = attrs.validator.match(RegExp('^/(.*)/$'));
           if (match) {
-            regex = RegExp(match[1]);
+            rule = $validator.convertRule({
+              validator: RegExp(match[1]),
+              invoke: attrs.validatorInvoke,
+              error: attrs.validatorError
+            });
+            validate(rule);
             return;
           }
           match = attrs.validator.match(RegExp('^\\[(.*)\\]$'));
@@ -33,7 +38,7 @@
               name = ruleNames[_i];
               rule = $validator.getRule(name.trim());
               if (rule) {
-                validate(rule, true);
+                validate(rule);
               }
             }
           }
@@ -99,6 +104,9 @@
       };
       if (result.invoke == null) {
         result.invoke = [];
+      }
+      if (result.invoke.constructor === String) {
+        result.invoke = result.invoke.split(',');
       }
       if (result.filter == null) {
         result.filter = function(input) {

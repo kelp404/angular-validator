@@ -29,7 +29,11 @@ validator = ($injector) ->
             # validat by RegExp
             match = attrs.validator.match(RegExp('^/(.*)/$'))
             if match
-                regex = RegExp match[1]
+                rule = $validator.convertRule
+                    validator: RegExp match[1]
+                    invoke: attrs.validatorInvoke
+                    error: attrs.validatorError
+                validate rule
                 return
 
             # validat by rules
@@ -38,7 +42,7 @@ validator = ($injector) ->
                 ruleNames = match[1].split(',')
                 for name in ruleNames
                     rule = $validator.getRule name.trim()
-                    validate rule, true if rule
+                    validate rule if rule
                 return
 
 

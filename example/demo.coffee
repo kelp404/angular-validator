@@ -18,4 +18,5 @@ a.config ($validatorProvider) ->
 a.controller 'DemoController', ($scope) ->
     $scope.formWatch =
         required: ''
+        regexp: ''
         http: ''
