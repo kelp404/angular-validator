@@ -41,18 +41,18 @@ a.provider '$validator', ->
         ###
         result =
             enableError: false
-            invoke: object.invoke
+            invokes: object.invokes
             filter: object.filter
             validator: object.validator
             error: object.error
             success: object.success
 
-        result.invoke ?= []
-        result.invoke = result.invoke.split(',') if result.invoke.constructor is String
+        result.invokes ?= []
+        result.invokes = result.invokes.split(',') if result.invokes.constructor is String
         result.filter ?= (input) -> input
         result.validator ?= -> true
         result.error ?= ''
-        result.enableError = 'watch' in result.invoke
+        result.enableError = 'watch' in result.invokes
 
         # convert error
         if result.error.constructor is String
@@ -117,7 +117,7 @@ a.provider '$validator', ->
         Register the rules.
         @params name: The rule name.
         @params object:
-            invoke: ['watch', 'blur'] or undefined(validator by yourself)
+            invokes: ['watch', 'blur'] or undefined(validator by yourself)
             filter: function(input)
             validator: RegExp() or function(value, element, attrs, $injector)
             error: string or function(element, attrs)

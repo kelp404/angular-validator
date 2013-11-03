@@ -7,7 +7,7 @@ a = angular.module 'app', ['validator', 'validator.rules']
 a.config ($validatorProvider) ->
     # backendWatch
     $validatorProvider.register 'backendWatch',
-        invoke: ['watch']
+        invokes: ['watch']
         validator: (value, element, attrs, $injector) ->
             $http = $injector.get '$http'
             h = $http.get 'example/data.json'
@@ -33,6 +33,12 @@ a.config ($validatorProvider) ->
 
     # submit - required
     $validatorProvider.register 'requiredSubmit',
+        validator: RegExp "^.+$"
+        error: 'This field is required.'
+
+    # blur - required
+    $validatorProvider.register 'requiredBlur',
+        invokes: ['blur']
         validator: RegExp "^.+$"
         error: 'This field is required.'
 

@@ -46,7 +46,7 @@
         if (match) {
           rule = $validator.convertRule({
             validator: RegExp(match[1]),
-            invoke: attrs.validatorInvoke,
+            invokes: attrs.validatorInvokes,
             error: attrs.validatorError
           });
           rules.push(rule);
@@ -138,17 +138,17 @@
 
       result = {
         enableError: false,
-        invoke: object.invoke,
+        invokes: object.invokes,
         filter: object.filter,
         validator: object.validator,
         error: object.error,
         success: object.success
       };
-      if (result.invoke == null) {
-        result.invoke = [];
+      if (result.invokes == null) {
+        result.invokes = [];
       }
-      if (result.invoke.constructor === String) {
-        result.invoke = result.invoke.split(',');
+      if (result.invokes.constructor === String) {
+        result.invokes = result.invokes.split(',');
       }
       if (result.filter == null) {
         result.filter = function(input) {
@@ -163,7 +163,7 @@
       if (result.error == null) {
         result.error = '';
       }
-      result.enableError = __indexOf.call(result.invoke, 'watch') >= 0;
+      result.enableError = __indexOf.call(result.invokes, 'watch') >= 0;
       if (result.error.constructor === String) {
         errorMessage = result.error;
         result.error = function(element, attrs) {
@@ -252,7 +252,7 @@
       Register the rules.
       @params name: The rule name.
       @params object:
-          invoke: ['watch', 'blur'] or undefined(validator by yourself)
+          invokes: ['watch', 'blur'] or undefined(validator by yourself)
           filter: function(input)
           validator: RegExp() or function(value, element, attrs, $injector)
           error: string or function(element, attrs)

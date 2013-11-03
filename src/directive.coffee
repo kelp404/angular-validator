@@ -38,7 +38,7 @@ validator = ($injector) ->
         if match
             rule = $validator.convertRule
                 validator: RegExp match[1]
-                invoke: attrs.validatorInvoke
+                invokes: attrs.validatorInvokes
                 error: attrs.validatorError
             rules.push rule
 

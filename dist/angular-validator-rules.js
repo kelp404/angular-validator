@@ -5,7 +5,7 @@
 
   config = function($validatorProvider) {
     $validatorProvider.register('required', {
-      invoke: ['watch'],
+      invokes: ['watch'],
       validator: RegExp("^.+$"),
       error: 'This field is required.'
     });

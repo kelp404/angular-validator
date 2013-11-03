@@ -6,7 +6,7 @@
 
   a.config(function($validatorProvider) {
     $validatorProvider.register('backendWatch', {
-      invoke: ['watch'],
+      invokes: ['watch'],
       validator: function(value, element, attrs, $injector) {
         var $http, h;
         $http = $injector.get('$http');
@@ -62,7 +62,12 @@
       },
       error: "do not use 'Kelp' or 'x'"
     });
-    return $validatorProvider.register('requiredSubmit', {
+    $validatorProvider.register('requiredSubmit', {
+      validator: RegExp("^.+$"),
+      error: 'This field is required.'
+    });
+    return $validatorProvider.register('requiredBlur', {
+      invokes: ['blur'],
       validator: RegExp("^.+$"),
       error: 'This field is required.'
     });
