@@ -9,7 +9,8 @@ module.exports = (config) ->
         files: [
             'test/lib/angularjs/angular.1.1.5.min.js'
             'test/lib/angularjs/angular-mocks.1.1.5.js'
-            'angular-validator.js'
+            'dist/angular-validator.js'
+            'dist/angular-validator-rules.js'
             'test/specs/*.coffee'
         ]
 
