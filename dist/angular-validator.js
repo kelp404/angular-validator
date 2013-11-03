@@ -27,14 +27,23 @@
           _results = [];
           for (_i = 0, _len = rules.length; _i < _len; _i++) {
             rule = rules[_i];
-            if (from === 'broadcast' || from === 'blur') {
-              rule.enableError = true;
-            }
-            if (from !== 'broadcast' && from !== rule.invoke) {
-              continue;
+            switch (from) {
+              case 'blur':
+                if (rule.invoke !== 'blur') {
+                  continue;
+                }
+                rule.enableError = true;
+                break;
+              case 'watch':
+                if (rule.invoke !== 'watch' && !rule.enableError) {
+                  continue;
+                }
+                break;
+              case 'broadcast':
+                rule.enableError = true;
             }
             model.assign(scope, rule.filter(model(scope)));
-            _results.push(rule.validator(model(scope), element, attrs, {
+            _results.push(rule.validator(model(scope), scope, element, attrs, {
               success: function() {
                 if (++successCount === rules.length) {
                   return funcs.success();
@@ -168,7 +177,7 @@
       }
       if (result.error.constructor === String) {
         errorMessage = result.error;
-        result.error = function(element, attrs) {
+        result.error = function(element) {
           var index, parent, _i;
           parent = $(element).parent();
           for (index = _i = 1; _i <= 3; index = ++_i) {
@@ -184,7 +193,7 @@
           }
         };
       }
-      successFunc = function(element, attrs) {
+      successFunc = function(element) {
         var index, label, parent, _i, _j, _len, _ref, _results;
         parent = $(element).parent();
         _results = [];
@@ -217,7 +226,7 @@
       }
       if (result.validator.constructor === RegExp) {
         regex = result.validator;
-        result.validator = function(value, element, attrs, funcs) {
+        result.validator = function(value, scope, element, attrs, funcs) {
           if (regex.test(value)) {
             result.success(element, attrs);
             return typeof funcs.success === "function" ? funcs.success() : void 0;
@@ -230,8 +239,8 @@
         };
       } else if (typeof result.validator === 'function') {
         func = result.validator;
-        result.validator = function(value, element, attrs, funcs) {
-          return $q.all([func(value, element, attrs, $injector)]).then(function(objects) {
+        result.validator = function(value, scope, element, attrs, funcs) {
+          return $q.all([func(value, scope, element, attrs, $injector)]).then(function(objects) {
             if (objects && objects.length > 0 && objects[0]) {
               result.success(element, attrs);
               return typeof funcs.success === "function" ? funcs.success() : void 0;
@@ -256,7 +265,7 @@
       @params object:
           invoke: 'watch' or 'blur' or undefined(validator by yourself)
           filter: function(input)
-          validator: RegExp() or function(value, element, attrs, $injector)
+          validator: RegExp() or function(value, scope, element, attrs, $injector)
           error: string or function(element, attrs)
           success: function(element, attrs)
       */

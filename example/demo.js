@@ -7,7 +7,7 @@
   a.config(function($validatorProvider) {
     $validatorProvider.register('backendWatch', {
       invoke: 'watch',
-      validator: function(value, element, attrs, $injector) {
+      validator: function(value, scope, element, attrs, $injector) {
         var $http, h;
         $http = $injector.get('$http');
         h = $http.get('example/data.json');
@@ -35,7 +35,7 @@
       error: "do not use 'Kelp' or 'x'"
     });
     $validatorProvider.register('backendSubmit', {
-      validator: function(value, element, attrs, $injector) {
+      validator: function(value, scope, element, attrs, $injector) {
         var $http, h;
         $http = $injector.get('$http');
         h = $http.get('example/data.json');
@@ -64,7 +64,7 @@
     });
     $validatorProvider.register('backendBlur', {
       invoke: 'blur',
-      validator: function(value, element, attrs, $injector) {
+      validator: function(value, scope, element, attrs, $injector) {
         var $http, h;
         $http = $injector.get('$http');
         h = $http.get('example/data.json');

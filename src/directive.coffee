@@ -26,10 +26,15 @@ validator = ($injector) ->
                 error: ->
             successCount = 0
             for rule in rules
-                rule.enableError = true if from in ['broadcast', 'blur']
-                continue if from isnt 'broadcast' and from isnt rule.invoke
+                switch from
+                    when 'blur'
+                        continue if rule.invoke isnt 'blur'
+                        rule.enableError = true
+                    when 'watch' then continue if rule.invoke isnt 'watch' and not rule.enableError
+                    when 'broadcast' then rule.enableError = true
+
                 model.assign scope, rule.filter(model(scope))
-                rule.validator model(scope), element, attrs,
+                rule.validator model(scope), scope, element, attrs,
                     success: ->
                         funcs.success() if ++successCount is rules.length
                     error: -> funcs.error()

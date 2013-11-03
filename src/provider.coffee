@@ -54,7 +54,7 @@ a.provider '$validator', ->
         # convert error
         if result.error.constructor is String
             errorMessage = result.error
-            result.error = (element, attrs) ->
+            result.error = (element) ->
                 parent = $(element).parent()
                 for index in [1..3]
                     if parent.hasClass 'form-group'
@@ -65,7 +65,7 @@ a.provider '$validator', ->
                     parent = parent.parent()
 
         # convert success
-        successFunc = (element, attrs) ->
+        successFunc = (element) ->
             parent = $(element).parent()
             for index in [1..3]
                 if parent.hasClass 'has-error'
@@ -88,7 +88,7 @@ a.provider '$validator', ->
         # convert validator
         if result.validator.constructor is RegExp
             regex = result.validator
-            result.validator = (value, element, attrs, funcs) ->
+            result.validator = (value, scope, element, attrs, funcs) ->
                 if regex.test value
                     result.success element, attrs
                     funcs.success?()
@@ -98,8 +98,8 @@ a.provider '$validator', ->
 
         else if typeof(result.validator) is 'function'
             func = result.validator
-            result.validator = (value, element, attrs, funcs) ->
-                $q.all([func(value, element, attrs, $injector)]).then (objects) ->
+            result.validator = (value, scope, element, attrs, funcs) ->
+                $q.all([func(value, scope, element, attrs, $injector)]).then (objects) ->
                     if objects and objects.length > 0 and objects[0]
                         result.success element, attrs
                         funcs.success?()
@@ -116,7 +116,7 @@ a.provider '$validator', ->
         @params object:
             invoke: 'watch' or 'blur' or undefined(validator by yourself)
             filter: function(input)
-            validator: RegExp() or function(value, element, attrs, $injector)
+            validator: RegExp() or function(value, scope, element, attrs, $injector)
             error: string or function(element, attrs)
             success: function(element, attrs)
         ###

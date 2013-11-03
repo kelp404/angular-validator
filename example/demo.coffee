@@ -8,7 +8,7 @@ a.config ($validatorProvider) ->
     # backendWatch
     $validatorProvider.register 'backendWatch',
         invoke: 'watch'
-        validator: (value, element, attrs, $injector) ->
+        validator: (value, scope, element, attrs, $injector) ->
             $http = $injector.get '$http'
             h = $http.get 'example/data.json'
             h.then (data) ->
@@ -20,7 +20,7 @@ a.config ($validatorProvider) ->
         error: "do not use 'Kelp' or 'x'"
 
     $validatorProvider.register 'backendSubmit',
-        validator: (value, element, attrs, $injector) ->
+        validator: (value, scope, element, attrs, $injector) ->
             $http = $injector.get '$http'
             h = $http.get 'example/data.json'
             h.then (data) ->
@@ -33,7 +33,7 @@ a.config ($validatorProvider) ->
 
     $validatorProvider.register 'backendBlur',
         invoke: 'blur'
-        validator: (value, element, attrs, $injector) ->
+        validator: (value, scope, element, attrs, $injector) ->
             $http = $injector.get '$http'
             h = $http.get 'example/data.json'
             h.then (data) ->
