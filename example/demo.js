@@ -5,7 +5,7 @@
   a = angular.module('app', ['validator', 'validator.rules']);
 
   a.config(function($validatorProvider) {
-    return $validatorProvider.register('backendWatch', {
+    $validatorProvider.register('backendWatch', {
       invoke: ['watch'],
       validator: function(value, element, attrs, $injector) {
         var $http, h;
@@ -34,13 +34,32 @@
       },
       error: "do not use 'Kelp' or 'x'"
     });
+    return $validatorProvider.register('submitRequired', {
+      validator: RegExp("^.+$"),
+      error: 'This field is required.'
+    });
   });
 
-  a.controller('DemoController', function($scope) {
-    return $scope.formWatch = {
+  a.controller('DemoController', function($scope, $validator) {
+    $scope.formWatch = {
       required: '',
       regexp: '',
       http: ''
+    };
+    $scope.formSubmit = {
+      required: '',
+      regexp: '',
+      http: ''
+    };
+    return $scope.submit = function() {
+      var v;
+      v = $validator.validate($scope, 'formSubmit');
+      v.success(function() {
+        return console.log('success');
+      });
+      return v.error(function() {
+        return console.log('error');
+      });
     };
   });
 

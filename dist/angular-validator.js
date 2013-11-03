@@ -175,10 +175,8 @@
         result.validator = function(value, element, attrs) {
           if (regex.test(value)) {
             return result.success(element, attrs);
-          } else {
-            if (result.enableError) {
-              return result.error(element, attrs);
-            }
+          } else if (result.enableError) {
+            return result.error(element, attrs);
           }
         };
       } else if (typeof result.validator === 'function') {
@@ -221,7 +219,7 @@
         return null;
       }
     };
-    this.validate = function(scope) {};
+    this.validate = function(scope, model) {};
     this.get = function($injector) {
       setupProviders($injector);
       init.all();

@@ -90,9 +90,8 @@ a.provider '$validator', ->
             result.validator = (value, element, attrs) ->
                 if regex.test value
                     result.success element, attrs
-                else
-                    if result.enableError
-                        result.error element, attrs
+                else if result.enableError
+                    result.error element, attrs
 
         else if typeof(result.validator) is 'function'
             func = result.validator
@@ -103,7 +102,6 @@ a.provider '$validator', ->
                         result.success element, attrs
                     else
                         result.error element, attrs
-
 
         result
 
@@ -124,7 +122,8 @@ a.provider '$validator', ->
     @getRule = (name) ->
         if @rules[name] then @rules[name] else null
 
-    @validate = (scope) ->
+    @validate = (scope, model) ->
+
 
 
     # ----------------------------

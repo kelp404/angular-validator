@@ -1,7 +1,11 @@
 
 a = angular.module 'app', ['validator', 'validator.rules']
 
+# ----------------------------
+# config
+# ----------------------------
 a.config ($validatorProvider) ->
+    # backendWatch
     $validatorProvider.register 'backendWatch',
         invoke: ['watch']
         validator: (value, element, attrs, $injector) ->
@@ -15,8 +19,26 @@ a.config ($validatorProvider) ->
                     return false
         error: "do not use 'Kelp' or 'x'"
 
-a.controller 'DemoController', ($scope) ->
+    # submit - required
+    $validatorProvider.register 'submitRequired',
+        validator: RegExp "^.+$"
+        error: 'This field is required.'
+
+
+# ----------------------------
+# controller
+# ----------------------------
+a.controller 'DemoController', ($scope, $validator) ->
     $scope.formWatch =
         required: ''
         regexp: ''
         http: ''
+
+    $scope.formSubmit =
+        required: ''
+        regexp: ''
+        http: ''
+    $scope.submit = ->
+        v = $validator.validate $scope, 'formSubmit'
+        v.success -> console.log 'success'
+        v.error -> console.log 'error'
