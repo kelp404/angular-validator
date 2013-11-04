@@ -126,10 +126,11 @@
   a = angular.module('validator.provider', []);
 
   a.provider('$validator', function() {
-    var $injector, $q, setupProviders,
+    var $injector, $q, $timeout, setupProviders,
       _this = this;
     $injector = null;
     $q = null;
+    $timeout = null;
     this.rules = {};
     this.broadcastChannel = {
       prepare: '$validateStartPrepare',
@@ -137,7 +138,8 @@
     };
     setupProviders = function(injector) {
       $injector = injector;
-      return $q = $injector.get('$q');
+      $q = $injector.get('$q');
+      return $timeout = $injector.get('$timeout');
     };
     this.convertRule = function(name, object) {
       var errorMessage, func, regex, result;
@@ -306,13 +308,11 @@
         error: func.validatedError
       };
       scope.$broadcast(_this.broadcastChannel.prepare, brocadcastObject);
-      setTimeout(function() {
-        return scope.$apply(function() {
-          var $validator;
-          $validator = $injector.get('$validator');
-          return scope.$broadcast($validator.broadcastChannel.start, brocadcastObject);
-        });
-      }, 0);
+      $timeout(function() {
+        var $validator;
+        $validator = $injector.get('$validator');
+        return scope.$broadcast($validator.broadcastChannel.start, brocadcastObject);
+      });
       return promise;
     };
     this.get = function($injector) {

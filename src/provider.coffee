@@ -8,6 +8,7 @@ a.provider '$validator', ->
     # ----------------------------
     $injector = null
     $q = null
+    $timeout = null
 
     # ----------------------------
     # properties
@@ -23,6 +24,7 @@ a.provider '$validator', ->
     setupProviders = (injector) ->
         $injector = injector
         $q = $injector.get '$q'
+        $timeout = $injector.get '$timeout'
 
     # ----------------------------
     # public functions
@@ -138,11 +140,9 @@ a.provider '$validator', ->
             error: func.validatedError
 
         scope.$broadcast @broadcastChannel.prepare, brocadcastObject
-        setTimeout ->
-            scope.$apply ->
-                $validator = $injector.get '$validator'
-                scope.$broadcast $validator.broadcastChannel.start, brocadcastObject
-        , 0
+        $timeout ->
+            $validator = $injector.get '$validator'
+            scope.$broadcast $validator.broadcastChannel.start, brocadcastObject
 
         promise
 
