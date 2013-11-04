@@ -271,6 +271,14 @@
       }
     };
     this.validate = function(scope, model) {
+      /*
+      Validate the model.
+      @param scope: The scope.
+      @param model: The model name of the scope.
+      @promise success(): The success function.
+      @promise error(): The error function.
+      */
+
       var brocadcastObject, count, deferred, func, promise;
       deferred = $q.defer();
       promise = deferred.promise;

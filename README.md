@@ -12,17 +12,30 @@ It supports [Bootstrap3](http://getbootstrap.com/).
 ##$validator
 ####register
 >
-```coffeescript
+```coffee
 $validatorProvider.register = (name, object={}) ->
     ###
     Register the rule.
     @params name: The rule name.
     @params object:
-        invoke: 'watch' or 'blur' or undefined(validator by yourself)
+        invoke: 'watch' or 'blur' or undefined(validate by yourself)
         filter: function(input)
         validator: RegExp() or function(value, scope, element, attrs, $injector)
         error: string or function(element, attrs)
         success: function(element, attrs)
+    ###
+```
+
+####validate
+>
+```coffee
+$validate.validate = (scope, model) =>
+    ###
+    Validate the model.
+    @param scope: The scope.
+    @param model: The model name of the scope.
+    @promise success(): The success function.
+    @promise error(): The error function.
     ###
 ```
 
@@ -40,7 +53,63 @@ $validatorProvider.register = (name, object={}) ->
 <script type="text/javascript" src="dist/angular-validator-rules.js"></script>
 ```
 >
+```html
+<!-- submit -->
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">submit</h3>
+    </div>
+    <form class="form-horizontal panel-body">
+        <div class="form-group">
+            <label for="required2" class="col-md-2 control-label">Required</label>
+            <div class="col-md-10">
+                <input type="text" ng-model="formSubmit.required" validator="[requiredSubmit]" class="form-control" id="required2" placeholder="Required"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="regexp2" class="col-md-2 control-label">RegExp [a-z]</label>
+            <div class="col-md-10">
+                <input type="text" ng-model="formSubmit.regexp" validator="/[a-z]/" validator-error="it should be /[a-z]/" class="form-control" id="regexp2" placeholder="RegExp [a-z]"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="http2" class="col-md-2 control-label">$http</label>
+            <div class="col-md-10">
+                <input type="text" ng-model="formSubmit.http" validator="[backendSubmit]" class="form-control" id="http2" placeholder="do not use 'Kelp' or 'x'"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" ng-click="submit()" class="btn btn-default"/>
+            </div>
+        </div>
+    </form>
+    <div class="panel-footer">{{formSubmit}}</div>
+</div>
+```
+>
 ```coffee
+a = angular.module 'app', ['validator', 'validator.rules']
+a.config ($validatorProvider) ->    
+    $validatorProvider.register 'backendSubmit',
+        validator: (value, scope, element, attrs, $injector) ->
+            $http = $injector.get '$http'
+            h = $http.get 'example/data.json'
+            h.then (data) ->
+                if data and data.status < 400 and data.data
+                    return false if value in (x.name for x in data.data)
+                    return true
+                else
+                    return false
+        error: "do not use 'Kelp' or 'x'"
+    # submit - required
+    $validatorProvider.register 'requiredSubmit',
+        validator: RegExp "^.+$"
+        error: 'This field is required.'
+```
+>
+```coffee
+# CoffeeScript
 # the form model
 $scope.formSubmit =
     required: ''
@@ -55,6 +124,27 @@ $scope.submit = ->
     v.error ->
         # validated error
         console.log 'error'
+```
+```js
+// JavaScript
+// the form model
+$scope.formSubmit = {
+    required: '',
+    regexp: '',
+    http: ''
+};
+// the submit function
+$scope.submit = function () {
+    $validator.validate($scope, 'formSubmit')
+    .success(function () {
+        // validated success
+        console.log('success');
+    })
+    .error(function () {
+        // validated error
+        console.log('error');
+    });
+};
 ```
 
 

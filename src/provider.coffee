@@ -120,6 +120,13 @@ a.provider '$validator', ->
         if @rules[name] then @rules[name] else null
 
     @validate = (scope, model) =>
+        ###
+        Validate the model.
+        @param scope: The scope.
+        @param model: The model name of the scope.
+        @promise success(): The success function.
+        @promise error(): The error function.
+        ###
         deferred = $q.defer()
         promise = deferred.promise
         count =
@@ -127,10 +134,14 @@ a.provider '$validator', ->
             success: 0
             error: 0
         func =
+            # promise success and error
             success: ->
             error: ->
+            # accept callback function for directives
             accept: -> count.total++
+            # success callback function for directives
             validatedSuccess: -> func.success() if ++count.success is count.total
+            # error callback function for directives
             validatedError: -> func.error() if count.error++ is 0
         promise.success = (fn) -> func.success = fn
         promise.error = (fn) -> func.error = fn
