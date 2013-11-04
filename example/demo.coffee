@@ -55,6 +55,12 @@ a.config ($validatorProvider) ->
         validator: RegExp "^.+$"
         error: 'This field is required.'
 
+    # watch - custom less than xx
+    $validatorProvider.register 'customLess',
+        invoke: 'watch'
+        validator: (value, scope) -> value < scope.formWatch.number
+        error: 'This field is required.'
+
 
 # ----------------------------
 # controller
@@ -63,7 +69,8 @@ a.controller 'DemoController', ($scope, $validator) ->
     $scope.formWatch =
         required: ''
         regexp: ''
-        number: ''
+        number: 100
+        number2: ''
         http: ''
 
     # the form model

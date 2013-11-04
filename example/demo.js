@@ -95,9 +95,16 @@
       validator: RegExp("^.+$"),
       error: 'This field is required.'
     });
-    return $validatorProvider.register('requiredBlur', {
+    $validatorProvider.register('requiredBlur', {
       invoke: 'blur',
       validator: RegExp("^.+$"),
+      error: 'This field is required.'
+    });
+    return $validatorProvider.register('customLess', {
+      invoke: 'watch',
+      validator: function(value, scope) {
+        return value < scope.formWatch.number;
+      },
       error: 'This field is required.'
     });
   });
@@ -106,7 +113,8 @@
     $scope.formWatch = {
       required: '',
       regexp: '',
-      number: '',
+      number: 100,
+      number2: '',
       http: ''
     };
     $scope.formSubmit = {

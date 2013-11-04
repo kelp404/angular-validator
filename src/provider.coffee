@@ -68,6 +68,7 @@ a.provider '$validator', ->
         ###
         Convert rule.validator.
         @param validator: RegExp() or function(value, scope, element, attrs, $injector)
+                                                    { return true / false }
         @return: function(value, scope, element, attrs, funcs{success, error})
             (funcs is callback functions)
         ###

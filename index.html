@@ -32,9 +32,15 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="number0" class="col-md-2 control-label">Number</label>
+                        <label for="number0" class="col-md-2 control-label">Number 1</label>
                         <div class="col-md-10">
                             <input type="text" ng-model="formWatch.number" validator="[required, number]" class="form-control" id="number0" placeholder="Number, Required"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="number20" class="col-md-2 control-label">Number 2</label>
+                        <div class="col-md-10">
+                            <input type="text" ng-model="formWatch.number2" validator="[number, customLess]" class="form-control" id="number20" placeholder="it should less than number 1"/>
                         </div>
                     </div>
                     <div class="form-group">
