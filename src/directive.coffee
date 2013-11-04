@@ -42,7 +42,7 @@ validator = ($injector) ->
         # validat by RegExp
         match = attrs.validator.match(RegExp('^/(.*)/$'))
         if match
-            rule = $validator.convertRule
+            rule = $validator.convertRule 'dynamic',
                 validator: RegExp match[1]
                 invoke: attrs.validatorInvoke
                 error: attrs.validatorError

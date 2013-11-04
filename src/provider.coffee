@@ -18,14 +18,6 @@ a.provider '$validator', ->
         start: '$validateStartStart'
 
     # ----------------------------
-    # init
-    # ----------------------------
-    init =
-        all: ->
-            do @[x] for x of @ when x isnt 'all'
-            return
-
-    # ----------------------------
     # private functions
     # ----------------------------
     setupProviders = (injector) ->
@@ -35,11 +27,12 @@ a.provider '$validator', ->
     # ----------------------------
     # public functions
     # ----------------------------
-    @convertRule = (object={}) ->
+    @convertRule = (name, object={}) ->
         ###
         Convert the rule object.
         ###
         result =
+            name: name
             enableError: object.invoke is 'watch'
             invoke: object.invoke
             filter: object.filter
@@ -114,14 +107,14 @@ a.provider '$validator', ->
         Register the rule.
         @params name: The rule name.
         @params object:
-            invoke: 'watch' or 'blur' or undefined(validator by yourself)
+            invoke: 'watch' or 'blur' or undefined(validate by yourself)
             filter: function(input)
             validator: RegExp() or function(value, scope, element, attrs, $injector)
             error: string or function(element, attrs)
             success: function(element, attrs)
         ###
         # set rule
-        @rules[name] = @convertRule object
+        @rules[name] = @convertRule name, object
 
     @getRule = (name) ->
         if @rules[name] then @rules[name] else null
@@ -163,7 +156,6 @@ a.provider '$validator', ->
     # ----------------------------
     @get = ($injector) ->
         setupProviders $injector
-        do init.all
 
         rules: @rules
         broadcastChannel: @broadcastChannel

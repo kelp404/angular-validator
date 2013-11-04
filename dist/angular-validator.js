@@ -58,7 +58,7 @@
         };
         match = attrs.validator.match(RegExp('^/(.*)/$'));
         if (match) {
-          rule = $validator.convertRule({
+          rule = $validator.convertRule('dynamic', {
             validator: RegExp(match[1]),
             invoke: attrs.validatorInvoke,
             error: attrs.validatorError
@@ -122,7 +122,7 @@
   a = angular.module('validator.provider', []);
 
   a.provider('$validator', function() {
-    var $injector, $q, init, setupProviders,
+    var $injector, $q, setupProviders,
       _this = this;
     $injector = null;
     $q = null;
@@ -131,21 +131,11 @@
       prepare: '$validateStartPrepare',
       start: '$validateStartStart'
     };
-    init = {
-      all: function() {
-        var x;
-        for (x in this) {
-          if (x !== 'all') {
-            this[x]();
-          }
-        }
-      }
-    };
     setupProviders = function(injector) {
       $injector = injector;
       return $q = $injector.get('$q');
     };
-    this.convertRule = function(object) {
+    this.convertRule = function(name, object) {
       var errorMessage, func, regex, result, successFunc;
       if (object == null) {
         object = {};
@@ -155,6 +145,7 @@
       */
 
       result = {
+        name: name,
         enableError: object.invoke === 'watch',
         invoke: object.invoke,
         filter: object.filter,
@@ -263,14 +254,14 @@
       Register the rule.
       @params name: The rule name.
       @params object:
-          invoke: 'watch' or 'blur' or undefined(validator by yourself)
+          invoke: 'watch' or 'blur' or undefined(validate by yourself)
           filter: function(input)
           validator: RegExp() or function(value, scope, element, attrs, $injector)
           error: string or function(element, attrs)
           success: function(element, attrs)
       */
 
-      return this.rules[name] = this.convertRule(object);
+      return this.rules[name] = this.convertRule(name, object);
     };
     this.getRule = function(name) {
       if (this.rules[name]) {
@@ -329,7 +320,6 @@
     };
     this.get = function($injector) {
       setupProviders($injector);
-      init.all();
       return {
         rules: this.rules,
         broadcastChannel: this.broadcastChannel,
