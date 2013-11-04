@@ -105,7 +105,7 @@
       validator: function(value, scope) {
         return value < scope.formWatch.number;
       },
-      error: 'This field is required.'
+      error: 'It should less than number 1.'
     });
   });
 

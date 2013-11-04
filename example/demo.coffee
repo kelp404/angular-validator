@@ -59,7 +59,7 @@ a.config ($validatorProvider) ->
     $validatorProvider.register 'customLess',
         invoke: 'watch'
         validator: (value, scope) -> value < scope.formWatch.number
-        error: 'This field is required.'
+        error: 'It should less than number 1.'
 
 
 # ----------------------------

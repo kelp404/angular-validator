@@ -1,5 +1,5 @@
 $ = angular.element
-a = angular.module 'validator.directive', []
+a = angular.module 'validator.directive', ['validator.provider']
 
 validator = ($injector) ->
     restrict: 'A'
