@@ -21,8 +21,8 @@ $validatorProvider.register = (name, object={}) ->
         invoke: 'watch' or 'blur' or undefined(validate by yourself)
         filter: function(input)
         validator: RegExp() or function(value, scope, element, attrs, $injector)
-        error: string or function(element, attrs)
-        success: function(element, attrs)
+        error: string or function(scope, element, attrs)
+        success: function(scope, element, attrs)
     ###
 ```
 
@@ -34,8 +34,9 @@ $validate.validate = (scope, model) =>
     Validate the model.
     @param scope: The scope.
     @param model: The model name of the scope.
-    @promise success(): The success function.
-    @promise error(): The error function.
+    @return:
+        @promise success(): The success function.
+        @promise error(): The error function.
     ###
 ```
 
