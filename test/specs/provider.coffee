@@ -22,6 +22,6 @@ describe "validator.provider", ->
     describe '$validator.broadcastChannel', ->
         it "check $validator.broadcastChannel property", inject ($validator) ->
             expect
-                prepare: '$validateStartPrepare'
-                start: '$validateStartStart'
+                prepare: '$validatePrepare'
+                start: '$validateStart'
             .toEqual $validator.broadcastChannel

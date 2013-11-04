@@ -15,8 +15,8 @@ a.provider '$validator', ->
     # ----------------------------
     @rules = {}
     @broadcastChannel =
-        prepare: '$validateStartPrepare'
-        start: '$validateStartStart'
+        prepare: '$validatePrepare'
+        start: '$validateStart'
 
     # ----------------------------
     # private functions

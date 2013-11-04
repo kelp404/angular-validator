@@ -138,8 +138,8 @@
     $timeout = null;
     this.rules = {};
     this.broadcastChannel = {
-      prepare: '$validateStartPrepare',
-      start: '$validateStartStart'
+      prepare: '$validatePrepare',
+      start: '$validateStart'
     };
     this.setupProviders = function(injector) {
       $injector = injector;
