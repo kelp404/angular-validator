@@ -17,12 +17,6 @@
         rules = [];
         validate = function(from, funcs) {
           var rule, successCount, _i, _len, _results;
-          if (funcs == null) {
-            funcs = {
-              success: function() {},
-              error: function() {}
-            };
-          }
           successCount = 0;
           _results = [];
           for (_i = 0, _len = rules.length; _i < _len; _i++) {
@@ -47,14 +41,22 @@
               success: function() {
                 if (++successCount === rules.length) {
                   rule.success(scope, element, attrs);
-                  return funcs.success();
+                  return funcs != null ? funcs.success() : void 0;
                 }
               },
               error: function() {
                 if (rule.enableError) {
                   rule.error(scope, element, attrs);
                 }
-                return funcs.error();
+                if ((funcs != null ? funcs.error() : void 0) === 1) {
+                  if (window.jQuery) {
+                    return jQuery('html, body').animate({
+                      scrollTop: jQuery(element).offset().top - 100
+                    }, 500);
+                  } else {
+                    return element[0].scrollIntoViewIfNeeded();
+                  }
+                }
               }
             }));
           }
@@ -349,6 +351,7 @@
               x();
             }
           }
+          return count.error;
         }
       };
       promise.success = function(fn) {

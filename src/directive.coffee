@@ -21,9 +21,6 @@ validator = ($injector) ->
         # functions
         # ----------------------------
         validate = (from, funcs) ->
-            funcs ?=
-                success: ->
-                error: ->
             successCount = 0
             for rule in rules
                 switch from
@@ -38,10 +35,17 @@ validator = ($injector) ->
                     success: ->
                         if ++successCount is rules.length
                             rule.success scope, element, attrs
-                            funcs.success()
+                            funcs?.success()
                     error: ->
                         rule.error scope, element, attrs if rule.enableError
-                        funcs.error()
+                        if funcs?.error() is 1
+                            # scroll to the first element
+                            if window.jQuery
+                                jQuery('html, body').animate
+                                    scrollTop: jQuery(element).offset().top - 100
+                                , 500
+                            else
+                                element[0].scrollIntoViewIfNeeded()
 
         # validat by RegExp
         match = attrs.validator.match(RegExp('^/(.*)/$'))

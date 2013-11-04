@@ -167,7 +167,7 @@ a.provider '$validator', ->
             validatedError: ->
                 if count.error++ is 0
                     x() for x in func.promises.error
-                return
+                count.error
         promise.success = (fn) ->
             func.promises.success.push fn
             promise
