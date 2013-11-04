@@ -46,13 +46,13 @@
             _results.push(rule.validator(model(scope), scope, element, attrs, {
               success: function() {
                 if (++successCount === rules.length) {
-                  rule.success(element, attrs);
+                  rule.success(scope, element, attrs);
                   return funcs.success();
                 }
               },
               error: function() {
                 if (rule.enableError) {
-                  rule.error(element, attrs);
+                  rule.error(scope, element, attrs);
                 }
                 return funcs.error();
               }
@@ -74,7 +74,10 @@
           ruleNames = match[1].split(',');
           for (_i = 0, _len = ruleNames.length; _i < _len; _i++) {
             name = ruleNames[_i];
-            rules.push($validator.getRule(name.trim()));
+            rule = $validator.getRule(name.trim());
+            if (rule) {
+              rules.push(rule);
+            }
           }
         }
         scope.$on($validator.broadcastChannel.prepare, function(self, object) {
@@ -126,7 +129,7 @@
   a = angular.module('validator.provider', []);
 
   a.provider('$validator', function() {
-    var $injector, $q, $timeout, setupProviders,
+    var $injector, $q, $timeout,
       _this = this;
     $injector = null;
     $q = null;
@@ -136,13 +139,107 @@
       prepare: '$validateStartPrepare',
       start: '$validateStartStart'
     };
-    setupProviders = function(injector) {
+    this.setupProviders = function(injector) {
       $injector = injector;
       $q = $injector.get('$q');
       return $timeout = $injector.get('$timeout');
     };
+    this.convertError = function(error) {
+      /*
+      Convert rule.error.
+      @param error: error messate (string) or function(scope, element, attrs)
+      @return: function(scope, element, attrs)
+      */
+
+      var errorMessage;
+      if (typeof error === 'function') {
+        return error;
+      }
+      errorMessage = error.constructor === String ? error : '';
+      return function(scope, element) {
+        var parent;
+        parent = $(element).parent();
+        while (parent.length !== 0) {
+          if (parent.hasClass('form-group')) {
+            if (parent.hasClass('has-error')) {
+              return;
+            }
+            $(element).parent().append("<label class='control-label error'>" + errorMessage + "</label>");
+            parent.addClass('has-error');
+            break;
+          }
+          parent = parent.parent();
+        }
+      };
+    };
+    this.convertSuccess = function(success) {
+      /*
+      Convert rule.success.
+      @param success: function(scope, element, attrs)
+      @return: function(scope, element, attrs)
+      */
+
+      if (typeof success === 'function') {
+        return success;
+      }
+      return function(scope, element) {
+        var label, parent, _i, _len, _ref, _results;
+        parent = $(element).parent();
+        _results = [];
+        while (parent.length !== 0) {
+          if (parent.hasClass('has-error')) {
+            parent.removeClass('has-error');
+            _ref = parent.find('label');
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              label = _ref[_i];
+              if (!($(label).hasClass('error'))) {
+                continue;
+              }
+              label.remove();
+              break;
+            }
+            break;
+          }
+          _results.push(parent = parent.parent());
+        }
+        return _results;
+      };
+    };
+    this.convertValidator = function(validator) {
+      /*
+      Convert rule.validator.
+      @param validator: RegExp() or function(value, scope, element, attrs, $injector)
+      @return: function(value, scope, element, attrs, funcs{success, error})
+          (funcs is callback functions)
+      */
+
+      var func, regex, result;
+      result = function() {};
+      if (validator.constructor === RegExp) {
+        regex = validator;
+        result = function(value, scope, element, attrs, funcs) {
+          if (regex.test(value)) {
+            return typeof funcs.success === "function" ? funcs.success() : void 0;
+          } else {
+            return typeof funcs.error === "function" ? funcs.error() : void 0;
+          }
+        };
+      } else if (typeof validator === 'function') {
+        func = validator;
+        result = function(value, scope, element, attrs, funcs) {
+          return $q.all([func(value, scope, element, attrs, $injector)]).then(function(objects) {
+            if (objects && objects.length > 0 && objects[0]) {
+              return typeof funcs.success === "function" ? funcs.success() : void 0;
+            } else {
+              return typeof funcs.error === "function" ? funcs.error() : void 0;
+            }
+          });
+        };
+      }
+      return result;
+    };
     this.convertRule = function(name, object) {
-      var errorMessage, func, regex, result;
+      var result;
       if (object == null) {
         object = {};
       }
@@ -172,69 +269,9 @@
       if (result.error == null) {
         result.error = '';
       }
-      if (result.error.constructor === String) {
-        errorMessage = result.error;
-        result.error = function(element) {
-          var parent;
-          parent = $(element).parent();
-          while (parent.length !== 0) {
-            if (parent.hasClass('form-group')) {
-              if (parent.hasClass('has-error')) {
-                return;
-              }
-              $(element).parent().append("<label class='control-label error'>" + errorMessage + "</label>");
-              parent.addClass('has-error');
-              break;
-            }
-            parent = parent.parent();
-          }
-        };
-      }
-      if (result.success == null) {
-        result.success = function(element) {
-          var label, parent, _i, _len, _ref, _results;
-          parent = $(element).parent();
-          _results = [];
-          while (parent.length !== 0) {
-            if (parent.hasClass('has-error')) {
-              parent.removeClass('has-error');
-              _ref = parent.find('label');
-              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                label = _ref[_i];
-                if (!($(label).hasClass('error'))) {
-                  continue;
-                }
-                label.remove();
-                break;
-              }
-              break;
-            }
-            _results.push(parent = parent.parent());
-          }
-          return _results;
-        };
-      }
-      if (result.validator.constructor === RegExp) {
-        regex = result.validator;
-        result.validator = function(value, scope, element, attrs, funcs) {
-          if (regex.test(value)) {
-            return typeof funcs.success === "function" ? funcs.success() : void 0;
-          } else {
-            return typeof funcs.error === "function" ? funcs.error() : void 0;
-          }
-        };
-      } else if (typeof result.validator === 'function') {
-        func = result.validator;
-        result.validator = function(value, scope, element, attrs, funcs) {
-          return $q.all([func(value, scope, element, attrs, $injector)]).then(function(objects) {
-            if (objects && objects.length > 0 && objects[0]) {
-              return typeof funcs.success === "function" ? funcs.success() : void 0;
-            } else {
-              return typeof funcs.error === "function" ? funcs.error() : void 0;
-            }
-          });
-        };
-      }
+      result.error = _this.convertError(result.error);
+      result.success = _this.convertSuccess(result.success);
+      result.validator = _this.convertValidator(result.validator);
       return result;
     };
     this.register = function(name, object) {
@@ -248,13 +285,18 @@
           invoke: 'watch' or 'blur' or undefined(validate by yourself)
           filter: function(input)
           validator: RegExp() or function(value, scope, element, attrs, $injector)
-          error: string or function(element, attrs)
-          success: function(element, attrs)
+          error: string or function(scope, element, attrs)
+          success: function(scope, element, attrs)
       */
 
       return this.rules[name] = this.convertRule(name, object);
     };
     this.getRule = function(name) {
+      /*
+      Get the rule form $validator.rules by the name.
+      @return rule / null
+      */
+
       if (this.rules[name]) {
         return this.rules[name];
       } else {
@@ -266,8 +308,9 @@
       Validate the model.
       @param scope: The scope.
       @param model: The model name of the scope.
-      @promise success(): The success function.
-      @promise error(): The error function.
+      @return:
+          @promise success(): The success function.
+          @promise error(): The error function.
       */
 
       var brocadcastObject, count, deferred, func, promise;
@@ -313,7 +356,6 @@
       };
       promise.error = function(fn) {
         func.promises.error.push(fn);
-        func.error = fn;
         return promise;
       };
       brocadcastObject = {
@@ -331,7 +373,7 @@
       return promise;
     };
     this.get = function($injector) {
-      setupProviders($injector);
+      this.setupProviders($injector);
       return {
         rules: this.rules,
         broadcastChannel: this.broadcastChannel,

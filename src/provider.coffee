@@ -21,15 +21,76 @@ a.provider '$validator', ->
     # ----------------------------
     # private functions
     # ----------------------------
-    setupProviders = (injector) ->
+    @setupProviders = (injector) ->
         $injector = injector
         $q = $injector.get '$q'
         $timeout = $injector.get '$timeout'
 
+    @convertError = (error) ->
+        ###
+        Convert rule.error.
+        @param error: error messate (string) or function(scope, element, attrs)
+        @return: function(scope, element, attrs)
+        ###
+        return error if typeof error is 'function'
+
+        errorMessage = if error.constructor is String then error else ''
+        (scope, element) ->
+            parent = $(element).parent()
+            until parent.length is 0
+                if parent.hasClass 'form-group'
+                    return if parent.hasClass 'has-error'
+                    $(element).parent().append "<label class='control-label error'>#{errorMessage}</label>"
+                    parent.addClass 'has-error'
+                    break
+                parent = parent.parent()
+
+    @convertSuccess = (success) ->
+        ###
+        Convert rule.success.
+        @param success: function(scope, element, attrs)
+        @return: function(scope, element, attrs)
+        ###
+        return success if typeof success is 'function'
+
+        (scope, element) ->
+            parent = $(element).parent()
+            until parent.length is 0
+                if parent.hasClass 'has-error'
+                    parent.removeClass 'has-error'
+                    for label in parent.find('label') when $(label).hasClass 'error'
+                        label.remove()
+                        break
+                    break
+                parent = parent.parent()
+
+    @convertValidator = (validator) ->
+        ###
+        Convert rule.validator.
+        @param validator: RegExp() or function(value, scope, element, attrs, $injector)
+        @return: function(value, scope, element, attrs, funcs{success, error})
+            (funcs is callback functions)
+        ###
+        result = ->
+        if validator.constructor is RegExp
+            regex = validator
+            result = (value, scope, element, attrs, funcs) ->
+                if regex.test value then funcs.success?() else funcs.error?()
+        else if typeof validator is 'function'
+            # swop
+            func = validator
+            result = (value, scope, element, attrs, funcs) ->
+                $q.all([func(value, scope, element, attrs, $injector)]).then (objects) ->
+                    if objects and objects.length > 0 and objects[0]
+                        funcs.success?()
+                    else
+                        funcs.error?()
+        result
+
     # ----------------------------
     # public functions
     # ----------------------------
-    @convertRule = (name, object={}) ->
+    @convertRule = (name, object={}) =>
         ###
         Convert the rule object.
         ###
@@ -46,46 +107,10 @@ a.provider '$validator', ->
         result.validator ?= -> true
         result.error ?= ''
 
-        # convert error
-        if result.error.constructor is String
-            errorMessage = result.error
-            result.error = (element) ->
-                parent = $(element).parent()
-                until parent.length is 0
-                    if parent.hasClass 'form-group'
-                        return if parent.hasClass 'has-error'
-                        $(element).parent().append "<label class='control-label error'>#{errorMessage}</label>"
-                        parent.addClass 'has-error'
-                        break
-                    parent = parent.parent()
-
-        # convert success
-        result.success ?= (element) ->
-            parent = $(element).parent()
-            until parent.length is 0
-                if parent.hasClass 'has-error'
-                    parent.removeClass 'has-error'
-                    for label in parent.find('label') when $(label).hasClass 'error'
-                        label.remove()
-                        break
-                    break
-                parent = parent.parent()
-
-
-        # convert validator
-        if result.validator.constructor is RegExp
-            regex = result.validator
-            result.validator = (value, scope, element, attrs, funcs) ->
-                if regex.test value then funcs.success?() else funcs.error?()
-
-        else if typeof(result.validator) is 'function'
-            func = result.validator
-            result.validator = (value, scope, element, attrs, funcs) ->
-                $q.all([func(value, scope, element, attrs, $injector)]).then (objects) ->
-                    if objects and objects.length > 0 and objects[0]
-                        funcs.success?()
-                    else
-                        funcs.error?()
+        # convert
+        result.error = @convertError result.error
+        result.success = @convertSuccess result.success
+        result.validator = @convertValidator result.validator
 
         result
 
@@ -97,13 +122,17 @@ a.provider '$validator', ->
             invoke: 'watch' or 'blur' or undefined(validate by yourself)
             filter: function(input)
             validator: RegExp() or function(value, scope, element, attrs, $injector)
-            error: string or function(element, attrs)
-            success: function(element, attrs)
+            error: string or function(scope, element, attrs)
+            success: function(scope, element, attrs)
         ###
         # set rule
         @rules[name] = @convertRule name, object
 
     @getRule = (name) ->
+        ###
+        Get the rule form $validator.rules by the name.
+        @return rule / null
+        ###
         if @rules[name] then @rules[name] else null
 
     @validate = (scope, model) =>
@@ -111,8 +140,9 @@ a.provider '$validator', ->
         Validate the model.
         @param scope: The scope.
         @param model: The model name of the scope.
-        @promise success(): The success function.
-        @promise error(): The error function.
+        @return:
+            @promise success(): The success function.
+            @promise error(): The error function.
         ###
         deferred = $q.defer()
         promise = deferred.promise
@@ -142,7 +172,6 @@ a.provider '$validator', ->
             promise
         promise.error = (fn) ->
             func.promises.error.push fn
-            func.error = fn
             promise
 
         brocadcastObject =
@@ -153,6 +182,7 @@ a.provider '$validator', ->
 
         scope.$broadcast @broadcastChannel.prepare, brocadcastObject
         $timeout ->
+            # wait for getting all promises
             $validator = $injector.get '$validator'
             scope.$broadcast $validator.broadcastChannel.start, brocadcastObject
 
@@ -163,7 +193,7 @@ a.provider '$validator', ->
     # $get
     # ----------------------------
     @get = ($injector) ->
-        setupProviders $injector
+        @setupProviders $injector
 
         rules: @rules
         broadcastChannel: @broadcastChannel

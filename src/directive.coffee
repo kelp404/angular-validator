@@ -37,10 +37,10 @@ validator = ($injector) ->
                 rule.validator model(scope), scope, element, attrs,
                     success: ->
                         if ++successCount is rules.length
-                            rule.success element, attrs
+                            rule.success scope, element, attrs
                             funcs.success()
                     error: ->
-                        rule.error element, attrs if rule.enableError
+                        rule.error scope, element, attrs if rule.enableError
                         funcs.error()
 
         # validat by RegExp
@@ -57,7 +57,8 @@ validator = ($injector) ->
         if match
             ruleNames = match[1].split(',')
             for name in ruleNames
-                rules.push $validator.getRule(name.trim())
+                rule = $validator.getRule name.trim()
+                rules.push rule if rule
 
         # listen
         scope.$on $validator.broadcastChannel.prepare, (self, object) ->
