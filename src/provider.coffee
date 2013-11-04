@@ -58,7 +58,7 @@ a.provider '$validator', ->
                     parent = parent.parent()
 
         # convert success
-        successFunc = (element) ->
+        result.success ?= (element) ->
             parent = $(element).parent()
             until parent.length is 0
                 if parent.hasClass 'has-error'
@@ -68,14 +68,6 @@ a.provider '$validator', ->
                         break
                     break
                 parent = parent.parent()
-        if result.success and typeof(result.success) is 'function'
-            # swop
-            func = result.success
-            result.success = (element, attrs) ->
-                func element, attrs
-                successFunc element, attrs
-        else
-            result.success = successFunc
 
 
         # convert validator

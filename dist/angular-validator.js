@@ -140,7 +140,7 @@
       return $q = $injector.get('$q');
     };
     this.convertRule = function(name, object) {
-      var errorMessage, func, regex, result, successFunc;
+      var errorMessage, func, regex, result;
       if (object == null) {
         object = {};
       }
@@ -188,36 +188,29 @@
           }
         };
       }
-      successFunc = function(element) {
-        var label, parent, _i, _len, _ref, _results;
-        parent = $(element).parent();
-        _results = [];
-        while (parent.length !== 0) {
-          if (parent.hasClass('has-error')) {
-            parent.removeClass('has-error');
-            _ref = parent.find('label');
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              label = _ref[_i];
-              if (!($(label).hasClass('error'))) {
-                continue;
+      if (result.success == null) {
+        result.success = function(element) {
+          var label, parent, _i, _len, _ref, _results;
+          parent = $(element).parent();
+          _results = [];
+          while (parent.length !== 0) {
+            if (parent.hasClass('has-error')) {
+              parent.removeClass('has-error');
+              _ref = parent.find('label');
+              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+                label = _ref[_i];
+                if (!($(label).hasClass('error'))) {
+                  continue;
+                }
+                label.remove();
+                break;
               }
-              label.remove();
               break;
             }
-            break;
+            _results.push(parent = parent.parent());
           }
-          _results.push(parent = parent.parent());
-        }
-        return _results;
-      };
-      if (result.success && typeof result.success === 'function') {
-        func = result.success;
-        result.success = function(element, attrs) {
-          func(element, attrs);
-          return successFunc(element, attrs);
+          return _results;
         };
-      } else {
-        result.success = successFunc;
       }
       if (result.validator.constructor === RegExp) {
         regex = result.validator;
