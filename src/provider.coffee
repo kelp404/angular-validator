@@ -49,7 +49,7 @@ a.provider '$validator', ->
             errorMessage = result.error
             result.error = (element) ->
                 parent = $(element).parent()
-                for index in [1..3]
+                until parent.length is 0
                     if parent.hasClass 'form-group'
                         return if parent.hasClass 'has-error'
                         $(element).parent().append "<label class='control-label error'>#{errorMessage}</label>"
@@ -60,7 +60,7 @@ a.provider '$validator', ->
         # convert success
         successFunc = (element) ->
             parent = $(element).parent()
-            for index in [1..3]
+            until parent.length is 0
                 if parent.hasClass 'has-error'
                     parent.removeClass 'has-error'
                     for label in parent.find('label') when $(label).hasClass 'error'

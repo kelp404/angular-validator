@@ -169,9 +169,9 @@
       if (result.error.constructor === String) {
         errorMessage = result.error;
         result.error = function(element) {
-          var index, parent, _i;
+          var parent;
           parent = $(element).parent();
-          for (index = _i = 1; _i <= 3; index = ++_i) {
+          while (parent.length !== 0) {
             if (parent.hasClass('form-group')) {
               if (parent.hasClass('has-error')) {
                 return;
@@ -185,15 +185,15 @@
         };
       }
       successFunc = function(element) {
-        var index, label, parent, _i, _j, _len, _ref, _results;
+        var label, parent, _i, _len, _ref, _results;
         parent = $(element).parent();
         _results = [];
-        for (index = _i = 1; _i <= 3; index = ++_i) {
+        while (parent.length !== 0) {
           if (parent.hasClass('has-error')) {
             parent.removeClass('has-error');
             _ref = parent.find('label');
-            for (_j = 0, _len = _ref.length; _j < _len; _j++) {
-              label = _ref[_j];
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              label = _ref[_i];
               if (!($(label).hasClass('error'))) {
                 continue;
               }
