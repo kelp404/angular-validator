@@ -46,10 +46,14 @@
             _results.push(rule.validator(model(scope), scope, element, attrs, {
               success: function() {
                 if (++successCount === rules.length) {
+                  rule.success(element, attrs);
                   return funcs.success();
                 }
               },
               error: function() {
+                if (rule.enableError) {
+                  rule.error(element, attrs);
+                }
                 return funcs.error();
               }
             }));
@@ -219,12 +223,8 @@
         regex = result.validator;
         result.validator = function(value, scope, element, attrs, funcs) {
           if (regex.test(value)) {
-            result.success(element, attrs);
             return typeof funcs.success === "function" ? funcs.success() : void 0;
           } else {
-            if (result.enableError) {
-              result.error(element, attrs);
-            }
             return typeof funcs.error === "function" ? funcs.error() : void 0;
           }
         };
@@ -233,12 +233,8 @@
         result.validator = function(value, scope, element, attrs, funcs) {
           return $q.all([func(value, scope, element, attrs, $injector)]).then(function(objects) {
             if (objects && objects.length > 0 && objects[0]) {
-              result.success(element, attrs);
               return typeof funcs.success === "function" ? funcs.success() : void 0;
             } else {
-              if (result.enableError) {
-                result.error(element, attrs);
-              }
               return typeof funcs.error === "function" ? funcs.error() : void 0;
             }
           });

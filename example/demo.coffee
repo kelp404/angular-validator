@@ -63,12 +63,14 @@ a.controller 'DemoController', ($scope, $validator) ->
     $scope.formWatch =
         required: ''
         regexp: ''
+        number: ''
         http: ''
 
     # the form model
     $scope.formSubmit =
         required: ''
         regexp: ''
+        number: ''
         http: ''
 
     # the submit function

@@ -36,8 +36,12 @@ validator = ($injector) ->
                 model.assign scope, rule.filter(model(scope))
                 rule.validator model(scope), scope, element, attrs,
                     success: ->
-                        funcs.success() if ++successCount is rules.length
-                    error: -> funcs.error()
+                        if ++successCount is rules.length
+                            rule.success element, attrs
+                            funcs.success()
+                    error: ->
+                        rule.error element, attrs if rule.enableError
+                        funcs.error()
 
         # validat by RegExp
         match = attrs.validator.match(RegExp('^/(.*)/$'))

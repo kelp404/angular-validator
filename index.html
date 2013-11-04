@@ -32,6 +32,12 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="number0" class="col-md-2 control-label">Number</label>
+                        <div class="col-md-10">
+                            <input type="text" ng-model="formWatch.number" validator="[required, number]" class="form-control" id="number0" placeholder="Number, Required"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="http0" class="col-md-2 control-label">$http</label>
                         <div class="col-md-10">
                             <input type="text" ng-model="formWatch.http" validator="[backendWatch]" class="form-control" id="http0" placeholder="do not use 'Kelp' or 'x'"/>
@@ -58,6 +64,12 @@
                         <label for="regexp2" class="col-md-2 control-label">RegExp [a-z]</label>
                         <div class="col-md-10">
                             <input type="text" ng-model="formSubmit.regexp" validator="/[a-z]/" validator-error="it should be /[a-z]/" class="form-control" id="regexp2" placeholder="RegExp [a-z]"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="number2" class="col-md-2 control-label">Number</label>
+                        <div class="col-md-10">
+                            <input type="text" ng-model="formSubmit.number" validator="[required, number]" class="form-control" id="number2" placeholder="Number, Required"/>
                         </div>
                     </div>
                     <div class="form-group">

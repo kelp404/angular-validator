@@ -82,22 +82,15 @@ a.provider '$validator', ->
         if result.validator.constructor is RegExp
             regex = result.validator
             result.validator = (value, scope, element, attrs, funcs) ->
-                if regex.test value
-                    result.success element, attrs
-                    funcs.success?()
-                else
-                    result.error element, attrs if result.enableError
-                    funcs.error?()
+                if regex.test value then funcs.success?() else funcs.error?()
 
         else if typeof(result.validator) is 'function'
             func = result.validator
             result.validator = (value, scope, element, attrs, funcs) ->
                 $q.all([func(value, scope, element, attrs, $injector)]).then (objects) ->
                     if objects and objects.length > 0 and objects[0]
-                        result.success element, attrs
                         funcs.success?()
                     else
-                        result.error element, attrs if result.enableError
                         funcs.error?()
 
         result

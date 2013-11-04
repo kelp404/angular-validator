@@ -106,11 +106,13 @@
     $scope.formWatch = {
       required: '',
       regexp: '',
+      number: '',
       http: ''
     };
     $scope.formSubmit = {
       required: '',
       regexp: '',
+      number: '',
       http: ''
     };
     $scope.submit = function() {
