@@ -122,16 +122,28 @@ a.provider '$validator', ->
             error: 0
         func =
             # promise success and error
-            success: ->
-            error: ->
+            promises:
+                success: []
+                error: []
             # accept callback function for directives
             accept: -> count.total++
             # success callback function for directives
-            validatedSuccess: -> func.success() if ++count.success is count.total
+            validatedSuccess: ->
+                if ++count.success is count.total
+                    x() for x in func.promises.success
+                return
             # error callback function for directives
-            validatedError: -> func.error() if count.error++ is 0
-        promise.success = (fn) -> func.success = fn
-        promise.error = (fn) -> func.error = fn
+            validatedError: ->
+                if count.error++ is 0
+                    x() for x in func.promises.error
+                return
+        promise.success = (fn) ->
+            func.promises.success.push fn
+            promise
+        promise.error = (fn) ->
+            func.promises.error.push fn
+            func.error = fn
+            promise
 
         brocadcastObject =
             model: model

@@ -279,27 +279,42 @@
         error: 0
       };
       func = {
-        success: function() {},
-        error: function() {},
+        promises: {
+          success: [],
+          error: []
+        },
         accept: function() {
           return count.total++;
         },
         validatedSuccess: function() {
+          var x, _i, _len, _ref;
           if (++count.success === count.total) {
-            return func.success();
+            _ref = func.promises.success;
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              x = _ref[_i];
+              x();
+            }
           }
         },
         validatedError: function() {
+          var x, _i, _len, _ref;
           if (count.error++ === 0) {
-            return func.error();
+            _ref = func.promises.error;
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              x = _ref[_i];
+              x();
+            }
           }
         }
       };
       promise.success = function(fn) {
-        return func.success = fn;
+        func.promises.success.push(fn);
+        return promise;
       };
       promise.error = function(fn) {
-        return func.error = fn;
+        func.promises.error.push(fn);
+        func.error = fn;
+        return promise;
       };
       brocadcastObject = {
         model: model,
