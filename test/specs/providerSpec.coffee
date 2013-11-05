@@ -1,3 +1,6 @@
+
+# https://github.com/pivotal/jasmine/wiki/Matchers
+
 describe "validator.provider", ->
     $ = angular.element
     fakeModule = null
@@ -60,3 +63,33 @@ describe "validator.provider", ->
                 attrs: 'attrs'
             .toEqual error('scope', 'element', 'attrs')
 
+
+    describe '$validator.convertRule(name, object)', ->
+        it "check rule.name is equal with the argument", inject ($validator) ->
+            rule = $validator.convertRule 'name', validator: /.*/
+            expect(rule.name).toEqual 'name'
+
+        it "check rule.enableError is true when object.invoke is watch", inject ($validator) ->
+            rule = $validator.convertRule 'name', invoke: 'watch'
+            expect(rule.enableError).toBe true
+
+            rule = $validator.convertRule 'name', invoke: 'blur'
+            expect(rule.enableError).toBe false
+
+            rule = $validator.convertRule 'name', validator: /.*/
+            expect(rule.enableError).toBe false
+
+
+    describe '$validator', ->
+        it "$validator.rules and $validatorProvider.rules are the same object", inject ($validator) ->
+            expect($validator.rules).toBe validatorProvider.rules
+        it "$validator.broadcastChannel and $validatorProvider.broadcastChannel are the same object", inject ($validator) ->
+            expect($validator.broadcastChannel).toBe validatorProvider.broadcastChannel
+        it "$validator.register and $validatorProvider.register are the same object", inject ($validator) ->
+            expect($validator.register).toBe validatorProvider.register
+        it "$validator.convertRule and $validatorProvider.convertRule are the same object", inject ($validator) ->
+            expect($validator.convertRule).toBe validatorProvider.convertRule
+        it "$validator.getRule and $validatorProvider.getRule are the same object", inject ($validator) ->
+            expect($validator.getRule).toBe validatorProvider.getRule
+        it "$validator.validate and $validatorProvider.validate are the same object", inject ($validator) ->
+            expect($validator.validate).toBe validatorProvider.validate

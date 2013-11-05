@@ -7,7 +7,7 @@ config = ($validatorProvider) ->
     # ----------------------------
     $validatorProvider.register 'required',
         invoke: 'watch'
-        validator: RegExp "^.+$"
+        validator: /^.+$/
         error: 'This field is required.'
 
     # ----------------------------
@@ -15,7 +15,7 @@ config = ($validatorProvider) ->
     # ----------------------------
     $validatorProvider.register 'number',
         invoke: 'watch'
-        validator: RegExp "^[-+]?[0-9]*[\.]?[0-9]*$"
+        validator: /^[-+]?[0-9]*[\.]?[0-9]*$/
         error: 'This field should be number.'
 
 config.$inject = ['$validatorProvider']
