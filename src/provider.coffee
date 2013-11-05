@@ -86,6 +86,7 @@ a.provider '$validator', ->
                         funcs.success?()
                     else
                         funcs.error?()
+                , -> funcs.error?()
         result
 
     # ----------------------------

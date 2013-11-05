@@ -236,6 +236,8 @@
             } else {
               return typeof funcs.error === "function" ? funcs.error() : void 0;
             }
+          }, function() {
+            return typeof funcs.error === "function" ? funcs.error() : void 0;
           });
         };
       }
