@@ -370,7 +370,15 @@
       };
       scope.$broadcast(_this.broadcastChannel.prepare, brocadcastObject);
       $timeout(function() {
-        var $validator;
+        var $validator, x, _i, _len, _ref;
+        if (count.total === 0) {
+          _ref = func.promises.success;
+          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+            x = _ref[_i];
+            x();
+          }
+          return;
+        }
         $validator = $injector.get('$validator');
         return scope.$broadcast($validator.broadcastChannel.start, brocadcastObject);
       });

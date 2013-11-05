@@ -169,9 +169,11 @@ a.provider '$validator', ->
                     x() for x in func.promises.error
                 count.error
         promise.success = (fn) ->
+            # push success promises into func.promise.success
             func.promises.success.push fn
             promise
         promise.error = (fn) ->
+            # push error promises into func.promise.error
             func.promises.error.push fn
             promise
 
@@ -184,6 +186,10 @@ a.provider '$validator', ->
         scope.$broadcast @broadcastChannel.prepare, brocadcastObject
         $timeout ->
             # wait for getting all promises
+            if count.total is 0
+                # nothing to validate
+                x() for x in func.promises.success
+                return
             $validator = $injector.get '$validator'
             scope.$broadcast $validator.broadcastChannel.start, brocadcastObject
 
