@@ -48,7 +48,7 @@ validator = ($injector) ->
                                 element[0].scrollIntoViewIfNeeded()
 
         # validat by RegExp
-        match = attrs.validator.match(RegExp('^/(.*)/$'))
+        match = attrs.validator.match /^\/(.*)\/$/
         if match
             rule = $validator.convertRule 'dynamic',
                 validator: RegExp match[1]
@@ -57,7 +57,7 @@ validator = ($injector) ->
             rules.push rule
 
         # validat by rules
-        match = attrs.validator.match(RegExp('^\\[(.*)\\]$'))
+        match = attrs.validator.match /^\[(.*)\]$/
         if match
             ruleNames = match[1].split(',')
             for name in ruleNames

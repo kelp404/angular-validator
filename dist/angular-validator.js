@@ -62,7 +62,7 @@
           }
           return _results;
         };
-        match = attrs.validator.match(RegExp('^/(.*)/$'));
+        match = attrs.validator.match(/^\/(.*)\/$/);
         if (match) {
           rule = $validator.convertRule('dynamic', {
             validator: RegExp(match[1]),
@@ -71,7 +71,7 @@
           });
           rules.push(rule);
         }
-        match = attrs.validator.match(RegExp('^\\[(.*)\\]$'));
+        match = attrs.validator.match(/^\[(.*)\]$/);
         if (match) {
           ruleNames = match[1].split(',');
           for (_i = 0, _len = ruleNames.length; _i < _len; _i++) {

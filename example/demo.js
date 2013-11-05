@@ -92,12 +92,12 @@
       error: "do not use 'Kelp' or 'x'"
     });
     $validatorProvider.register('requiredSubmit', {
-      validator: RegExp("^.+$"),
+      validator: /^.+$/,
       error: 'This field is required.'
     });
     $validatorProvider.register('requiredBlur', {
       invoke: 'blur',
-      validator: RegExp("^.+$"),
+      validator: /^.+$/,
       error: 'This field is required.'
     });
     return $validatorProvider.register('customLess', {
@@ -112,7 +112,7 @@
   a.run(function($validator) {
     return $validator.register('requiredRun', {
       invoke: 'watch',
-      validator: RegExp("^.+$"),
+      validator: /^.+$/,
       error: 'This field is requrired.'
     });
   });

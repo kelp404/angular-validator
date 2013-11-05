@@ -46,13 +46,13 @@ a.config ($validatorProvider) ->
 
     # submit - required
     $validatorProvider.register 'requiredSubmit',
-        validator: RegExp "^.+$"
+        validator: /^.+$/
         error: 'This field is required.'
 
     # blur - required
     $validatorProvider.register 'requiredBlur',
         invoke: 'blur'
-        validator: RegExp "^.+$"
+        validator: /^.+$/
         error: 'This field is required.'
 
     # watch - custom less than xx
@@ -61,10 +61,14 @@ a.config ($validatorProvider) ->
         validator: (value, scope) -> value < scope.formWatch.number
         error: 'It should less than number 1.'
 
+
+# ----------------------------
+# run
+# ----------------------------
 a.run ($validator) ->
     $validator.register 'requiredRun',
         invoke: 'watch'
-        validator: RegExp "^.+$"
+        validator: /^.+$/
         error: 'This field is requrired.'
 
 
