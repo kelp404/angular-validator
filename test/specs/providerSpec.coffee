@@ -33,15 +33,13 @@ describe 'validator.provider', ->
 
 
     describe '$validatorProvider.convertError()', ->
-        it 'check convertError(string)', ->
+        it 'check convertError(string) and work on the form-group element', ->
             $element = $ "<div class='form-group'><input type='text' id='input'/></div>"
             $input = $element.find 'input'
-            attrs =
-                id: 'input'
+            attrs = id: 'input'
             error = validatorProvider.convertError 'error message'
             # check error type
             expect('function').toEqual typeof error
-
             # execute error
             error(null, $input, attrs)
             $errorLabel = $element.find 'label'
@@ -50,6 +48,20 @@ describe 'validator.provider', ->
             expect($errorLabel.hasClass('error')).toBe true
             expect($errorLabel.attr('for')).toEqual 'input'
             expect($errorLabel.text()).toEqual 'error message'
+
+        it 'check convertError(string) and work on the form-group element and input without id', ->
+            $element = $ "<div class='form-group'><input type='text'/></div>"
+            $input = $element.find 'input'
+            attrs = id: undefined
+            error = validatorProvider.convertError ''
+            # execute error
+            error(null, $input, attrs)
+            $errorLabel = $element.find 'label'
+            expect($element.hasClass('has-error')).toBe true
+            expect($errorLabel.hasClass('control-label')).toBe true
+            expect($errorLabel.hasClass('error')).toBe true
+            expect($errorLabel.attr('for')).toBeUndefined()
+            expect($errorLabel.text()).toEqual ''
 
         it 'check convertError(function)', ->
             func = (scope, element, attrs) ->
@@ -100,6 +112,13 @@ describe 'validator.provider', ->
         it 'check success is in the result of convertRule()', inject ($validator) ->
             rule = $validator.convertRule 'name', invoke: 'watch'
             expect(typeof rule.success).toEqual 'function'
+
+
+    describe '$validator.getRule', ->
+        it 'check $validator.getRule', inject ($validator) ->
+            $validator.rules = name: 'object'
+            expect($validator.getRule('name')).toEqual 'object'
+            expect($validator.getRule('xx')).toBeNull()
 
 
     describe '$validator', ->

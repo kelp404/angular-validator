@@ -166,7 +166,11 @@
             if (parent.hasClass('has-error')) {
               return;
             }
-            $(element).parent().append("<label for='" + attrs.id + "' class='control-label error'>" + errorMessage + "</label>");
+            if (attrs.id) {
+              $(element).parent().append("<label for='" + attrs.id + "' class='control-label error'>" + errorMessage + "</label>");
+            } else {
+              $(element).parent().append("<label class='control-label error'>" + errorMessage + "</label>");
+            }
             parent.addClass('has-error');
             break;
           }
