@@ -121,6 +121,22 @@ describe 'validator.provider', ->
             expect($validator.getRule('xx')).toBeNull()
 
 
+    describe '$validator.validate', ->
+        $q = null
+        $rootScope = null
+        scope = null
+
+        beforeEach -> inject ($injector) ->
+            $q = $injector.get '$q'
+            $rootScope = $injector.get '$rootScope'
+            scope = $rootScope.$new()
+
+        it 'check result has success and error functions', inject ($validator) ->
+            promise = $validator.validate scope
+            expect(typeof promise.error).toEqual 'function'
+            expect(typeof promise.success).toEqual 'function'
+
+
     describe '$validator', ->
         it '$validator.rules and $validatorProvider.rules are the same object', inject ($validator) ->
             expect($validator.rules).toBe validatorProvider.rules
