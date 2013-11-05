@@ -35,12 +35,12 @@ a.provider '$validator', ->
         return error if typeof error is 'function'
 
         errorMessage = if error.constructor is String then error else ''
-        (scope, element) ->
+        (scope, element, attrs) ->
             parent = $(element).parent()
             until parent.length is 0
                 if parent.hasClass 'form-group'
                     return if parent.hasClass 'has-error'
-                    $(element).parent().append "<label class='control-label error'>#{errorMessage}</label>"
+                    $(element).parent().append "<label for='#{attrs.id}' class='control-label error'>#{errorMessage}</label>"
                     parent.addClass 'has-error'
                     break
                 parent = parent.parent()

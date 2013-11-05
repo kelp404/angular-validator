@@ -158,7 +158,7 @@
         return error;
       }
       errorMessage = error.constructor === String ? error : '';
-      return function(scope, element) {
+      return function(scope, element, attrs) {
         var parent;
         parent = $(element).parent();
         while (parent.length !== 0) {
@@ -166,7 +166,7 @@
             if (parent.hasClass('has-error')) {
               return;
             }
-            $(element).parent().append("<label class='control-label error'>" + errorMessage + "</label>");
+            $(element).parent().append("<label for='" + attrs.id + "' class='control-label error'>" + errorMessage + "</label>");
             parent.addClass('has-error');
             break;
           }
