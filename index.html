@@ -49,6 +49,13 @@
                             <input type="text" ng-model="formWatch.http" validator="[backendWatch]" class="form-control" id="http0" placeholder="do not use 'Kelp' or 'x'"/>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="requiredRun0" class="col-md-2 control-label">Required</label>
+                        <div class="col-md-10">
+                            <input type="text" ng-model="formWatch.requiredRun" validator="[requiredRun]" class="form-control" id="requiredRun0" placeholder="Required"/>
+                            <span>The rule of this field is register in angular.module.run()</span><br/>
+                        </div>
+                    </div>
                 </form>
 
                 <div class="panel-footer">{{formWatch}}</div>

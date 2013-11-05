@@ -205,6 +205,7 @@ a.provider '$validator', ->
 
         rules: @rules
         broadcastChannel: @broadcastChannel
+        register: @register
         convertRule: @convertRule
         getRule: @getRule
         validate: @validate

@@ -61,6 +61,12 @@ a.config ($validatorProvider) ->
         validator: (value, scope) -> value < scope.formWatch.number
         error: 'It should less than number 1.'
 
+a.run ($validator) ->
+    $validator.register 'requiredRun',
+        invoke: 'watch'
+        validator: RegExp "^.+$"
+        error: 'This field is requrired.'
+
 
 # ----------------------------
 # controller
@@ -69,6 +75,7 @@ a.controller 'DemoController', ($scope, $validator) ->
     $scope.formWatch =
         required: ''
         regexp: ''
+        requiredRun: ''
         number: 100
         number2: ''
         http: ''

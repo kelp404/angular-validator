@@ -109,10 +109,19 @@
     });
   });
 
+  a.run(function($validator) {
+    return $validator.register('requiredRun', {
+      invoke: 'watch',
+      validator: RegExp("^.+$"),
+      error: 'This field is requrired.'
+    });
+  });
+
   a.controller('DemoController', function($scope, $validator) {
     $scope.formWatch = {
       required: '',
       regexp: '',
+      requiredRun: '',
       number: 100,
       number2: '',
       http: ''

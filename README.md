@@ -13,6 +13,7 @@ It supports [Bootstrap3](http://getbootstrap.com/).
 ####register
 >
 ```coffee
+# .config
 $validatorProvider.register = (name, object={}) ->
     ###
     Register the rule.
@@ -24,6 +25,8 @@ $validatorProvider.register = (name, object={}) ->
         error: string or function(scope, element, attrs)
         success: function(scope, element, attrs)
     ###
+# .run
+$validator.register = (name, object={}) ->
 ```
 
 ####validate

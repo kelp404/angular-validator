@@ -391,6 +391,7 @@
       return {
         rules: this.rules,
         broadcastChannel: this.broadcastChannel,
+        register: this.register,
         convertRule: this.convertRule,
         getRule: this.getRule,
         validate: this.validate
