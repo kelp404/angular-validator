@@ -76,8 +76,8 @@ validator = ($injector) ->
 <div class="form-group">
     <label for="required0" class="col-md-2 control-label">Required</label>
     <div class="col-md-10">
-        <input type="text" ng-model="formWatch.required" validator="[required]" class="form-control"
-         id="required0" placeholder="Required"/>
+        <input type="text" ng-model="formWatch.required" validator="[required]"
+         class="form-control" id="required0" placeholder="Required"/>
     </div>
 </div>
 ```
@@ -89,8 +89,8 @@ validator = ($injector) ->
     <label for="regexp0" class="col-md-2 control-label">RegExp [a-z]</label>
     <div class="col-md-10">
         <input type="text" ng-model="formWatch.regexp" validator="/[a-z]/"
-         validator-invoke="watch" validator-error="it should be /[a-z]/" class="form-control"
-         id="regexp0" placeholder="RegExp [a-z]"/>
+         validator-invoke="watch" validator-error="it should be /[a-z]/"
+          class="form-control" id="regexp0" placeholder="RegExp [a-z]"/>
     </div>
 </div>
 ```
