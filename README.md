@@ -57,9 +57,52 @@ $validate.reset = (scope, model) =>
 
 
 
+##validator.directive
+>
+```coffee
+validator = ($injector) ->
+    restrict: 'A'
+    require: 'ngModel'
+    link: (scope, element, attrs) ->
+        ###
+        The link of `validator`.
+        You could use `validator=[rule, rule]` or `validator=/^regex$/`.
+        ###
+```
+
+####validator="[rule, rule]"
+>
+```html
+<div class="form-group">
+    <label for="required0" class="col-md-2 control-label">Required</label>
+    <div class="col-md-10">
+        <input type="text" ng-model="formWatch.required" validator="[required]" class="form-control"
+         id="required0" placeholder="Required"/>
+    </div>
+</div>
+```
+
+####validator="/^regex$/", validator-error="msg", validator-invoke="watch"
+>
+```html
+<div class="form-group">
+    <label for="regexp0" class="col-md-2 control-label">RegExp [a-z]</label>
+    <div class="col-md-10">
+        <input type="text" ng-model="formWatch.regexp" validator="/[a-z]/"
+         validator-invoke="watch" validator-error="it should be /[a-z]/" class="form-control"
+         id="regexp0" placeholder="RegExp [a-z]"/>
+    </div>
+</div>
+```
+
+
+
+
 ##Example
 >
 ```html
+<!-- Bootstrap3 (not required) -->
+<link type="text/css" rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css"/>
 <!-- AngularJS -->
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
 <!-- $validator -->
