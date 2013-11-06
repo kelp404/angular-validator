@@ -61,7 +61,8 @@ validator = ($injector) ->
         if match
             ruleNames = match[1].split(',')
             for name in ruleNames
-                rule = $validator.getRule name.trim()
+                # stupid browser has no .trim()
+                rule = $validator.getRule name.replace(/^\s+|\s+$/g, '')
                 rules.push rule if rule
 
         # listen

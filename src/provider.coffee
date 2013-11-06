@@ -39,12 +39,13 @@ a.provider '$validator', ->
             parent = $(element).parent()
             until parent.length is 0
                 if parent.hasClass 'form-group'
-                    return if parent.hasClass 'has-error'
+                    parent.addClass 'has-error'
+                    for label in parent.find('label') when $(label).hasClass 'error'
+                        $(label).remove()
                     if attrs.id
                         $(element).parent().append "<label for='#{attrs.id}' class='control-label error'>#{errorMessage}</label>"
                     else
                         $(element).parent().append "<label class='control-label error'>#{errorMessage}</label>"
-                    parent.addClass 'has-error'
                     break
                 parent = parent.parent()
 
@@ -62,8 +63,7 @@ a.provider '$validator', ->
                 if parent.hasClass 'has-error'
                     parent.removeClass 'has-error'
                     for label in parent.find('label') when $(label).hasClass 'error'
-                        label.remove()
-                        break
+                        $(label).remove()
                     break
                 parent = parent.parent()
 

@@ -76,7 +76,7 @@
           ruleNames = match[1].split(',');
           for (_i = 0, _len = ruleNames.length; _i < _len; _i++) {
             name = ruleNames[_i];
-            rule = $validator.getRule(name.trim());
+            rule = $validator.getRule(name.replace(/^\s+|\s+$/g, ''));
             if (rule) {
               rules.push(rule);
             }
@@ -159,23 +159,29 @@
       }
       errorMessage = error.constructor === String ? error : '';
       return function(scope, element, attrs) {
-        var parent;
+        var label, parent, _i, _len, _ref, _results;
         parent = $(element).parent();
+        _results = [];
         while (parent.length !== 0) {
           if (parent.hasClass('form-group')) {
-            if (parent.hasClass('has-error')) {
-              return;
+            parent.addClass('has-error');
+            _ref = parent.find('label');
+            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+              label = _ref[_i];
+              if ($(label).hasClass('error')) {
+                $(label).remove();
+              }
             }
             if (attrs.id) {
               $(element).parent().append("<label for='" + attrs.id + "' class='control-label error'>" + errorMessage + "</label>");
             } else {
               $(element).parent().append("<label class='control-label error'>" + errorMessage + "</label>");
             }
-            parent.addClass('has-error');
             break;
           }
-          parent = parent.parent();
+          _results.push(parent = parent.parent());
         }
+        return _results;
       };
     };
     this.convertSuccess = function(success) {
@@ -198,11 +204,9 @@
             _ref = parent.find('label');
             for (_i = 0, _len = _ref.length; _i < _len; _i++) {
               label = _ref[_i];
-              if (!($(label).hasClass('error'))) {
-                continue;
+              if ($(label).hasClass('error')) {
+                $(label).remove();
               }
-              label.remove();
-              break;
             }
             break;
           }
