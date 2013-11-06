@@ -24,6 +24,7 @@ describe 'validator.provider', ->
             expect
                 prepare: '$validatePrepare'
                 start: '$validateStart'
+                reset: '$validateReset'
             .toEqual $validator.broadcastChannel
 
 
@@ -150,3 +151,5 @@ describe 'validator.provider', ->
             expect($validator.getRule).toBe validatorProvider.getRule
         it '$validator.validate and $validatorProvider.validate are the same object', inject ($validator) ->
             expect($validator.validate).toBe validatorProvider.validate
+        it '$validator.reset and $validatorProvider.reset are the same object', inject ($validator) ->
+            expect($validator.reset).toBe validatorProvider.reset

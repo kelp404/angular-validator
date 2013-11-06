@@ -97,6 +97,18 @@
             error: object.error
           });
         });
+        scope.$on($validator.broadcastChannel.reset, function(self, object) {
+          var _j, _len1, _results;
+          if (object.model && attrs.ngModel.indexOf(object.model) !== 0) {
+            return;
+          }
+          _results = [];
+          for (_j = 0, _len1 = rules.length; _j < _len1; _j++) {
+            rule = rules[_j];
+            _results.push(rule.success(scope, element, attrs));
+          }
+          return _results;
+        });
         scope.$watch(attrs.ngModel, function(newValue, oldValue) {
           if (newValue === oldValue) {
             return;
@@ -139,7 +151,8 @@
     this.rules = {};
     this.broadcastChannel = {
       prepare: '$validatePrepare',
-      start: '$validateStart'
+      start: '$validateStart',
+      reset: '$validateReset'
     };
     this.setupProviders = function(injector) {
       $injector = injector;
@@ -394,6 +407,17 @@
       });
       return promise;
     };
+    this.reset = function(scope, model) {
+      /*
+      Reset validated error messages of the model.
+      @param scope: The scope.
+      @param model: The model name of the scope.
+      */
+
+      return scope.$broadcast(_this.broadcastChannel.reset, {
+        model: model
+      });
+    };
     this.get = function($injector) {
       this.setupProviders($injector);
       return {
@@ -402,7 +426,8 @@
         register: this.register,
         convertRule: this.convertRule,
         getRule: this.getRule,
-        validate: this.validate
+        validate: this.validate,
+        reset: this.reset
       };
     };
     this.get.$inject = ['$injector'];

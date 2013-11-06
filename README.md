@@ -43,6 +43,17 @@ $validate.validate = (scope, model) =>
     ###
 ```
 
+####reset
+>
+```coffee
+$validate.reset = (scope, model) =>
+    ###
+    Reset validated error messages of the model.
+    @param scope: The scope.
+    @param model: The model name of the scope.
+    ###
+```
+
 
 
 

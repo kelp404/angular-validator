@@ -17,6 +17,7 @@ a.provider '$validator', ->
     @broadcastChannel =
         prepare: '$validatePrepare'
         start: '$validateStart'
+        reset: '$validateReset'
 
     # ----------------------------
     # private functions
@@ -195,8 +196,15 @@ a.provider '$validator', ->
                 return
             $validator = $injector.get '$validator'
             scope.$broadcast $validator.broadcastChannel.start, brocadcastObject
-
         promise
+
+    @reset = (scope, model) =>
+        ###
+        Reset validated error messages of the model.
+        @param scope: The scope.
+        @param model: The model name of the scope.
+        ###
+        scope.$broadcast @broadcastChannel.reset, model: model
 
 
     # ----------------------------
@@ -211,5 +219,6 @@ a.provider '$validator', ->
         convertRule: @convertRule
         getRule: @getRule
         validate: @validate
+        reset: @reset
     @get.$inject = ['$injector']
     @$get = @get

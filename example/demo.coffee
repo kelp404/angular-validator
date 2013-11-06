@@ -100,6 +100,8 @@ a.controller 'DemoController', ($scope, $validator) ->
         v.error ->
             # validated error
             console.log 'error'
+    $scope.reset = ->
+        $validator.reset $scope, 'formSubmit'
 
     $scope.formBlur =
         required: ''

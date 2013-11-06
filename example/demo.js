@@ -142,6 +142,9 @@
         return console.log('error');
       });
     };
+    $scope.reset = function() {
+      return $validator.reset($scope, 'formSubmit');
+    };
     return $scope.formBlur = {
       required: '',
       regexp: '',
