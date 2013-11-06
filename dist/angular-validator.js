@@ -159,7 +159,7 @@
       }
       errorMessage = error.constructor === String ? error : '';
       return function(scope, element, attrs) {
-        var label, parent, _i, _len, _ref, _results;
+        var $label, label, parent, _i, _len, _ref, _results;
         parent = $(element).parent();
         _results = [];
         while (parent.length !== 0) {
@@ -172,11 +172,11 @@
                 $(label).remove();
               }
             }
+            $label = $("<label class='control-label error'>" + errorMessage + "</label>");
             if (attrs.id) {
-              $(element).parent().append("<label for='" + attrs.id + "' class='control-label error'>" + errorMessage + "</label>");
-            } else {
-              $(element).parent().append("<label class='control-label error'>" + errorMessage + "</label>");
+              $label.attr('for', attrs.id);
             }
+            $(element).parent().append($label);
             break;
           }
           _results.push(parent = parent.parent());

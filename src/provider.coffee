@@ -42,10 +42,9 @@ a.provider '$validator', ->
                     parent.addClass 'has-error'
                     for label in parent.find('label') when $(label).hasClass 'error'
                         $(label).remove()
-                    if attrs.id
-                        $(element).parent().append "<label for='#{attrs.id}' class='control-label error'>#{errorMessage}</label>"
-                    else
-                        $(element).parent().append "<label class='control-label error'>#{errorMessage}</label>"
+                    $label = $ "<label class='control-label error'>#{errorMessage}</label>"
+                    $label.attr 'for', attrs.id if attrs.id
+                    $(element).parent().append $label
                     break
                 parent = parent.parent()
 
