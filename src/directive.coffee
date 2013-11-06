@@ -26,9 +26,9 @@ validator = ($injector) ->
                 switch from
                     when 'blur'
                         continue if rule.invoke isnt 'blur'
-                        rule.enableError = true
+                        rule.enableError = yes
                     when 'watch' then continue if rule.invoke isnt 'watch' and not rule.enableError
-                    when 'broadcast' then rule.enableError = true
+                    when 'broadcast' then rule.enableError = yes
 
                 model.assign scope, rule.filter(model(scope))
                 rule.validator model(scope), scope, element, attrs,

@@ -43,9 +43,9 @@ describe 'validator.provider', ->
             # execute error
             error(null, $input, attrs)
             $errorLabel = $element.find 'label'
-            expect($element.hasClass('has-error')).toBe true
-            expect($errorLabel.hasClass('control-label')).toBe true
-            expect($errorLabel.hasClass('error')).toBe true
+            expect($element.hasClass('has-error')).toBe yes
+            expect($errorLabel.hasClass('control-label')).toBe yes
+            expect($errorLabel.hasClass('error')).toBe yes
             expect($errorLabel.attr('for')).toEqual 'input'
             expect($errorLabel.text()).toEqual 'error message'
 
@@ -57,9 +57,9 @@ describe 'validator.provider', ->
             # execute error
             error(null, $input, attrs)
             $errorLabel = $element.find 'label'
-            expect($element.hasClass('has-error')).toBe true
-            expect($errorLabel.hasClass('control-label')).toBe true
-            expect($errorLabel.hasClass('error')).toBe true
+            expect($element.hasClass('has-error')).toBe yes
+            expect($errorLabel.hasClass('control-label')).toBe yes
+            expect($errorLabel.hasClass('error')).toBe yes
             expect($errorLabel.attr('for')).toBeUndefined()
             expect($errorLabel.text()).toEqual ''
 
@@ -81,13 +81,13 @@ describe 'validator.provider', ->
             rule = $validator.convertRule 'name', validator: /.*/
             expect(rule.name).toEqual 'name'
 
-        it 'check rule.enableError is true when object.invoke is watch', inject ($validator) ->
+        it 'check rule.enableError is yes when object.invoke is watch', inject ($validator) ->
             rule = $validator.convertRule 'name', invoke: 'watch'
-            expect(rule.enableError).toBe true
+            expect(rule.enableError).toBe yes
             rule = $validator.convertRule 'name', invoke: 'blur'
-            expect(rule.enableError).toBe false
+            expect(rule.enableError).toBe no
             rule = $validator.convertRule 'name', validator: /.*/
-            expect(rule.enableError).toBe false
+            expect(rule.enableError).toBe no
 
         it 'check invoke is equal to the argument', inject ($validator) ->
             rule = $validator.convertRule 'name', invoke: 'watch'

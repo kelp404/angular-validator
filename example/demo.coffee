@@ -13,10 +13,10 @@ a.config ($validatorProvider) ->
             h = $http.get 'example/data.json'
             h.then (data) ->
                 if data and data.status < 400 and data.data
-                    return false if value in (x.name for x in data.data)
-                    return true
+                    return no if value in (x.name for x in data.data)
+                    return yes
                 else
-                    return false
+                    return no
         error: "do not use 'Kelp' or 'x'"
 
     $validatorProvider.register 'backendSubmit',
@@ -25,10 +25,10 @@ a.config ($validatorProvider) ->
             h = $http.get 'example/data.json'
             h.then (data) ->
                 if data and data.status < 400 and data.data
-                    return false if value in (x.name for x in data.data)
-                    return true
+                    return no if value in (x.name for x in data.data)
+                    return yes
                 else
-                    return false
+                    return no
         error: "do not use 'Kelp' or 'x'"
 
     $validatorProvider.register 'backendBlur',
@@ -38,10 +38,10 @@ a.config ($validatorProvider) ->
             h = $http.get 'example/data.json'
             h.then (data) ->
                 if data and data.status < 400 and data.data
-                    return false if value in (x.name for x in data.data)
-                    return true
+                    return no if value in (x.name for x in data.data)
+                    return yes
                 else
-                    return false
+                    return no
         error: "do not use 'Kelp' or 'x'"
 
     # submit - required

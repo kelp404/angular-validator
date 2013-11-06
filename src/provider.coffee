@@ -109,7 +109,7 @@ a.provider '$validator', ->
             success: object.success
 
         result.filter ?= (input) -> input
-        result.validator ?= -> true
+        result.validator ?= -> yes
         result.error ?= ''
 
         # convert
