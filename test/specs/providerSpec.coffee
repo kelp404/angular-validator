@@ -77,6 +77,32 @@ describe 'validator.provider', ->
             .toEqual error('scope', 'element', 'attrs')
 
 
+    describe '$validatorProvider.convertSuccess()', ->
+        it 'check convertSuccess(string) and work on the form-group element', ->
+            $element = $ "<div class='form-group has-error'><input type='text' id='input'/><label class='control-label error'>msg</label></div>"
+            $input = $element.find 'input'
+            success = validatorProvider.convertSuccess()
+            # check error type
+            expect('function').toEqual typeof success
+            # execute error
+            success(null, $input)
+            $errorLabel = $element.find 'label'
+            expect($errorLabel.length).toBe 0
+            expect($element.hasClass('has-error')).toBe no
+
+        it 'check convertSuccess(function)', ->
+            func = (scope, element, attrs) ->
+                scope: scope
+                element: element
+                attrs: attrs
+            success = validatorProvider.convertSuccess func
+            expect
+                scope: 'scope'
+                element: 'element'
+                attrs: 'attrs'
+            .toEqual success('scope', 'element', 'attrs')
+
+
     describe '$validator.convertRule(name, object)', ->
         it 'check rule.name is equal to the argument', inject ($validator) ->
             rule = $validator.convertRule 'name', validator: /.*/
