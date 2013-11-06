@@ -24,7 +24,7 @@ module.exports = (config) ->
 
         # web server port
         # CLI --port 9876
-        port: 8083
+        port: 8084
 
         # enable / disable colors in the output (reporters and logs)
         # CLI --colors --no-colors
