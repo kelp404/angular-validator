@@ -90,7 +90,7 @@ validator = ($injector) ->
     <div class="col-md-10">
         <input type="text" ng-model="formWatch.regexp" validator="/[a-z]/"
          validator-invoke="watch" validator-error="it should be /[a-z]/"
-          class="form-control" id="regexp0" placeholder="RegExp [a-z]"/>
+         class="form-control" id="regexp0" placeholder="RegExp [a-z]"/>
     </div>
 </div>
 ```
