@@ -3,25 +3,27 @@ $ = angular.element
 a = angular.module 'validator.provider', []
 
 a.provider '$validator', ->
-    # ----------------------------
+    # ----------------------------------------
     # providers
-    # ----------------------------
+    # ----------------------------------------
     $injector = null
     $q = null
     $timeout = null
 
-    # ----------------------------
+
+    # ----------------------------------------
     # properties
-    # ----------------------------
+    # ----------------------------------------
     @rules = {}
     @broadcastChannel =
         prepare: '$validatePrepare'
         start: '$validateStart'
         reset: '$validateReset'
 
-    # ----------------------------
+
+    # ----------------------------------------
     # private functions
-    # ----------------------------
+    # ----------------------------------------
     @setupProviders = (injector) ->
         $injector = injector
         $q = $injector.get '$q'
@@ -92,9 +94,10 @@ a.provider '$validator', ->
                 , -> funcs.error?()
         result
 
-    # ----------------------------
+
+    # ----------------------------------------
     # public functions
-    # ----------------------------
+    # ----------------------------------------
     @convertRule = (name, object={}) =>
         ###
         Convert the rule object.
@@ -207,9 +210,9 @@ a.provider '$validator', ->
         scope.$broadcast @broadcastChannel.reset, model: model
 
 
-    # ----------------------------
+    # ----------------------------------------
     # $get
-    # ----------------------------
+    # ----------------------------------------
     @get = ($injector) ->
         @setupProviders $injector
 

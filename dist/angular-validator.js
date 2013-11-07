@@ -10,7 +10,7 @@
       restrict: 'A',
       require: 'ngModel',
       link: function(scope, element, attrs) {
-        var $parse, $validator, match, model, name, rule, ruleNames, rules, validate, _i, _len;
+        var $parse, $validator, isAcceptTheBroadcast, match, model, name, rule, ruleNames, rules, validate, _i, _len;
         $validator = $injector.get('$validator');
         $parse = $injector.get('$parse');
         model = $parse(attrs.ngModel);
@@ -82,14 +82,34 @@
             }
           }
         }
+        isAcceptTheBroadcast = function(broadcast, modelName) {
+          var item, repeat;
+          if (modelName) {
+            if (broadcast.targetScope === scope) {
+              return attrs.ngModel.indexOf(modelName) === 0;
+            } else {
+              item = $(element);
+              while (item.length !== 0) {
+                repeat = item.attr('ng-repeat');
+                match = repeat != null ? repeat.match(/^.* in (.*)$/) : void 0;
+                if (match && match[1].indexOf(modelName) >= 0) {
+                  return true;
+                }
+                item = item.parent();
+              }
+              return false;
+            }
+          }
+          return true;
+        };
         scope.$on($validator.broadcastChannel.prepare, function(self, object) {
-          if (object.model && attrs.ngModel.indexOf(object.model) !== 0) {
+          if (!isAcceptTheBroadcast(self, object.model)) {
             return;
           }
           return object.accept();
         });
         scope.$on($validator.broadcastChannel.start, function(self, object) {
-          if (object.model && attrs.ngModel.indexOf(object.model) !== 0) {
+          if (!isAcceptTheBroadcast(self, object.model)) {
             return;
           }
           return validate('broadcast', {
@@ -99,7 +119,7 @@
         });
         scope.$on($validator.broadcastChannel.reset, function(self, object) {
           var _j, _len1, _results;
-          if (object.model && attrs.ngModel.indexOf(object.model) !== 0) {
+          if (!isAcceptTheBroadcast(self, object.model)) {
             return;
           }
           _results = [];

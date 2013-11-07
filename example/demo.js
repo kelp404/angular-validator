@@ -130,25 +130,49 @@
       required: '',
       regexp: '',
       number: '',
-      http: ''
+      http: '',
+      submit: function() {
+        var v;
+        v = $validator.validate($scope, 'formSubmit');
+        v.success(function() {
+          return console.log('success');
+        });
+        return v.error(function() {
+          return console.log('error');
+        });
+      },
+      reset: function() {
+        return $validator.reset($scope, 'formSubmit');
+      }
     };
-    $scope.submit = function() {
-      var v;
-      v = $validator.validate($scope, 'formSubmit');
-      v.success(function() {
-        return console.log('success');
-      });
-      return v.error(function() {
-        return console.log('error');
-      });
-    };
-    $scope.reset = function() {
-      return $validator.reset($scope, 'formSubmit');
-    };
-    return $scope.formBlur = {
+    $scope.formBlur = {
       required: '',
       regexp: '',
       http: ''
+    };
+    return $scope.formRepeat = {
+      model: [
+        {
+          value: 'a'
+        }, {
+          value: 100
+        }, {
+          value: ''
+        }
+      ],
+      submit: function() {
+        var v;
+        v = $validator.validate($scope, 'formRepeat');
+        v.success(function() {
+          return console.log('success');
+        });
+        return v.error(function() {
+          return console.log('error');
+        });
+      },
+      reset: function() {
+        return $validator.reset($scope, 'formRepeat');
+      }
     };
   });
 

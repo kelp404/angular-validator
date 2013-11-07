@@ -94,8 +94,8 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-offset-2 col-md-10">
-                            <input type="submit" ng-click="submit()" class="btn btn-default"/>
-                            <input type="button" ng-click="reset()" class="btn btn-default" value="Reset"/>
+                            <input type="submit" ng-click="formSubmit.submit()" class="btn btn-default"/>
+                            <input type="button" ng-click="formSubmit.reset()" class="btn btn-default" value="Reset"/>
                         </div>
                     </div>
                 </form>
@@ -130,6 +130,29 @@
                 </form>
 
                 <div class="panel-footer">{{formBlur}}</div>
+            </div>
+
+            <!-- ng-repeat -->
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">ng-repeat</h3>
+                </div>
+                <form class="form-horizontal panel-body">
+                    <div class="form-group" ng-repeat="item in formRepeat.model">
+                        <label for="repeat{{$index}}" class="col-md-2 control-label">Number</label>
+                        <div class="col-md-10">
+                            <input type="text" ng-model="item.value" validator="[required, number]" class="form-control" id="repeat{{$index}}" placeholder="Required, Number" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+                            <input type="submit" ng-click="formRepeat.submit()" class="btn btn-default"/>
+                            <input type="button" ng-click="formRepeat.reset()" class="btn btn-default" value="Reset"/>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="panel-footer">{{formRepeat}}</div>
             </div>
         </div>
     </div>

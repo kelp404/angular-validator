@@ -5,21 +5,21 @@ validator = ($injector) ->
     restrict: 'A'
     require: 'ngModel'
     link: (scope, element, attrs) ->
-        # ----------------------------
+        # ----------------------------------------
         # providers
-        # ----------------------------
+        # ----------------------------------------
         $validator = $injector.get '$validator'
         $parse = $injector.get '$parse'
 
-        # ----------------------------
+        # ----------------------------------------
         # valuables
-        # ----------------------------
+        # ----------------------------------------
         model = $parse attrs.ngModel
         rules = []
 
-        # ----------------------------
+        # ----------------------------------------
         # functions
-        # ----------------------------
+        # ----------------------------------------
         validate = (from, funcs) ->
             successCount = 0
             for rule in rules
@@ -66,16 +66,31 @@ validator = ($injector) ->
                 rules.push rule if rule
 
         # listen
+        isAcceptTheBroadcast = (broadcast, modelName) ->
+            if modelName
+                if broadcast.targetScope is scope
+                    # check ngModel and validate model are same.
+                    return attrs.ngModel.indexOf(modelName) is 0
+                else
+                    # current scope was created by ng-repeat
+                    item = $(element)
+                    until item.length is 0
+                        repeat = item.attr 'ng-repeat'
+                        match = repeat?.match /^.* in (.*)$/
+                        return yes if match and match[1].indexOf(modelName) >= 0
+                        item = item.parent()
+                    return no
+            yes
         scope.$on $validator.broadcastChannel.prepare, (self, object) ->
-            return if object.model and attrs.ngModel.indexOf(object.model) isnt 0
+            return if not isAcceptTheBroadcast self, object.model
             object.accept()
         scope.$on $validator.broadcastChannel.start, (self, object) ->
-            return if object.model and attrs.ngModel.indexOf(object.model) isnt 0
+            return if not isAcceptTheBroadcast self, object.model
             validate 'broadcast',
                 success: object.success
                 error: object.error
         scope.$on $validator.broadcastChannel.reset, (self, object) ->
-            return if object.model and attrs.ngModel.indexOf(object.model) isnt 0
+            return if not isAcceptTheBroadcast self, object.model
             for rule in rules
                 rule.success scope, element, attrs
 

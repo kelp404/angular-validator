@@ -1,9 +1,9 @@
 
 a = angular.module 'app', ['validator', 'validator.rules']
 
-# ----------------------------
+# ----------------------------------------
 # config
-# ----------------------------
+# ----------------------------------------
 a.config ($validatorProvider) ->
     # backendWatch
     $validatorProvider.register 'backendWatch',
@@ -62,9 +62,9 @@ a.config ($validatorProvider) ->
         error: 'It should less than number 1.'
 
 
-# ----------------------------
+# ----------------------------------------
 # run
-# ----------------------------
+# ----------------------------------------
 a.run ($validator) ->
     $validator.register 'requiredRun',
         invoke: 'watch'
@@ -72,9 +72,9 @@ a.run ($validator) ->
         error: 'This field is requrired.'
 
 
-# ----------------------------
+# ----------------------------------------
 # controller
-# ----------------------------
+# ----------------------------------------
 a.controller 'DemoController', ($scope, $validator) ->
     $scope.formWatch =
         required: ''
@@ -90,20 +90,32 @@ a.controller 'DemoController', ($scope, $validator) ->
         regexp: ''
         number: ''
         http: ''
-
-    # the submit function
-    $scope.submit = ->
-        v = $validator.validate $scope, 'formSubmit'
-        v.success ->
-            # validated success
-            console.log 'success'
-        v.error ->
-            # validated error
-            console.log 'error'
-    $scope.reset = ->
-        $validator.reset $scope, 'formSubmit'
+        # the submit function
+        submit: ->
+            v = $validator.validate $scope, 'formSubmit'
+            v.success ->
+                # validated success
+                console.log 'success'
+            v.error ->
+                # validated error
+                console.log 'error'
+        reset: ->
+            $validator.reset $scope, 'formSubmit'
 
     $scope.formBlur =
         required: ''
         regexp: ''
         http: ''
+
+    $scope.formRepeat =
+        model: [
+            value: 'a'
+        ,   value: 100,
+            value: ''
+        ]
+        submit: ->
+            v = $validator.validate $scope, 'formRepeat'
+            v.success -> console.log 'success'
+            v.error -> console.log 'error'
+        reset: ->
+            $validator.reset $scope, 'formRepeat'
