@@ -73,7 +73,7 @@ validator = ($injector) ->
         ###
 ```
 
-####validator="[rule, rule]"
+####validator="[rule, rule]", [required]
 >
 ```html
 <div class="form-group">
@@ -85,7 +85,7 @@ validator = ($injector) ->
 </div>
 ```
 
-####validator="/^regex$/", validator-error="msg", validator-invoke="watch"
+####validator="/^regex$/", [validator-error="msg"], [validator-invoke="watch"], [required]
 >
 ```html
 <div class="form-group">
@@ -97,6 +97,10 @@ validator = ($injector) ->
     </div>
 </div>
 ```
+
+####[required]
+>
+If the element has this attribute $validator will add the rule `required` into rules of the element.
 
 
 

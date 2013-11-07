@@ -81,6 +81,7 @@ a.provider '$validator', ->
         if validator.constructor is RegExp
             regex = validator
             result = (value, scope, element, attrs, funcs) ->
+                value ?= ''
                 if regex.test value then funcs.success?() else funcs.error?()
         else if typeof validator is 'function'
             # swop
@@ -165,7 +166,7 @@ a.provider '$validator', ->
             validatedSuccess: ->
                 if ++count.success is count.total
                     x() for x in func.promises.success
-                return
+                count.success
             # error callback function for directives
             validatedError: ->
                 if count.error++ is 0

@@ -20,7 +20,15 @@ validator = ($injector) ->
         # ----------------------------------------
         # functions
         # ----------------------------------------
-        validate = (from, funcs) ->
+        validate = (from, args={}) ->
+            ###
+            Validate this element with all rules.
+            @param from: 'watch', 'blur' or 'broadcast'
+            @param args:
+                success(): success callback (this callback will return success count)
+                error(): error callback (this callback will return error count)
+                oldValue: the old value of $watch
+            ###
             successCount = 0
             for rule in rules
                 switch from
@@ -30,22 +38,24 @@ validator = ($injector) ->
                     when 'watch' then continue if rule.invoke isnt 'watch' and not rule.enableError
                     when 'broadcast' then rule.enableError = yes
 
-                model.assign scope, rule.filter(model(scope))
+                # filter
+                filterValue = rule.filter model(scope)
+                if filterValue is no and from is 'watch'
+                    model.assign scope, args.oldValue
+                else
+                    model.assign scope, filterValue
+
+                # validate
                 rule.validator model(scope), scope, element, attrs,
                     success: ->
                         if ++successCount is rules.length
                             rule.success scope, element, attrs
-                            funcs?.success()
+                            args.success?()
                     error: ->
                         rule.error scope, element, attrs if rule.enableError
-                        if funcs?.error() is 1
+                        if args.error?() is 1
                             # scroll to the first element
-                            if window.jQuery
-                                jQuery('html, body').animate
-                                    scrollTop: jQuery(element).offset().top - 100
-                                , 500
-                            else
-                                element[0].scrollIntoViewIfNeeded()
+                            try element[0].scrollIntoViewIfNeeded()
 
         # validat by RegExp
         match = attrs.validator.match /^\/(.*)\/$/
@@ -64,6 +74,15 @@ validator = ($injector) ->
                 # stupid browser has no .trim()
                 rule = $validator.getRule name.replace(/^\s+|\s+$/g, '')
                 rules.push rule if rule
+
+        # validate by required attribute
+        if attrs.required
+            rule = $validator.getRule 'required'
+            rule ?= $validator.convertRule 'required',
+                validator: /^.+$/
+                invoke: 'watch'
+            rules.push rule
+
 
         # listen
         isAcceptTheBroadcast = (broadcast, modelName) ->
@@ -97,12 +116,11 @@ validator = ($injector) ->
         # watch
         scope.$watch attrs.ngModel, (newValue, oldValue) ->
             return if newValue is oldValue  # first
-            validate 'watch'
+            validate 'watch', oldValue: oldValue
 
         # blur
         $(element).bind 'blur', ->
             scope.$apply -> validate 'blur'
-
 
 validator.$inject = ['$injector']
 a.directive 'validator', validator

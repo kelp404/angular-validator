@@ -104,6 +104,7 @@ a.controller 'DemoController', ($scope, $validator) ->
 
     $scope.formBlur =
         required: ''
+        email: ''
         regexp: ''
         http: ''
 

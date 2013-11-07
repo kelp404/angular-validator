@@ -15,8 +15,20 @@
         $parse = $injector.get('$parse');
         model = $parse(attrs.ngModel);
         rules = [];
-        validate = function(from, funcs) {
-          var rule, successCount, _i, _len, _results;
+        validate = function(from, args) {
+          var filterValue, rule, successCount, _i, _len, _results;
+          if (args == null) {
+            args = {};
+          }
+          /*
+          Validate this element with all rules.
+          @param from: 'watch', 'blur' or 'broadcast'
+          @param args:
+              success(): success callback (this callback will return success count)
+              error(): error callback (this callback will return error count)
+              oldValue: the old value of $watch
+          */
+
           successCount = 0;
           _results = [];
           for (_i = 0, _len = rules.length; _i < _len; _i++) {
@@ -36,26 +48,27 @@
               case 'broadcast':
                 rule.enableError = true;
             }
-            model.assign(scope, rule.filter(model(scope)));
+            filterValue = rule.filter(model(scope));
+            if (filterValue === false && from === 'watch') {
+              model.assign(scope, args.oldValue);
+            } else {
+              model.assign(scope, filterValue);
+            }
             _results.push(rule.validator(model(scope), scope, element, attrs, {
               success: function() {
                 if (++successCount === rules.length) {
                   rule.success(scope, element, attrs);
-                  return funcs != null ? funcs.success() : void 0;
+                  return typeof args.success === "function" ? args.success() : void 0;
                 }
               },
               error: function() {
                 if (rule.enableError) {
                   rule.error(scope, element, attrs);
                 }
-                if ((funcs != null ? funcs.error() : void 0) === 1) {
-                  if (window.jQuery) {
-                    return jQuery('html, body').animate({
-                      scrollTop: jQuery(element).offset().top - 100
-                    }, 500);
-                  } else {
+                if ((typeof args.error === "function" ? args.error() : void 0) === 1) {
+                  try {
                     return element[0].scrollIntoViewIfNeeded();
-                  }
+                  } catch (_error) {}
                 }
               }
             }));
@@ -81,6 +94,16 @@
               rules.push(rule);
             }
           }
+        }
+        if (attrs.required) {
+          rule = $validator.getRule('required');
+          if (rule == null) {
+            rule = $validator.convertRule('required', {
+              validator: /^.+$/,
+              invoke: 'watch'
+            });
+          }
+          rules.push(rule);
         }
         isAcceptTheBroadcast = function(broadcast, modelName) {
           var item, repeat;
@@ -133,7 +156,9 @@
           if (newValue === oldValue) {
             return;
           }
-          return validate('watch');
+          return validate('watch', {
+            oldValue: oldValue
+          });
         });
         return $(element).bind('blur', function() {
           return scope.$apply(function() {
@@ -262,6 +287,9 @@
       if (validator.constructor === RegExp) {
         regex = validator;
         result = function(value, scope, element, attrs, funcs) {
+          if (value == null) {
+            value = '';
+          }
           if (regex.test(value)) {
             return typeof funcs.success === "function" ? funcs.success() : void 0;
           } else {
@@ -375,6 +403,7 @@
               x();
             }
           }
+          return count.success;
         },
         validatedError: function() {
           var x, _i, _len, _ref;

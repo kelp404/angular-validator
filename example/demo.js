@@ -147,6 +147,7 @@
     };
     $scope.formBlur = {
       required: '',
+      email: '',
       regexp: '',
       http: ''
     };

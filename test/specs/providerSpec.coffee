@@ -142,7 +142,7 @@ describe 'validator.provider', ->
                     error: -> count.error++
             expect(count.error).toBe 1
 
-        it 'check convertValidator(RegExp)', inject ($validator, $rootScope, $injector) ->
+        it 'check convertValidator(RegExp)', inject ($validator, $rootScope) ->
             count =
                 success: 0
                 error: 0
