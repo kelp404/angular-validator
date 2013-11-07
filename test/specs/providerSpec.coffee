@@ -103,6 +103,46 @@ describe 'validator.provider', ->
             .toEqual success('scope', 'element', 'attrs')
 
 
+    describe 'validatorProvider.convertValidator(validator)', ->
+        it 'check arguments of convertValidator(function)', ->
+            model = {}
+            func = (value, scope, element, attrs, injector) ->
+                model.value = value
+                model.scope = scope
+                model.element = element
+                model.attrs = attrs
+                model.injector = injector
+            validator = validatorProvider.convertValidator func
+            expect(typeof validator).toEqual 'function'
+            func 'value', 'scope', 'element', 'attrs', 'injector'
+            expect
+                value: 'value'
+                scope: 'scope'
+                element: 'element'
+                attrs: 'attrs'
+                injector: 'injector'
+            .toEqual model
+
+        it 'check convertValidator(function)', inject ($validator, $rootScope, $injector) ->
+            count =
+                success: 0
+                error: 0
+            func = (value, scope, element, attrs, injector) ->
+                expect(injector).toBe $injector
+                value is 'value'
+            validator = validatorProvider.convertValidator func
+            $rootScope.$apply ->
+                validator 'value', null, null, null,
+                    success: -> count.success++
+                    error: ->
+            expect(count.success).toBe 1
+            $rootScope.$apply ->
+                validator 'xx', null, null, null,
+                    success: ->
+                    error: -> count.error++
+            expect(count.error).toBe 1
+
+
     describe '$validator.convertRule(name, object)', ->
         it 'check rule.name is equal to the argument', inject ($validator) ->
             rule = $validator.convertRule 'name', validator: /.*/
