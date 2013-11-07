@@ -285,7 +285,7 @@
       return result;
     };
     this.convertRule = function(name, object) {
-      var result;
+      var result, _ref, _ref1, _ref2;
       if (object == null) {
         object = {};
       }
@@ -297,24 +297,15 @@
         name: name,
         enableError: object.invoke === 'watch',
         invoke: object.invoke,
-        filter: object.filter,
-        validator: object.validator,
-        error: object.error,
+        filter: (_ref = object.filter) != null ? _ref : function(input) {
+          return input;
+        },
+        validator: (_ref1 = object.validator) != null ? _ref1 : function() {
+          return true;
+        },
+        error: (_ref2 = object.error) != null ? _ref2 : '',
         success: object.success
       };
-      if (result.filter == null) {
-        result.filter = function(input) {
-          return input;
-        };
-      }
-      if (result.validator == null) {
-        result.validator = function() {
-          return true;
-        };
-      }
-      if (result.error == null) {
-        result.error = '';
-      }
       result.error = _this.convertError(result.error);
       result.success = _this.convertSuccess(result.success);
       result.validator = _this.convertValidator(result.validator);

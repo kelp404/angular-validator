@@ -142,6 +142,22 @@ describe 'validator.provider', ->
                     error: -> count.error++
             expect(count.error).toBe 1
 
+        it 'check convertValidator(RegExp)', inject ($validator, $rootScope, $injector) ->
+            count =
+                success: 0
+                error: 0
+            validator = validatorProvider.convertValidator /^value$/
+            $rootScope.$apply ->
+                validator 'value', null, null, null,
+                    success: -> count.success++
+                    error: ->
+            expect(count.success).toBe 1
+            $rootScope.$apply ->
+                validator 'xx', null, null, null,
+                    success: ->
+                    error: -> count.error++
+            expect(count.error).toBe 1
+
 
     describe '$validator.convertRule(name, object)', ->
         it 'check rule.name is equal to the argument', inject ($validator) ->

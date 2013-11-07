@@ -106,14 +106,10 @@ a.provider '$validator', ->
             name: name
             enableError: object.invoke is 'watch'
             invoke: object.invoke
-            filter: object.filter
-            validator: object.validator
-            error: object.error
+            filter: object.filter ? (input) -> input
+            validator: object.validator ? -> yes
+            error: object.error ? ''
             success: object.success
-
-        result.filter ?= (input) -> input
-        result.validator ?= -> yes
-        result.error ?= ''
 
         # convert
         result.error = @convertError result.error
