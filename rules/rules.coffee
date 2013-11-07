@@ -6,9 +6,6 @@ config = ($validatorProvider) ->
     # required
     # ----------------------------------------
     $validatorProvider.register 'required',
-        filter: (input='') ->
-            return no if input.length > 5
-            input
         invoke: 'watch'
         validator: /^.+$/
         error: 'This field is required.'

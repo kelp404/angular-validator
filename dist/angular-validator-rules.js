@@ -5,15 +5,6 @@
 
   config = function($validatorProvider) {
     $validatorProvider.register('required', {
-      filter: function(input) {
-        if (input == null) {
-          input = '';
-        }
-        if (input.length > 5) {
-          return false;
-        }
-        return input;
-      },
       invoke: 'watch',
       validator: /^.+$/,
       error: 'This field is required.'
