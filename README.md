@@ -10,6 +10,9 @@ It supports [Bootstrap3](http://getbootstrap.com/).
 
 
 ##$validator
+```coffee
+angular.module 'yourApp', ['validator']
+```
 ####register
 >
 ```coffee
