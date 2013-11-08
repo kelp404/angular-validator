@@ -1,2 +1,2 @@
 
-angular.module 'validator', ['validator.provider', 'validator.directive']
+angular.module 'validator', ['validator.directive']

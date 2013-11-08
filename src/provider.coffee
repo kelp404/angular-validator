@@ -80,8 +80,7 @@ a.provider '$validator', ->
         result = ->
         if validator.constructor is RegExp
             regex = validator
-            result = (value, scope, element, attrs, funcs) ->
-                value ?= ''
+            result = (value='', scope, element, attrs, funcs) ->
                 if regex.test value then funcs.success?() else funcs.error?()
         else if typeof validator is 'function'
             # swop

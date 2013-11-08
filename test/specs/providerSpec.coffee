@@ -205,12 +205,10 @@ describe 'validator.provider', ->
 
 
     describe '$validator.validate', ->
-        $q = null
         $rootScope = null
         scope = null
 
         beforeEach -> inject ($injector) ->
-            $q = $injector.get '$q'
             $rootScope = $injector.get '$rootScope'
             scope = $rootScope.$new()
 
@@ -218,6 +216,23 @@ describe 'validator.provider', ->
             promise = $validator.validate scope
             expect(typeof promise.error).toEqual 'function'
             expect(typeof promise.success).toEqual 'function'
+
+
+    describe '$validator.reset', ->
+        $rootScope = null
+        scope = null
+
+        beforeEach -> inject ($injector) ->
+            $rootScope = $injector.get '$rootScope'
+            scope = $rootScope.$new()
+
+        it 'check result has success and error functions', inject ($validator) ->
+            broadcastCount = 0
+            scope.$on $validator.broadcastChannel.reset, (self, model) ->
+                broadcastCount++
+                expect(model.model).toEqual 'model'
+            $validator.reset scope, 'model'
+            expect(broadcastCount).toBe 1
 
 
     describe '$validator', ->

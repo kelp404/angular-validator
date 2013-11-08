@@ -105,6 +105,21 @@ If the element has this attribute $validator will add the rule `required` into r
 
 
 
+##validator.rules
+>There are default rules in this module.
+
+
+
+
+##Frameworks
+1. AngularJS 1.0.8, 1.1.5, 1.2.0-rc3
+
+2. Bootstrap 3
+> If your `error` is `string` in rules you should include bootstrap3.css and use `form-group` to the input div.
+
+
+
+
 ##Example
 >
 ```html
