@@ -224,7 +224,7 @@ describe 'validator.provider', ->
             scope.$on $validator.broadcastChannel.start, ->
                 spy.start()
             $validator.validate scope, 'form'
-            $timeout.flush();
+            $timeout.flush()
             expect(spy.accept).toHaveBeenCalled()
             expect(spy.start).not.toHaveBeenCalled()
 
@@ -239,7 +239,7 @@ describe 'validator.provider', ->
             scope.$on $validator.broadcastChannel.start, ->
                 spy.start()
             $validator.validate scope, 'form'
-            $timeout.flush();
+            $timeout.flush()
             expect(spy.accept).toHaveBeenCalled()
             expect(spy.start).toHaveBeenCalled()
 
