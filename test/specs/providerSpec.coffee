@@ -124,39 +124,39 @@ describe 'validator.provider', ->
             .toEqual model
 
         it 'check convertValidator(function)', inject ($validator, $rootScope, $injector) ->
-            count =
-                success: 0
-                error: 0
+            spy =
+                success: jasmine.createSpy 'success'
+                error: jasmine.createSpy 'error'
             func = (value, scope, element, attrs, injector) ->
                 expect(injector).toBe $injector
                 value is 'value'
             validator = validatorProvider.convertValidator func
             $rootScope.$apply ->
                 validator 'value', null, null, null,
-                    success: -> count.success++
+                    success: -> spy.success()
                     error: ->
-            expect(count.success).toBe 1
+            expect(spy.success).toHaveBeenCalled()
             $rootScope.$apply ->
                 validator 'xx', null, null, null,
                     success: ->
-                    error: -> count.error++
-            expect(count.error).toBe 1
+                    error: -> spy.error()
+            expect(spy.error).toHaveBeenCalled()
 
         it 'check convertValidator(RegExp)', inject ($validator, $rootScope) ->
-            count =
-                success: 0
-                error: 0
+            spy =
+                success: jasmine.createSpy('success')
+                error: jasmine.createSpy('error')
             validator = validatorProvider.convertValidator /^value$/
             $rootScope.$apply ->
                 validator 'value', null, null, null,
-                    success: -> count.success++
+                    success: -> spy.success()
                     error: ->
-            expect(count.success).toBe 1
+            expect(spy.success).toHaveBeenCalled()
             $rootScope.$apply ->
                 validator 'xx', null, null, null,
                     success: ->
-                    error: -> count.error++
-            expect(count.error).toBe 1
+                    error: -> spy.error()
+            expect(spy.error).toHaveBeenCalled()
 
 
     describe '$validator.convertRule(name, object)', ->
@@ -206,11 +206,42 @@ describe 'validator.provider', ->
 
     describe '$validator.validate', ->
         $rootScope = null
+        $timeout = null
         scope = null
 
         beforeEach -> inject ($injector) ->
             $rootScope = $injector.get '$rootScope'
+            $timeout = $injector.get '$timeout'
             scope = $rootScope.$new()
+
+        it 'check broadcasts broadcastChannel.start not send if accept is zero', inject ($validator) ->
+            spy =
+                accept: jasmine.createSpy('accept')
+                start: jasmine.createSpy('start')
+            scope.$on $validator.broadcastChannel.prepare, (self, model) ->
+                expect(model.model).toEqual 'form'
+                spy.accept()
+            scope.$on $validator.broadcastChannel.start, ->
+                spy.start()
+            $validator.validate scope, 'form'
+            $timeout.flush();
+            expect(spy.accept).toHaveBeenCalled()
+            expect(spy.start).not.toHaveBeenCalled()
+
+        it 'check broadcasts had be sent', inject ($validator) ->
+            spy =
+                accept: jasmine.createSpy('accept')
+                start: jasmine.createSpy('start')
+            scope.$on $validator.broadcastChannel.prepare, (self, model) ->
+                model.accept()
+                expect(model.model).toEqual 'form'
+                spy.accept()
+            scope.$on $validator.broadcastChannel.start, ->
+                spy.start()
+            $validator.validate scope, 'form'
+            $timeout.flush();
+            expect(spy.accept).toHaveBeenCalled()
+            expect(spy.start).toHaveBeenCalled()
 
         it 'check result has success and error functions', inject ($validator) ->
             promise = $validator.validate scope
@@ -219,20 +250,14 @@ describe 'validator.provider', ->
 
 
     describe '$validator.reset', ->
-        $rootScope = null
-        scope = null
-
-        beforeEach -> inject ($injector) ->
-            $rootScope = $injector.get '$rootScope'
+        it 'check result has success and error functions', inject ($validator, $rootScope) ->
             scope = $rootScope.$new()
-
-        it 'check result has success and error functions', inject ($validator) ->
-            broadcastCount = 0
+            broadcastSpy = jasmine.createSpy 'broadcastSpy'
             scope.$on $validator.broadcastChannel.reset, (self, model) ->
-                broadcastCount++
                 expect(model.model).toEqual 'model'
+                broadcastSpy()
             $validator.reset scope, 'model'
-            expect(broadcastCount).toBe 1
+            expect(broadcastSpy).toHaveBeenCalled()
 
 
     describe '$validator', ->
