@@ -221,3 +221,4 @@ a.provider '$validator', ->
         reset: @reset
     @get.$inject = ['$injector']
     @$get = @get
+    return
