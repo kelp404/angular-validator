@@ -1,10 +1,18 @@
-#angular-validator [![Build Status](https://secure.travis-ci.org/kelp404/angular-validator.png?branch=master)](http://travis-ci.org/kelp404/angular-validator)
+#angular-validator [![Build Status](https://secure.travis-ci.org/kelp404/angular-validator.png?branch=master)](http://travis-ci.org/kelp404/angular-validator) [![devDependency Status](https://david-dm.org/kelp404/angular-validator/dev-status.png?branch=master)](https://david-dm.org/kelp404/angular-validator#info=devDependencies&view=table)
 
 [MIT License](http://www.opensource.org/licenses/mit-license.php)  
 
 
-This is an AngularJS form validation written in [CoffeeScript](http://coffeescript.org) and **think in AngularJS not jQuery**.  
-It supports [Bootstrap3](http://getbootstrap.com/).
+This is an AngularJS form validation written in [CoffeeScript](http://coffeescript.org) and **think in AngularJS not jQuery**.
+
+
+
+
+##Frameworks
+1. [AngularJS](http://angularjs.org/) 1.0.8, 1.1.5, 1.2.0
+
+2. [Bootstrap 3](http://getbootstrap.com/)
+> If your `error` is `string` in rules you should include bootstrap3.css and use `form-group` to the input div.
 
 
 
@@ -107,15 +115,6 @@ If the element has this attribute $validator will add the rule `required` into r
 
 ##validator.rules
 >There are default rules in this module.
-
-
-
-
-##Frameworks
-1. AngularJS 1.0.8, 1.1.5, 1.2.0
-
-2. Bootstrap 3
-> If your `error` is `string` in rules you should include bootstrap3.css and use `form-group` to the input div.
 
 
 
