@@ -37,6 +37,7 @@ validator = ($injector) ->
                         rule.enableError = yes
                     when 'watch' then continue if rule.invoke isnt 'watch' and not rule.enableError
                     when 'broadcast' then rule.enableError = yes
+                    else
 
                 # filter
                 filterValue = rule.filter model(scope)
@@ -91,14 +92,23 @@ validator = ($injector) ->
                     # check ngModel and validate model are same.
                     return attrs.ngModel.indexOf(modelName) is 0
                 else
-                    # current scope was created by ng-repeat
-                    item = $(element)
-                    until item.length is 0
-                        repeat = item.attr 'ng-repeat'
-                        match = repeat?.match /^.* in (.*)$/
-                        return yes if match and match[1].indexOf(modelName) >= 0
-                        item = item.parent()
-                    return no
+                    # current scope is different maybe create by scope.$new() or in the ng-repeat
+                    anyHashKey = (targetModel, hashKey) ->
+                        for key of targetModel
+                            x = targetModel[key]
+                            switch typeof x
+                                when 'string'
+                                    return yes if key is '$$hashKey' and x is hashKey
+                                when 'object'
+                                    return yes if anyHashKey x, hashKey
+                                else
+                        no
+
+                    # the model of the scope in ng-repeat
+                    dotIndex = attrs.ngModel.indexOf '.'
+                    itemExpression = if dotIndex >= 0 then attrs.ngModel.substr(0, dotIndex) else attrs.ngModel
+                    itemModel = $parse(itemExpression) scope
+                    return anyHashKey $parse(modelName)(broadcast.targetScope), itemModel.$$hashKey
             yes
         scope.$on $validator.broadcastChannel.prepare, (self, object) ->
             return if not isAcceptTheBroadcast self, object.model

@@ -47,6 +47,7 @@
                 break;
               case 'broadcast':
                 rule.enableError = true;
+                break;
             }
             filterValue = rule.filter(model(scope));
             if (filterValue === false && from === 'watch') {
@@ -106,21 +107,34 @@
           rules.push(rule);
         }
         isAcceptTheBroadcast = function(broadcast, modelName) {
-          var item, repeat;
+          var anyHashKey, dotIndex, itemExpression, itemModel;
           if (modelName) {
             if (broadcast.targetScope === scope) {
               return attrs.ngModel.indexOf(modelName) === 0;
             } else {
-              item = $(element);
-              while (item.length !== 0) {
-                repeat = item.attr('ng-repeat');
-                match = repeat != null ? repeat.match(/^.* in (.*)$/) : void 0;
-                if (match && match[1].indexOf(modelName) >= 0) {
-                  return true;
+              anyHashKey = function(targetModel, hashKey) {
+                var key, x;
+                for (key in targetModel) {
+                  x = targetModel[key];
+                  switch (typeof x) {
+                    case 'string':
+                      if (key === '$$hashKey' && x === hashKey) {
+                        return true;
+                      }
+                      break;
+                    case 'object':
+                      if (anyHashKey(x, hashKey)) {
+                        return true;
+                      }
+                      break;
+                  }
                 }
-                item = item.parent();
-              }
-              return false;
+                return false;
+              };
+              dotIndex = attrs.ngModel.indexOf('.');
+              itemExpression = dotIndex >= 0 ? attrs.ngModel.substr(0, dotIndex) : attrs.ngModel;
+              itemModel = $parse(itemExpression)(scope);
+              return anyHashKey($parse(modelName)(broadcast.targetScope), itemModel.$$hashKey);
             }
           }
           return true;
