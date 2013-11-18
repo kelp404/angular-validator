@@ -101,6 +101,16 @@ validator = ($injector) ->
                     rule = $validator.getRule name.replace(/^\s+|\s+$/g, '')
                     rules.push rule if rule
 
+        attrs.$observe 'validatorError', (value) ->
+            match = attrs.validator.match /^\/(.*)\/$/
+            if match
+                removeRule 'dynamic'
+                rule = $validator.convertRule 'dynamic',
+                    validator: RegExp match[1]
+                    invoke: attrs.validatorInvoke
+                    error: value
+                rules.push rule
+
         # validate by required attribute
         observerRequired =
             validatorRequired: no

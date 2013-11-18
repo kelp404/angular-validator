@@ -135,6 +135,19 @@
             return _results;
           }
         });
+        attrs.$observe('validatorError', function(value) {
+          var match, rule;
+          match = attrs.validator.match(/^\/(.*)\/$/);
+          if (match) {
+            removeRule('dynamic');
+            rule = $validator.convertRule('dynamic', {
+              validator: RegExp(match[1]),
+              invoke: attrs.validatorInvoke,
+              error: value
+            });
+            return rules.push(rule);
+          }
+        });
         observerRequired = {
           validatorRequired: false,
           required: false
