@@ -26,12 +26,12 @@ module.exports = (grunt) ->
                 files: ['./example/*.scss']
                 tasks: ['compass']
                 options:
-                    spawn: false
+                    spawn: no
             coffee:
                 files: ['./src/*.coffee', './rules/*.coffee', './example/*.coffee']
                 tasks: ['coffee']
                 options:
-                    spawn: false
+                    spawn: no
 
         connect:
             server:
