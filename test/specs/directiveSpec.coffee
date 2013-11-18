@@ -7,6 +7,7 @@ describe 'validator.directive', ->
         $compile = null
         $timeout = null
         $validator = null
+        $rootScope = null
         scope = null
         $form = null
 
@@ -31,6 +32,7 @@ describe 'validator.directive', ->
                 success: jasmine.createSpy 'success'
                 error: jasmine.createSpy 'error'
             $compile($form) scope
+            $rootScope.$digest()
             v = $validator.validate scope
             v.success -> spy.success()
             v.error -> spy.error()
@@ -43,6 +45,7 @@ describe 'validator.directive', ->
                 success: jasmine.createSpy 'success'
                 error: jasmine.createSpy 'error'
             $compile($form) scope
+            $rootScope.$digest()
             scope.input = 'xx'
             v = $validator.validate scope
             v.success -> spy.success()
@@ -54,6 +57,7 @@ describe 'validator.directive', ->
     describe 'validator=/regex/', ->
         $compile = null
         $timeout = null
+        $rootScope = null
         scope = null
         $form = null
 
@@ -77,6 +81,7 @@ describe 'validator.directive', ->
                 success: jasmine.createSpy 'success'
                 error: jasmine.createSpy 'error'
             $compile($form) scope
+            $rootScope.$digest()
             v = $validator.validate scope
             v.success -> spy.success()
             v.error -> spy.error()
@@ -89,6 +94,7 @@ describe 'validator.directive', ->
                 success: jasmine.createSpy 'success'
                 error: jasmine.createSpy 'error'
             $compile($form) scope
+            $rootScope.$digest()
             scope.input = 'regex'
             v = $validator.validate scope
             v.success -> spy.success()

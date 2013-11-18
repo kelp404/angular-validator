@@ -10,7 +10,7 @@
       restrict: 'A',
       require: 'ngModel',
       link: function(scope, element, attrs) {
-        var $parse, $validator, isAcceptTheBroadcast, match, model, name, rule, ruleNames, rules, validate, _i, _len;
+        var $parse, $validator, isAcceptTheBroadcast, match, model, name, removeRule, rule, ruleNames, rules, validate, _i, _len;
         $validator = $injector.get('$validator');
         $parse = $injector.get('$parse');
         model = $parse(attrs.ngModel);
@@ -76,15 +76,42 @@
           }
           return _results;
         };
-        match = attrs.validator.match(/^\/(.*)\/$/);
-        if (match) {
-          rule = $validator.convertRule('dynamic', {
-            validator: RegExp(match[1]),
-            invoke: attrs.validatorInvoke,
-            error: attrs.validatorError
-          });
-          rules.push(rule);
-        }
+        removeRule = function(name) {
+          /*
+          Remove the rule in rules by the name.
+          */
+
+          var index, _i, _ref, _results;
+          _results = [];
+          for (index = _i = 0, _ref = rules.length - 1; _i <= _ref; index = _i += 1) {
+            if (!(rules[index].name === name)) {
+              continue;
+            }
+            rules.splice(index, 1);
+            _results.push(index--);
+          }
+          return _results;
+        };
+        attrs.$observe('validator', function(newValue, oldValue) {
+          var match, rule;
+          if (oldValue && newValue !== oldValue) {
+            match = oldValue.match(/^\/(.*)\/$/);
+            if (match) {
+              removeRule('dynamic');
+            }
+          }
+          if (newValue) {
+            match = newValue.match(/^\/(.*)\/$/);
+            if (match) {
+              rule = $validator.convertRule('dynamic', {
+                validator: RegExp(match[1]),
+                invoke: attrs.validatorInvoke,
+                error: attrs.validatorError
+              });
+              return rules.push(rule);
+            }
+          }
+        });
         match = attrs.validator.match(/^\[(.*)\]$/);
         if (match) {
           ruleNames = match[1].split(',');
@@ -97,7 +124,9 @@
           }
         }
         attrs.$observe('required', function(newValue, oldValue) {
-          var index, _j, _ref, _results;
+          if (oldValue && newValue !== oldValue) {
+            removeRule('required');
+          }
           if (newValue) {
             rule = $validator.getRule('required');
             if (rule == null) {
@@ -107,16 +136,6 @@
               });
             }
             return rules.push(rule);
-          } else if (newValue !== oldValue) {
-            _results = [];
-            for (index = _j = 0, _ref = rules.length - 1; _j <= _ref; index = _j += 1) {
-              if (!(rules[index].name === 'required')) {
-                continue;
-              }
-              rules.splice(index, 1);
-              break;
-            }
-            return _results;
           }
         });
         isAcceptTheBroadcast = function(broadcast, modelName) {

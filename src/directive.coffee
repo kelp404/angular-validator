@@ -58,14 +58,31 @@ validator = ($injector) ->
                             # scroll to the first element
                             try element[0].scrollIntoViewIfNeeded()
 
-        # validat by RegExp
-        match = attrs.validator.match /^\/(.*)\/$/
-        if match
-            rule = $validator.convertRule 'dynamic',
-                validator: RegExp match[1]
-                invoke: attrs.validatorInvoke
-                error: attrs.validatorError
-            rules.push rule
+        removeRule = (name) ->
+            ###
+            Remove the rule in rules by the name.
+            ###
+            for index in [0..rules.length - 1] by 1 when rules[index].name is name
+                rules.splice index, 1
+                index--
+
+
+        attrs.$observe 'validator', (newValue, oldValue) ->
+            # remove old rule
+            if oldValue and newValue isnt oldValue
+                # validat by RegExp
+                match = oldValue.match /^\/(.*)\/$/
+                removeRule 'dynamic' if match
+            # register
+            if newValue
+                # validat by RegExp
+                match = newValue.match /^\/(.*)\/$/
+                if match
+                    rule = $validator.convertRule 'dynamic',
+                        validator: RegExp match[1]
+                        invoke: attrs.validatorInvoke
+                        error: attrs.validatorError
+                    rules.push rule
 
         # validat by rules
         match = attrs.validator.match /^\[(.*)\]$/
@@ -78,6 +95,9 @@ validator = ($injector) ->
 
         # validate by required attribute
         attrs.$observe 'required', (newValue, oldValue) ->
+            if oldValue and newValue isnt oldValue
+                # remove required
+                removeRule 'required'
             if newValue
                 # register required
                 rule = $validator.getRule 'required'
@@ -85,11 +105,6 @@ validator = ($injector) ->
                     validator: /^.+$/
                     invoke: 'watch'
                 rules.push rule
-            else if newValue isnt oldValue
-                # remove required
-                for index in [0..rules.length - 1] by 1 when rules[index].name is 'required'
-                    rules.splice index, 1
-                    break
 
 
         # listen
