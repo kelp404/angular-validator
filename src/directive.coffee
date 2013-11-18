@@ -18,7 +18,7 @@ validator = ($injector) ->
         rules = []
 
         # ----------------------------------------
-        # functions
+        # private methods
         # ----------------------------------------
         validate = (from, args={}) ->
             ###
@@ -58,67 +58,76 @@ validator = ($injector) ->
                             # scroll to the first element
                             try element[0].scrollIntoViewIfNeeded()
 
+        registerRequired = ->
+            rule = $validator.getRule 'required'
+            rule ?= $validator.convertRule 'required',
+                validator: /^.+$/
+                invoke: 'watch'
+            rules.push rule
+
         removeRule = (name) ->
             ###
             Remove the rule in rules by the name.
             ###
-            for index in [0..rules.length - 1] by 1 when rules[index].name is name
+            for index in [0..rules.length - 1] by 1 when rules[index]?.name is name
                 rules.splice index, 1
                 index--
 
 
-        attrs.$observe 'validator', (newValue, oldValue) ->
+        # ----------------------------------------
+        # attrs.$observe
+        # ----------------------------------------
+        attrs.$observe 'validator', (value) ->
             # remove old rule
-            if oldValue and newValue isnt oldValue
-                # validat by RegExp
-                match = oldValue.match /^\/(.*)\/$/
-                if match
-                    removeRule 'dynamic'
-                    return
+            rules.length = 0
+            registerRequired() if observerRequired.validatorRequired or observerRequired.required
 
-                # validat by rules
-                match = oldValue.match /^\[(.*)\]$/
-                if match
-                    ruleNames = match[1].split(',')
-                    for name in ruleNames
-                        # stupid browser has no .trim()
-                        removeRule name.replace(/^\s+|\s+$/g, '')
-            # register
-            if newValue
-                # validat by RegExp
-                match = newValue.match /^\/(.*)\/$/
-                if match
-                    rule = $validator.convertRule 'dynamic',
-                        validator: RegExp match[1]
-                        invoke: attrs.validatorInvoke
-                        error: attrs.validatorError
-                    rules.push rule
-                    return
+            # validat by RegExp
+            match = value.match /^\/(.*)\/$/
+            if match
+                rule = $validator.convertRule 'dynamic',
+                    validator: RegExp match[1]
+                    invoke: attrs.validatorInvoke
+                    error: attrs.validatorError
+                rules.push rule
+                return
 
-                # validat by rules
-                match = newValue.match /^\[(.*)\]$/
-                if match
-                    ruleNames = match[1].split(',')
-                    for name in ruleNames
-                        # stupid browser has no .trim()
-                        rule = $validator.getRule name.replace(/^\s+|\s+$/g, '')
-                        rules.push rule if rule
+            # validat by rules
+            match = value.match /^\[(.*)\]$/
+            if match
+                ruleNames = match[1].split(',')
+                for name in ruleNames
+                    # stupid browser has no .trim()
+                    rule = $validator.getRule name.replace(/^\s+|\s+$/g, '')
+                    rules.push rule if rule
 
         # validate by required attribute
-        attrs.$observe 'required', (newValue, oldValue) ->
-            if oldValue and newValue isnt oldValue
+        observerRequired =
+            validatorRequired: no
+            required: no
+        attrs.$observe 'validatorRequired', (value) ->
+            if value and value isnt 'false'
+                # register required
+                registerRequired()
+                observerRequired.validatorRequired = yes
+            else if observerRequired.validatorRequired
                 # remove required
                 removeRule 'required'
-            if newValue
+                observerRequired.validatorRequired = no
+        attrs.$observe 'required', (value) ->
+            if value and value isnt 'false'
                 # register required
-                rule = $validator.getRule 'required'
-                rule ?= $validator.convertRule 'required',
-                    validator: /^.+$/
-                    invoke: 'watch'
-                rules.push rule
+                registerRequired()
+                observerRequired.required = yes
+            else if observerRequired.required
+                # remove required
+                removeRule 'required'
+                observerRequired.required = no
 
 
+        # ----------------------------------------
         # listen
+        # ----------------------------------------
         isAcceptTheBroadcast = (broadcast, modelName) ->
             if modelName
                 if broadcast.targetScope is scope
@@ -156,12 +165,16 @@ validator = ($injector) ->
             for rule in rules
                 rule.success scope, element, attrs
 
+        # ----------------------------------------
         # watch
+        # ----------------------------------------
         scope.$watch attrs.ngModel, (newValue, oldValue) ->
             return if newValue is oldValue  # first
             validate 'watch', oldValue: oldValue
 
+        # ----------------------------------------
         # blur
+        # ----------------------------------------
         $(element).bind 'blur', ->
             scope.$apply -> validate 'blur'
 
