@@ -96,16 +96,29 @@
             }
           }
         }
-        if (attrs.required) {
-          rule = $validator.getRule('required');
-          if (rule == null) {
-            rule = $validator.convertRule('required', {
-              validator: /^.+$/,
-              invoke: 'watch'
-            });
+        attrs.$observe('required', function(newValue, oldValue) {
+          var index, _j, _ref, _results;
+          if (newValue) {
+            rule = $validator.getRule('required');
+            if (rule == null) {
+              rule = $validator.convertRule('required', {
+                validator: /^.+$/,
+                invoke: 'watch'
+              });
+            }
+            return rules.push(rule);
+          } else if (newValue !== oldValue) {
+            _results = [];
+            for (index = _j = 0, _ref = rules.length - 1; _j <= _ref; index = _j += 1) {
+              if (!(rules[index].name === 'required')) {
+                continue;
+              }
+              rules.splice(index, 1);
+              break;
+            }
+            return _results;
           }
-          rules.push(rule);
-        }
+        });
         isAcceptTheBroadcast = function(broadcast, modelName) {
           var anyHashKey, dotIndex, itemExpression, itemModel;
           if (modelName) {

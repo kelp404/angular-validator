@@ -77,12 +77,19 @@ validator = ($injector) ->
                 rules.push rule if rule
 
         # validate by required attribute
-        if attrs.required
-            rule = $validator.getRule 'required'
-            rule ?= $validator.convertRule 'required',
-                validator: /^.+$/
-                invoke: 'watch'
-            rules.push rule
+        attrs.$observe 'required', (newValue, oldValue) ->
+            if newValue
+                # register required
+                rule = $validator.getRule 'required'
+                rule ?= $validator.convertRule 'required',
+                    validator: /^.+$/
+                    invoke: 'watch'
+                rules.push rule
+            else if newValue isnt oldValue
+                # remove required
+                for index in [0..rules.length - 1] by 1 when rules[index].name is 'required'
+                    rules.splice index, 1
+                    break
 
 
         # listen
