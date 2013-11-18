@@ -100,6 +100,10 @@
       validator: /^.+$/,
       error: 'This field is required.'
     });
+    $validatorProvider.register('numberSubmit', {
+      validator: /^[-+]?[0-9]*[\.]?[0-9]*$/,
+      error: 'This field should be number.'
+    });
     return $validatorProvider.register('customLess', {
       invoke: 'watch',
       validator: function(value, scope) {
