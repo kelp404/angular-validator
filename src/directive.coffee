@@ -72,7 +72,17 @@ validator = ($injector) ->
             if oldValue and newValue isnt oldValue
                 # validat by RegExp
                 match = oldValue.match /^\/(.*)\/$/
-                removeRule 'dynamic' if match
+                if match
+                    removeRule 'dynamic'
+                    return
+
+                # validat by rules
+                match = oldValue.match /^\[(.*)\]$/
+                if match
+                    ruleNames = match[1].split(',')
+                    for name in ruleNames
+                        # stupid browser has no .trim()
+                        removeRule name.replace(/^\s+|\s+$/g, '')
             # register
             if newValue
                 # validat by RegExp
@@ -83,15 +93,16 @@ validator = ($injector) ->
                         invoke: attrs.validatorInvoke
                         error: attrs.validatorError
                     rules.push rule
+                    return
 
-        # validat by rules
-        match = attrs.validator.match /^\[(.*)\]$/
-        if match
-            ruleNames = match[1].split(',')
-            for name in ruleNames
-                # stupid browser has no .trim()
-                rule = $validator.getRule name.replace(/^\s+|\s+$/g, '')
-                rules.push rule if rule
+                # validat by rules
+                match = newValue.match /^\[(.*)\]$/
+                if match
+                    ruleNames = match[1].split(',')
+                    for name in ruleNames
+                        # stupid browser has no .trim()
+                        rule = $validator.getRule name.replace(/^\s+|\s+$/g, '')
+                        rules.push rule if rule
 
         # validate by required attribute
         attrs.$observe 'required', (newValue, oldValue) ->

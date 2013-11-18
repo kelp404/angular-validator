@@ -10,7 +10,7 @@
       restrict: 'A',
       require: 'ngModel',
       link: function(scope, element, attrs) {
-        var $parse, $validator, isAcceptTheBroadcast, match, model, name, removeRule, rule, ruleNames, rules, validate, _i, _len;
+        var $parse, $validator, isAcceptTheBroadcast, model, removeRule, rules, validate;
         $validator = $injector.get('$validator');
         $parse = $injector.get('$parse');
         model = $parse(attrs.ngModel);
@@ -93,11 +93,20 @@
           return _results;
         };
         attrs.$observe('validator', function(newValue, oldValue) {
-          var match, rule;
+          var match, name, rule, ruleNames, _i, _j, _len, _len1, _results;
           if (oldValue && newValue !== oldValue) {
             match = oldValue.match(/^\/(.*)\/$/);
             if (match) {
               removeRule('dynamic');
+              return;
+            }
+            match = oldValue.match(/^\[(.*)\]$/);
+            if (match) {
+              ruleNames = match[1].split(',');
+              for (_i = 0, _len = ruleNames.length; _i < _len; _i++) {
+                name = ruleNames[_i];
+                removeRule(name.replace(/^\s+|\s+$/g, ''));
+              }
             }
           }
           if (newValue) {
@@ -108,22 +117,28 @@
                 invoke: attrs.validatorInvoke,
                 error: attrs.validatorError
               });
-              return rules.push(rule);
+              rules.push(rule);
+              return;
+            }
+            match = newValue.match(/^\[(.*)\]$/);
+            if (match) {
+              ruleNames = match[1].split(',');
+              _results = [];
+              for (_j = 0, _len1 = ruleNames.length; _j < _len1; _j++) {
+                name = ruleNames[_j];
+                rule = $validator.getRule(name.replace(/^\s+|\s+$/g, ''));
+                if (rule) {
+                  _results.push(rules.push(rule));
+                } else {
+                  _results.push(void 0);
+                }
+              }
+              return _results;
             }
           }
         });
-        match = attrs.validator.match(/^\[(.*)\]$/);
-        if (match) {
-          ruleNames = match[1].split(',');
-          for (_i = 0, _len = ruleNames.length; _i < _len; _i++) {
-            name = ruleNames[_i];
-            rule = $validator.getRule(name.replace(/^\s+|\s+$/g, ''));
-            if (rule) {
-              rules.push(rule);
-            }
-          }
-        }
         attrs.$observe('required', function(newValue, oldValue) {
+          var rule;
           if (oldValue && newValue !== oldValue) {
             removeRule('required');
           }
@@ -187,13 +202,13 @@
           });
         });
         scope.$on($validator.broadcastChannel.reset, function(self, object) {
-          var _j, _len1, _results;
+          var rule, _i, _len, _results;
           if (!isAcceptTheBroadcast(self, object.model)) {
             return;
           }
           _results = [];
-          for (_j = 0, _len1 = rules.length; _j < _len1; _j++) {
-            rule = rules[_j];
+          for (_i = 0, _len = rules.length; _i < _len; _i++) {
+            rule = rules[_i];
             _results.push(rule.success(scope, element, attrs));
           }
           return _results;
