@@ -71,6 +71,7 @@ $validate.reset = (scope, model) =>
 ##validator.directive
 >
 ```coffee
+a = angular.module 'validator.directive', ['validator.provider']
 validator = ($injector) ->
     restrict: 'A'
     require: 'ngModel'
@@ -79,6 +80,8 @@ validator = ($injector) ->
         The link of `validator`.
         You could use `validator=[rule, rule]` or `validator=/^regex$/`.
         ###
+validator.$inject = ['$injector']
+a.directive 'validator', validator
 ```
 
 ####validator="[rule, rule]", [required], [validator-required={expression}]
