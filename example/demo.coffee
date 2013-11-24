@@ -11,24 +11,22 @@ a.config ($validatorProvider) ->
         validator: (value, scope, element, attrs, $injector) ->
             $http = $injector.get '$http'
             h = $http.get 'example/data.json'
-            h.then (data) ->
-                if data and data.status < 400 and data.data
-                    return no if value in (x.name for x in data.data)
-                    return yes
+            h.then (response) ->
+                if response and response.data
+                    not (value in (x.name for x in response.data))
                 else
-                    return no
+                    no
         error: "do not use 'Kelp' or 'x'"
 
     $validatorProvider.register 'backendSubmit',
         validator: (value, scope, element, attrs, $injector) ->
             $http = $injector.get '$http'
             h = $http.get 'example/data.json'
-            h.then (data) ->
-                if data and data.status < 400 and data.data
-                    return no if value in (x.name for x in data.data)
-                    return yes
+            h.then (response) ->
+                if response and response.data
+                    not (value in (x.name for x in response.data))
                 else
-                    return no
+                    no
         error: "do not use 'Kelp' or 'x'"
 
     $validatorProvider.register 'backendBlur',
@@ -36,12 +34,11 @@ a.config ($validatorProvider) ->
         validator: (value, scope, element, attrs, $injector) ->
             $http = $injector.get '$http'
             h = $http.get 'example/data.json'
-            h.then (data) ->
-                if data and data.status < 400 and data.data
-                    return no if value in (x.name for x in data.data)
-                    return yes
+            h.then (response) ->
+                if response and response.data
+                    not (value in (x.name for x in response.data))
                 else
-                    return no
+                    no
         error: "do not use 'Kelp' or 'x'"
 
     # submit - required
@@ -88,7 +85,6 @@ a.controller 'DemoController', ($scope, $validator) ->
         number2: ''
         http: ''
 
-    # the form model
     $scope.formSubmit =
         required: ''
         regexp: ''

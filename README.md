@@ -1,4 +1,4 @@
-#angular-validator [![Build Status](https://secure.travis-ci.org/kelp404/angular-validator.png?branch=master)](http://travis-ci.org/kelp404/angular-validator) [![devDependency Status](https://david-dm.org/kelp404/angular-validator/dev-status.png?branch=master)](https://david-dm.org/kelp404/angular-validator#info=devDependencies&view=table)
+#angular-validator [![Build Status](https://secure.travis-ci.org/kelp404/angular-validator.png?branch=master)](http://travis-ci.org/kelp404/angular-validator) [![devDependency Status](https://david-dm.org/kelp404/angular-validator/dev-status.png?branch=master)](https://david-dm.org/kelp404/angular-validator#info=devDependencies)
 
 [MIT License](http://www.opensource.org/licenses/mit-license.php)  
 
@@ -111,13 +111,19 @@ a.directive 'validator', validator
 
 ####[required], [validator-required={expression}]
 >
-If the element has this attribute $validator will add the rule `required` into rules of the element.
+If the element has this attribute, $validator will add the rule `required` into rules of the element.
 
 
 
 
 ##validator.rules
+```coffee
+angular.module 'yourApp', ['validator.rules']
+```
 >There are default rules in this module.
++ required
++ number
++ email
 
 
 

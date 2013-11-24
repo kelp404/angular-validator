@@ -11,22 +11,19 @@
         var $http, h;
         $http = $injector.get('$http');
         h = $http.get('example/data.json');
-        return h.then(function(data) {
+        return h.then(function(response) {
           var x;
-          if (data && data.status < 400 && data.data) {
-            if (__indexOf.call((function() {
+          if (response && response.data) {
+            return !(__indexOf.call((function() {
               var _i, _len, _ref, _results;
-              _ref = data.data;
+              _ref = response.data;
               _results = [];
               for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 x = _ref[_i];
                 _results.push(x.name);
               }
               return _results;
-            })(), value) >= 0) {
-              return false;
-            }
-            return true;
+            })(), value) >= 0);
           } else {
             return false;
           }
@@ -39,22 +36,19 @@
         var $http, h;
         $http = $injector.get('$http');
         h = $http.get('example/data.json');
-        return h.then(function(data) {
+        return h.then(function(response) {
           var x;
-          if (data && data.status < 400 && data.data) {
-            if (__indexOf.call((function() {
+          if (response && response.data) {
+            return !(__indexOf.call((function() {
               var _i, _len, _ref, _results;
-              _ref = data.data;
+              _ref = response.data;
               _results = [];
               for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 x = _ref[_i];
                 _results.push(x.name);
               }
               return _results;
-            })(), value) >= 0) {
-              return false;
-            }
-            return true;
+            })(), value) >= 0);
           } else {
             return false;
           }
@@ -68,22 +62,19 @@
         var $http, h;
         $http = $injector.get('$http');
         h = $http.get('example/data.json');
-        return h.then(function(data) {
+        return h.then(function(response) {
           var x;
-          if (data && data.status < 400 && data.data) {
-            if (__indexOf.call((function() {
+          if (response && response.data) {
+            return !(__indexOf.call((function() {
               var _i, _len, _ref, _results;
-              _ref = data.data;
+              _ref = response.data;
               _results = [];
               for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 x = _ref[_i];
                 _results.push(x.name);
               }
               return _results;
-            })(), value) >= 0) {
-              return false;
-            }
-            return true;
+            })(), value) >= 0);
           } else {
             return false;
           }
