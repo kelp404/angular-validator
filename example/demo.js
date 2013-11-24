@@ -143,6 +143,7 @@
     $scope.formBlur = {
       required: '',
       email: '',
+      url: '',
       regexp: '',
       http: ''
     };

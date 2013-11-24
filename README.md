@@ -124,6 +124,7 @@ angular.module 'yourApp', ['validator.rules']
 + required
 + number
 + email
++ url
 
 
 
