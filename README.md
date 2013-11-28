@@ -3,13 +3,13 @@
 [MIT License](http://www.opensource.org/licenses/mit-license.php)  
 
 
-This is an AngularJS form validation written in [CoffeeScript](http://coffeescript.org) and **think in AngularJS not jQuery**.
+This is an AngularJS form validation written in [CoffeeScript](http://coffeescript.org) and **thinking in AngularJS not jQuery**.
 
 
 
 
 ##Frameworks
-1. [AngularJS](http://angularjs.org/) 1.0.8, 1.1.5, 1.2.2
+1. [AngularJS](http://angularjs.org/) 1.0.8, 1.1.5, 1.2.3
 
 2. [Bootstrap 3](http://getbootstrap.com/)
 > If your `error` is `string` in rules you should include bootstrap3.css and use `form-group` to the input div.
