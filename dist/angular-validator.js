@@ -94,7 +94,7 @@
 
           var index, _i, _ref, _ref1, _results;
           _results = [];
-          for (index = _i = 0, _ref = rules.length - 1; _i <= _ref; index = _i += 1) {
+          for (index = _i = 0, _ref = rules.length; _i < _ref; index = _i += 1) {
             if (!(((_ref1 = rules[index]) != null ? _ref1.name : void 0) === name)) {
               continue;
             }

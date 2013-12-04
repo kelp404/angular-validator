@@ -69,7 +69,7 @@ validator = ($injector) ->
             ###
             Remove the rule in rules by the name.
             ###
-            for index in [0..rules.length - 1] by 1 when rules[index]?.name is name
+            for index in [0...rules.length] by 1 when rules[index]?.name is name
                 rules.splice index, 1
                 index--
 
