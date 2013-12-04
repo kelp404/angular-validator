@@ -16,7 +16,7 @@
         model = $parse(attrs.ngModel);
         rules = [];
         validate = function(from, args) {
-          var filterValue, rule, successCount, _i, _len, _results;
+          var filterValue, increaseSuccessCount, rule, successCount, _i, _len, _results;
           if (args == null) {
             args = {};
           }
@@ -30,6 +30,18 @@
           */
 
           successCount = 0;
+          increaseSuccessCount = function() {
+            var rule, _i, _len;
+            if (++successCount === rules.length) {
+              for (_i = 0, _len = rules.length; _i < _len; _i++) {
+                rule = rules[_i];
+                rule.success(scope, element, attrs);
+              }
+              if (typeof args.success === "function") {
+                args.success();
+              }
+            }
+          };
           _results = [];
           for (_i = 0, _len = rules.length; _i < _len; _i++) {
             rule = rules[_i];
@@ -42,6 +54,7 @@
                 break;
               case 'watch':
                 if (rule.invoke !== 'watch' && !rule.enableError) {
+                  increaseSuccessCount();
                   continue;
                 }
                 break;
@@ -57,10 +70,7 @@
             }
             _results.push(rule.validator(model(scope), scope, element, attrs, {
               success: function() {
-                if (++successCount === rules.length) {
-                  rule.success(scope, element, attrs);
-                  return typeof args.success === "function" ? args.success() : void 0;
-                }
+                return increaseSuccessCount();
               },
               error: function() {
                 if (rule.enableError) {
@@ -98,6 +108,7 @@
             if (!(((_ref1 = rules[index]) != null ? _ref1.name : void 0) === name)) {
               continue;
             }
+            rules[index].success(scope, element, attrs);
             rules.splice(index, 1);
             _results.push(index--);
           }

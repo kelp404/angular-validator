@@ -30,12 +30,21 @@ validator = ($injector) ->
                 oldValue: the old value of $watch
             ###
             successCount = 0
+            increaseSuccessCount = ->
+                if ++successCount is rules.length
+                    rule.success scope, element, attrs for rule in rules
+                    args.success?()
+                return
+
             for rule in rules
                 switch from
                     when 'blur'
                         continue if rule.invoke isnt 'blur'
                         rule.enableError = yes
-                    when 'watch' then continue if rule.invoke isnt 'watch' and not rule.enableError
+                    when 'watch'
+                        if rule.invoke isnt 'watch' and not rule.enableError
+                            increaseSuccessCount()
+                            continue
                     when 'broadcast' then rule.enableError = yes
                     else
 
@@ -49,9 +58,7 @@ validator = ($injector) ->
                 # validate
                 rule.validator model(scope), scope, element, attrs,
                     success: ->
-                        if ++successCount is rules.length
-                            rule.success scope, element, attrs
-                            args.success?()
+                        increaseSuccessCount()
                     error: ->
                         rule.error scope, element, attrs if rule.enableError
                         if args.error?() is 1
@@ -70,6 +77,7 @@ validator = ($injector) ->
             Remove the rule in rules by the name.
             ###
             for index in [0...rules.length] by 1 when rules[index]?.name is name
+                rules[index].success scope, element, attrs
                 rules.splice index, 1
                 index--
 
