@@ -184,6 +184,9 @@
         isAcceptTheBroadcast = function(broadcast, modelName) {
           var anyHashKey, dotIndex, itemExpression, itemModel;
           if (modelName) {
+            if (attrs.validatorGroup === modelName) {
+              return true;
+            }
             if (broadcast.targetScope === scope) {
               return attrs.ngModel.indexOf(modelName) === 0;
             } else {
@@ -461,7 +464,7 @@
       /*
       Validate the model.
       @param scope: The scope.
-      @param model: The model name of the scope.
+      @param model: The model name of the scope or validator-group.
       @return:
           @promise success(): The success function.
           @promise error(): The error function.
@@ -540,7 +543,7 @@
       /*
       Reset validated error messages of the model.
       @param scope: The scope.
-      @param model: The model name of the scope.
+      @param model: The model name of the scope or validator-group.
       */
 
       return scope.$broadcast(_this.broadcastChannel.reset, {

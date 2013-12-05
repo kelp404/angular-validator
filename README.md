@@ -47,7 +47,7 @@ $validate.validate = (scope, model) =>
     ###
     Validate the model.
     @param scope: The scope.
-    @param model: The model name of the scope.
+    @param model: The model name of the scope or validator-group.
     @return:
         @promise success(): The success function.
         @promise error(): The error function.
@@ -61,7 +61,7 @@ $validate.reset = (scope, model) =>
     ###
     Reset validated error messages of the model.
     @param scope: The scope.
-    @param model: The model name of the scope.
+    @param model: The model name of the scope or validator-group.
     ###
 ```
 
@@ -84,7 +84,7 @@ validator.$inject = ['$injector']
 a.directive 'validator', validator
 ```
 
-####validator="[rule, rule]", [required], [validator-required={expression}]
+####validator="[rule, rule]", [required], [validator-required="true/false"], [validator-group="group"]
 >
 ```html
 <div class="form-group">
@@ -96,7 +96,7 @@ a.directive 'validator', validator
 </div>
 ```
 
-####validator="/^regex$/", [validator-error="msg"], [validator-invoke="watch"], [required], [validator-required={expression}]
+####validator="/^regex$/", [validator-error="msg"], [validator-invoke="watch"], [required], [validator-required="true/false"], [validator-group="group"]
 >
 ```html
 <div class="form-group">
@@ -109,7 +109,7 @@ a.directive 'validator', validator
 </div>
 ```
 
-####[required], [validator-required={expression}]
+####[required], [validator-required="true/false"]
 >
 If the element has this attribute, $validator will add the rule `required` into rules of the element.
 

@@ -143,7 +143,7 @@ a.provider '$validator', ->
         ###
         Validate the model.
         @param scope: The scope.
-        @param model: The model name of the scope.
+        @param model: The model name of the scope or validator-group.
         @return:
             @promise success(): The success function.
             @promise error(): The error function.
@@ -201,7 +201,7 @@ a.provider '$validator', ->
         ###
         Reset validated error messages of the model.
         @param scope: The scope.
-        @param model: The model name of the scope.
+        @param model: The model name of the scope or validator-group.
         ###
         scope.$broadcast @broadcastChannel.reset, model: model
 

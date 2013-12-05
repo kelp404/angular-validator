@@ -148,6 +148,8 @@ validator = ($injector) ->
         # ----------------------------------------
         isAcceptTheBroadcast = (broadcast, modelName) ->
             if modelName
+                # is match validator-group?
+                return yes if attrs.validatorGroup is modelName
                 if broadcast.targetScope is scope
                     # check ngModel and validate model are same.
                     return attrs.ngModel.indexOf(modelName) is 0
