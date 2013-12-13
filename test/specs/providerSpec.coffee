@@ -175,14 +175,6 @@ describe 'validator.provider', ->
         it 'check invoke is equal to the argument', inject ($validator) ->
             rule = $validator.convertRule 'name', invoke: 'watch'
             expect(rule.invoke).toEqual 'watch'
-            
-        it 'check filter(input) is return input value when object.filter is undefined', inject ($validator) ->
-            rule = $validator.convertRule 'name', validator: /.*/
-            result = rule.filter 'input'
-            expect(result).toEqual 'input'
-            func = (input) -> input.toLowerCase()
-            rule = $validator.convertRule 'name', filter: func
-            expect(rule.filter).toBe func
 
         it 'check validator is in the result of convertRule()', inject ($validator) ->
             rule = $validator.convertRule 'name', invoke: 'watch'

@@ -16,7 +16,7 @@
         model = $parse(attrs.ngModel);
         rules = [];
         validate = function(from, args) {
-          var filterValue, increaseSuccessCount, rule, successCount, _i, _len, _results;
+          var increaseSuccessCount, rule, successCount, _i, _len, _results;
           if (args == null) {
             args = {};
           }
@@ -61,12 +61,6 @@
               case 'broadcast':
                 rule.enableError = true;
                 break;
-            }
-            filterValue = rule.filter(model(scope));
-            if (filterValue === void 0 && from === 'watch') {
-              model.assign(scope, args.oldValue);
-            } else {
-              model.assign(scope, filterValue);
             }
             _results.push(rule.validator(model(scope), scope, element, attrs, {
               success: function() {
@@ -405,7 +399,7 @@
       return result;
     };
     this.convertRule = function(name, object) {
-      var result, _ref, _ref1, _ref2;
+      var result, _ref, _ref1;
       if (object == null) {
         object = {};
       }
@@ -417,13 +411,10 @@
         name: name,
         enableError: object.invoke === 'watch',
         invoke: object.invoke,
-        filter: (_ref = object.filter) != null ? _ref : function(input) {
-          return input;
-        },
-        validator: (_ref1 = object.validator) != null ? _ref1 : function() {
+        validator: (_ref = object.validator) != null ? _ref : function() {
           return true;
         },
-        error: (_ref2 = object.error) != null ? _ref2 : '',
+        error: (_ref1 = object.error) != null ? _ref1 : '',
         success: object.success
       };
       result.error = _this.convertError(result.error);
@@ -440,7 +431,6 @@
       @params name: The rule name.
       @params object:
           invoke: 'watch' or 'blur' or undefined(validate by yourself)
-          filter: function(input)
           validator: RegExp() or function(value, scope, element, attrs, $injector)
           error: string or function(scope, element, attrs)
           success: function(scope, element, attrs)

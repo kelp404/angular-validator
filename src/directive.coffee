@@ -48,14 +48,6 @@ validator = ($injector) ->
                     when 'broadcast' then rule.enableError = yes
                     else
 
-                # filter
-                filterValue = rule.filter model(scope)
-                if filterValue is undefined and from is 'watch'
-                    # rollback value
-                    model.assign scope, args.oldValue
-                else
-                    model.assign scope, filterValue
-
                 # validate
                 rule.validator model(scope), scope, element, attrs,
                     success: ->

@@ -31,7 +31,6 @@ $validatorProvider.register = (name, object={}) ->
     @params name: The rule name.
     @params object:
         invoke: 'watch' or 'blur' or undefined(validate by yourself)
-        filter: function(input)
         validator: RegExp() or function(value, scope, element, attrs, $injector)
         error: string or function(scope, element, attrs)
         success: function(scope, element, attrs)
