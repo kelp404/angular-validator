@@ -50,7 +50,8 @@ validator = ($injector) ->
 
                 # filter
                 filterValue = rule.filter model(scope)
-                if filterValue is no and from is 'watch'
+                if filterValue is undefined and from is 'watch'
+                    # rollback value
                     model.assign scope, args.oldValue
                 else
                     model.assign scope, filterValue

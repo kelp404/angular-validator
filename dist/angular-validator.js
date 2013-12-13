@@ -63,7 +63,7 @@
                 break;
             }
             filterValue = rule.filter(model(scope));
-            if (filterValue === false && from === 'watch') {
+            if (filterValue === void 0 && from === 'watch') {
               model.assign(scope, args.oldValue);
             } else {
               model.assign(scope, filterValue);
