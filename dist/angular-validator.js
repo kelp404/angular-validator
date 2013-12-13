@@ -35,7 +35,7 @@
             if (++successCount === rules.length) {
               for (_i = 0, _len = rules.length; _i < _len; _i++) {
                 rule = rules[_i];
-                rule.success(scope, element, attrs);
+                rule.success(model(scope), scope, element, attrs, $injector);
               }
               if (typeof args.success === "function") {
                 args.success();
@@ -68,7 +68,7 @@
               },
               error: function() {
                 if (rule.enableError) {
-                  rule.error(scope, element, attrs);
+                  rule.error(model(scope), scope, element, attrs, $injector);
                 }
                 if ((typeof args.error === "function" ? args.error() : void 0) === 1) {
                   try {
@@ -102,7 +102,7 @@
             if (!(((_ref1 = rules[index]) != null ? _ref1.name : void 0) === name)) {
               continue;
             }
-            rules[index].success(scope, element, attrs);
+            rules[index].success(model(scope), scope, element, attrs, $injector);
             rules.splice(index, 1);
             _results.push(index--);
           }
@@ -234,7 +234,7 @@
           _results = [];
           for (_i = 0, _len = rules.length; _i < _len; _i++) {
             rule = rules[_i];
-            _results.push(rule.success(scope, element, attrs));
+            _results.push(rule.success(model(scope), scope, element, attrs, $injector));
           }
           return _results;
         });
@@ -293,8 +293,8 @@
     this.convertError = function(error) {
       /*
       Convert rule.error.
-      @param error: error messate (string) or function(scope, element, attrs)
-      @return: function(scope, element, attrs)
+      @param error: error messate (string) or function(value, scope, element, attrs, $injector)
+      @return: function(value, scope, element, attrs, $injector)
       */
 
       var errorMessage;
@@ -302,7 +302,7 @@
         return error;
       }
       errorMessage = error.constructor === String ? error : '';
-      return function(scope, element, attrs) {
+      return function(value, scope, element, attrs) {
         var $label, label, parent, _i, _len, _ref, _results;
         parent = $(element).parent();
         _results = [];
@@ -331,14 +331,14 @@
     this.convertSuccess = function(success) {
       /*
       Convert rule.success.
-      @param success: function(scope, element, attrs)
-      @return: function(scope, element, attrs)
+      @param success: function(value, scope, element, attrs, $injector)
+      @return: function(value, scope, element, attrs, $injector)
       */
 
       if (typeof success === 'function') {
         return success;
       }
-      return function(scope, element) {
+      return function(value, scope, element) {
         var label, parent, _i, _len, _ref, _results;
         parent = $(element).parent();
         _results = [];

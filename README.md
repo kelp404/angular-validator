@@ -32,8 +32,8 @@ $validatorProvider.register = (name, object={}) ->
     @params object:
         invoke: 'watch' or 'blur' or undefined(validate by yourself)
         validator: RegExp() or function(value, scope, element, attrs, $injector)
-        error: string or function(scope, element, attrs)
-        success: function(scope, element, attrs)
+        error: string or function(value, scope, element, attrs, $injector)
+        success: function(value, scope, element, attrs, $injector)
     ###
 # .run
 $validator.register = (name, object={}) ->

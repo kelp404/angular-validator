@@ -32,7 +32,7 @@ validator = ($injector) ->
             successCount = 0
             increaseSuccessCount = ->
                 if ++successCount is rules.length
-                    rule.success scope, element, attrs for rule in rules
+                    rule.success model(scope), scope, element, attrs, $injector for rule in rules
                     args.success?()
                 return
 
@@ -53,7 +53,7 @@ validator = ($injector) ->
                     success: ->
                         increaseSuccessCount()
                     error: ->
-                        rule.error scope, element, attrs if rule.enableError
+                        rule.error model(scope), scope, element, attrs, $injector if rule.enableError
                         if args.error?() is 1
                             # scroll to the first element
                             try element[0].scrollIntoViewIfNeeded()
@@ -70,7 +70,7 @@ validator = ($injector) ->
             Remove the rule in rules by the name.
             ###
             for index in [0...rules.length] by 1 when rules[index]?.name is name
-                rules[index].success scope, element, attrs
+                rules[index].success model(scope), scope, element, attrs, $injector
                 rules.splice index, 1
                 index--
 
@@ -176,7 +176,7 @@ validator = ($injector) ->
         scope.$on $validator.broadcastChannel.reset, (self, object) ->
             return if not isAcceptTheBroadcast self, object.model
             for rule in rules
-                rule.success scope, element, attrs
+                rule.success model(scope), scope, element, attrs, $injector
 
         # ----------------------------------------
         # watch

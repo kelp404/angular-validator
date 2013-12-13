@@ -32,13 +32,13 @@ a.provider '$validator', ->
     @convertError = (error) ->
         ###
         Convert rule.error.
-        @param error: error messate (string) or function(scope, element, attrs)
-        @return: function(scope, element, attrs)
+        @param error: error messate (string) or function(value, scope, element, attrs, $injector)
+        @return: function(value, scope, element, attrs, $injector)
         ###
         return error if typeof error is 'function'
 
         errorMessage = if error.constructor is String then error else ''
-        (scope, element, attrs) ->
+        (value, scope, element, attrs) ->
             parent = $(element).parent()
             until parent.length is 0
                 if parent.hasClass 'form-group'
@@ -54,12 +54,12 @@ a.provider '$validator', ->
     @convertSuccess = (success) ->
         ###
         Convert rule.success.
-        @param success: function(scope, element, attrs)
-        @return: function(scope, element, attrs)
+        @param success: function(value, scope, element, attrs, $injector)
+        @return: function(value, scope, element, attrs, $injector)
         ###
         return success if typeof success is 'function'
 
-        (scope, element) ->
+        (value, scope, element) ->
             parent = $(element).parent()
             until parent.length is 0
                 if parent.hasClass 'has-error'

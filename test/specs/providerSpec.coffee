@@ -34,7 +34,7 @@ describe 'validator.provider', ->
 
 
     describe '$validatorProvider.convertError()', ->
-        it 'check convertError(string) and work on the form-group element', ->
+        it 'convertError(string) is work on the form-group element', ->
             $element = $ "<div class='form-group'><input type='text' id='input'/></div>"
             $input = $element.find 'input'
             attrs = id: 'input'
@@ -42,7 +42,7 @@ describe 'validator.provider', ->
             # check error type
             expect('function').toEqual typeof error
             # execute error
-            error(null, $input, attrs)
+            error(null, null, $input, attrs)
             $errorLabel = $element.find 'label'
             expect($element.hasClass('has-error')).toBe yes
             expect($errorLabel.hasClass('control-label')).toBe yes
@@ -50,13 +50,13 @@ describe 'validator.provider', ->
             expect($errorLabel.attr('for')).toEqual 'input'
             expect($errorLabel.text()).toEqual 'error message'
 
-        it 'check convertError(string) and work on the form-group element and input without id', ->
+        it 'convertError(string) is work on the form-group element and input without id', ->
             $element = $ "<div class='form-group'><input type='text'/></div>"
             $input = $element.find 'input'
             attrs = id: undefined
             error = validatorProvider.convertError ''
             # execute error
-            error(null, $input, attrs)
+            error(null, null, $input, attrs)
             $errorLabel = $element.find 'label'
             expect($element.hasClass('has-error')).toBe yes
             expect($errorLabel.hasClass('control-label')).toBe yes
@@ -65,42 +65,50 @@ describe 'validator.provider', ->
             expect($errorLabel.text()).toEqual ''
 
         it 'check convertError(function)', ->
-            func = (scope, element, attrs) ->
+            func = (value, scope, element, attrs, $injector) ->
+                value: value
                 scope: scope
                 element: element
                 attrs: attrs
+                $injector: $injector
             error = validatorProvider.convertError func
             expect
+                value: 'value'
                 scope: 'scope'
                 element: 'element'
                 attrs: 'attrs'
-            .toEqual error('scope', 'element', 'attrs')
+                $injector: '$injector'
+            .toEqual error('value', 'scope', 'element', 'attrs', '$injector')
 
 
     describe '$validatorProvider.convertSuccess()', ->
-        it 'check convertSuccess(string) and work on the form-group element', ->
+        it 'convertSuccess(string) is work on the form-group element', ->
             $element = $ "<div class='form-group has-error'><input type='text' id='input'/><label class='control-label error'>msg</label></div>"
             $input = $element.find 'input'
             success = validatorProvider.convertSuccess()
             # check error type
             expect('function').toEqual typeof success
             # execute error
-            success(null, $input)
+            success(null, null, $input)
             $errorLabel = $element.find 'label'
             expect($errorLabel.length).toBe 0
             expect($element.hasClass('has-error')).toBe no
 
         it 'check convertSuccess(function)', ->
-            func = (scope, element, attrs) ->
+            func = (value, scope, element, attrs, $injector) ->
+                value: value
                 scope: scope
                 element: element
                 attrs: attrs
+                $injector: $injector
             success = validatorProvider.convertSuccess func
             expect
+                value: 'value'
                 scope: 'scope'
                 element: 'element'
                 attrs: 'attrs'
-            .toEqual success('scope', 'element', 'attrs')
+                $injector: '$injector'
+            .toEqual success('value', 'scope', 'element', 'attrs', '$injector')
 
 
     describe 'validatorProvider.convertValidator(validator)', ->
