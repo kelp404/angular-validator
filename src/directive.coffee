@@ -96,10 +96,11 @@ validator = ($injector) ->
             # validat by rules
             match = value.match /^\[(.*)\]$/
             if match
-                ruleNames = match[1].split(',')
+                ruleNames = match[1].split ','
                 for name in ruleNames
                     # stupid browser has no .trim()
                     rule = $validator.getRule name.replace(/^\s+|\s+$/g, '')
+                    rule.init? scope, element, attrs, $injector
                     rules.push rule if rule
 
         attrs.$observe 'validatorError', (value) ->

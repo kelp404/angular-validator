@@ -131,6 +131,9 @@
             for (_i = 0, _len = ruleNames.length; _i < _len; _i++) {
               name = ruleNames[_i];
               rule = $validator.getRule(name.replace(/^\s+|\s+$/g, ''));
+              if (typeof rule.init === "function") {
+                rule.init(scope, element, attrs, $injector);
+              }
               if (rule) {
                 _results.push(rules.push(rule));
               } else {
@@ -411,6 +414,7 @@
         name: name,
         enableError: object.invoke === 'watch',
         invoke: object.invoke,
+        init: object.init,
         validator: (_ref = object.validator) != null ? _ref : function() {
           return true;
         },
@@ -431,6 +435,7 @@
       @params name: The rule name.
       @params object:
           invoke: 'watch' or 'blur' or undefined(validate by yourself)
+          init: function(scope, element, attrs, $injector)
           validator: RegExp() or function(value, scope, element, attrs, $injector)
           error: string or function(scope, element, attrs)
           success: function(scope, element, attrs)

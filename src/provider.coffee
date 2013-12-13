@@ -106,6 +106,7 @@ a.provider '$validator', ->
             name: name
             enableError: object.invoke is 'watch'
             invoke: object.invoke
+            init: object.init
             validator: object.validator ? -> yes
             error: object.error ? ''
             success: object.success
@@ -123,6 +124,7 @@ a.provider '$validator', ->
         @params name: The rule name.
         @params object:
             invoke: 'watch' or 'blur' or undefined(validate by yourself)
+            init: function(scope, element, attrs, $injector)
             validator: RegExp() or function(value, scope, element, attrs, $injector)
             error: string or function(scope, element, attrs)
             success: function(scope, element, attrs)
