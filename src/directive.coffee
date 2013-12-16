@@ -57,6 +57,7 @@ validator = ($injector) ->
                         if args.error?() is 1
                             # scroll to the first element
                             try element[0].scrollIntoViewIfNeeded()
+                            element[0].select()
 
         registerRequired = ->
             rule = $validator.getRule 'required'

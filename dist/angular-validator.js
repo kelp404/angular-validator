@@ -72,8 +72,9 @@
                 }
                 if ((typeof args.error === "function" ? args.error() : void 0) === 1) {
                   try {
-                    return element[0].scrollIntoViewIfNeeded();
+                    element[0].scrollIntoViewIfNeeded();
                   } catch (_error) {}
+                  return element[0].select();
                 }
               }
             }));
