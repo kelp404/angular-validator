@@ -45,6 +45,7 @@
           _results = [];
           for (_i = 0, _len = rules.length; _i < _len; _i++) {
             rule = rules[_i];
+            rule.enableError = false;
             switch (from) {
               case 'blur':
                 if (rule.invoke !== 'blur') {
