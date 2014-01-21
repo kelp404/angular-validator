@@ -467,7 +467,7 @@
           @promise error(): The error function.
       */
 
-      var brocadcastObject, count, deferred, func, promise;
+      var broadcastObject, count, deferred, func, promise;
       deferred = $q.defer();
       promise = deferred.promise;
       count = {
@@ -514,13 +514,13 @@
         func.promises.error.push(fn);
         return promise;
       };
-      brocadcastObject = {
+      broadcastObject = {
         model: model,
         accept: func.accept,
         success: func.validatedSuccess,
         error: func.validatedError
       };
-      scope.$broadcast(_this.broadcastChannel.prepare, brocadcastObject);
+      scope.$broadcast(_this.broadcastChannel.prepare, broadcastObject);
       $timeout(function() {
         var $validator, x, _i, _len, _ref;
         if (count.total === 0) {
@@ -532,7 +532,7 @@
           return;
         }
         $validator = $injector.get('$validator');
-        return scope.$broadcast($validator.broadcastChannel.start, brocadcastObject);
+        return scope.$broadcast($validator.broadcastChannel.start, broadcastObject);
       });
       return promise;
     };
