@@ -180,13 +180,13 @@ a.provider '$validator', ->
             func.promises.error.push fn
             promise
 
-        brocadcastObject =
+        broadcastObject =
             model: model
             accept: func.accept
             success: func.validatedSuccess
             error: func.validatedError
 
-        scope.$broadcast @broadcastChannel.prepare, brocadcastObject
+        scope.$broadcast @broadcastChannel.prepare, broadcastObject
         $timeout ->
             # wait for getting all promises
             if count.total is 0
@@ -194,7 +194,7 @@ a.provider '$validator', ->
                 x() for x in func.promises.success
                 return
             $validator = $injector.get '$validator'
-            scope.$broadcast $validator.broadcastChannel.start, brocadcastObject
+            scope.$broadcast $validator.broadcastChannel.start, broadcastObject
         promise
 
     @reset = (scope, model) =>

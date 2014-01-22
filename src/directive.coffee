@@ -37,6 +37,7 @@ validator = ($injector) ->
                 return
 
             for rule in rules
+                rule.enableError = no
                 switch from
                     when 'blur'
                         continue if rule.invoke isnt 'blur'
