@@ -37,7 +37,6 @@ validator = ($injector) ->
                 return
 
             for rule in rules
-                rule.enableError = no
                 switch from
                     when 'blur'
                         continue if rule.invoke isnt 'blur'
@@ -50,15 +49,17 @@ validator = ($injector) ->
                     else
 
                 # validate
-                rule.validator model(scope), scope, element, attrs,
-                    success: ->
-                        increaseSuccessCount()
-                    error: ->
-                        rule.error model(scope), scope, element, attrs, $injector if rule.enableError
-                        if args.error?() is 1
-                            # scroll to the first element
-                            try element[0].scrollIntoViewIfNeeded()
-                            element[0].select()
+                do (rule) ->
+                    # success() and error() call back will run in other thread
+                    rule.validator model(scope), scope, element, attrs,
+                        success: ->
+                            increaseSuccessCount()
+                        error: ->
+                            rule.error model(scope), scope, element, attrs, $injector if rule.enableError
+                            if args.error?() is 1
+                                # scroll to the first element
+                                try element[0].scrollIntoViewIfNeeded()
+                                element[0].select()
 
         registerRequired = ->
             rule = $validator.getRule 'required'

@@ -45,7 +45,6 @@
           _results = [];
           for (_i = 0, _len = rules.length; _i < _len; _i++) {
             rule = rules[_i];
-            rule.enableError = false;
             switch (from) {
               case 'blur':
                 if (rule.invoke !== 'blur') {
@@ -63,22 +62,24 @@
                 rule.enableError = true;
                 break;
             }
-            _results.push(rule.validator(model(scope), scope, element, attrs, {
-              success: function() {
-                return increaseSuccessCount();
-              },
-              error: function() {
-                if (rule.enableError) {
-                  rule.error(model(scope), scope, element, attrs, $injector);
+            _results.push((function(rule) {
+              return rule.validator(model(scope), scope, element, attrs, {
+                success: function() {
+                  return increaseSuccessCount();
+                },
+                error: function() {
+                  if (rule.enableError) {
+                    rule.error(model(scope), scope, element, attrs, $injector);
+                  }
+                  if ((typeof args.error === "function" ? args.error() : void 0) === 1) {
+                    try {
+                      element[0].scrollIntoViewIfNeeded();
+                    } catch (_error) {}
+                    return element[0].select();
+                  }
                 }
-                if ((typeof args.error === "function" ? args.error() : void 0) === 1) {
-                  try {
-                    element[0].scrollIntoViewIfNeeded();
-                  } catch (_error) {}
-                  return element[0].select();
-                }
-              }
-            }));
+              });
+            })(rule));
           }
           return _results;
         };
