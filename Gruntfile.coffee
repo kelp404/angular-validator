@@ -42,10 +42,6 @@ module.exports = (grunt) ->
                     base: '.'
 
         karma:
-            ng1_0:
-                configFile: './test/karma-ng1.0.config.coffee'
-            ng1_1:
-                configFile: './test/karma-ng1.1.config.coffee'
             ng1_2:
                 configFile: './test/karma-ng1.2.config.coffee'
             ng1_2_min:
