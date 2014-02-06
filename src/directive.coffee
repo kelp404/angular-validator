@@ -1,7 +1,7 @@
 $ = angular.element
-a = angular.module 'validator.directive', ['validator.provider']
+angular.module 'validator.directive', ['validator.provider']
 
-validator = ($injector) ->
+.directive 'validator', ['$injector', ($injector) ->
     restrict: 'A'
     require: 'ngModel'
     link: (scope, element, attrs) ->
@@ -194,6 +194,4 @@ validator = ($injector) ->
         # ----------------------------------------
         $(element).bind 'blur', ->
             scope.$apply -> validate 'blur'
-
-validator.$inject = ['$injector']
-a.directive 'validator', validator
+]

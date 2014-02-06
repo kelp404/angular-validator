@@ -1,8 +1,7 @@
-
 $ = angular.element
-a = angular.module 'validator.provider', []
+angular.module 'validator.provider', []
 
-a.provider '$validator', ->
+.provider '$validator', ->
     # ----------------------------------------
     # providers
     # ----------------------------------------

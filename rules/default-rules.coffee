@@ -1,7 +1,6 @@
+angular.module 'validator.rules', ['validator']
 
-a = angular.module 'validator.rules', ['validator']
-
-config = ($validatorProvider) ->
+.config ['$validatorProvider', ($validatorProvider) ->
     # ----------------------------------------
     # required
     # ----------------------------------------
@@ -33,6 +32,4 @@ config = ($validatorProvider) ->
         invoke: 'blur'
         validator: /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/
         error: 'This field should be the url.'
-
-config.$inject = ['$validatorProvider']
-a.config config
+]
