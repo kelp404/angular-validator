@@ -133,7 +133,7 @@ angular.module 'yourApp', ['validator.rules']
 >
 ```html
 <!-- Bootstrap3 (not required) -->
-<link type="text/css" rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css"/>
+<link type="text/css" rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css"/>
 <!-- AngularJS -->
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
 <!-- $validator -->
