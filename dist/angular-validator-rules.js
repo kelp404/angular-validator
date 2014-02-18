@@ -3,7 +3,7 @@
     '$validatorProvider', function($validatorProvider) {
       $validatorProvider.register('required', {
         invoke: 'watch',
-        validator: /^.+$/,
+        validator: /.+/,
         error: 'This field is required.'
       });
       $validatorProvider.register('number', {

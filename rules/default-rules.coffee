@@ -6,7 +6,7 @@ angular.module 'validator.rules', ['validator']
     # ----------------------------------------
     $validatorProvider.register 'required',
         invoke: 'watch'
-        validator: /^.+$/
+        validator: /.+/
         error: 'This field is required.'
 
     # ----------------------------------------
