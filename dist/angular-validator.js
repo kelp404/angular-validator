@@ -232,16 +232,17 @@
             });
           });
           scope.$on($validator.broadcastChannel.reset, function(self, object) {
-            var rule, _i, _len, _results;
+            var rule, _i, _len;
             if (!isAcceptTheBroadcast(self, object.model)) {
               return;
             }
-            _results = [];
             for (_i = 0, _len = rules.length; _i < _len; _i++) {
               rule = rules[_i];
-              _results.push(rule.success(model(scope), scope, element, attrs, $injector));
+              rule.success(model(scope), scope, element, attrs, $injector);
+              if (rule.invoke !== 'watch') {
+                rule.enableError = false;
+              }
             }
-            return _results;
           });
           scope.$watch(attrs.ngModel, function(newValue, oldValue) {
             if (newValue === oldValue) {

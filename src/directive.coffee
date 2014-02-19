@@ -181,6 +181,8 @@ angular.module 'validator.directive', ['validator.provider']
             return if not isAcceptTheBroadcast self, object.model
             for rule in rules
                 rule.success model(scope), scope, element, attrs, $injector
+                rule.enableError = no if rule.invoke isnt 'watch'
+            return
 
         # ----------------------------------------
         # watch
