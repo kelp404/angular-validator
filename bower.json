@@ -1,0 +1,19 @@
+{
+  "name": "angular-validator",
+  "version": "0.1.4",
+  "main": ["./dist/angular-validator.js","./dist/angular-validator-rules.js"],
+  "homepage": "https://kelp404.github.io/angular-validator/",
+  "description": "AngularJS validator.",
+  "keywords": [
+    "AngularJS",
+    "CoffeeScript"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
