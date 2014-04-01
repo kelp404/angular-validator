@@ -476,28 +476,39 @@
         func = {
           promises: {
             success: [],
-            error: []
+            error: [],
+            then: []
           },
           accept: function() {
             return count.total++;
           },
           validatedSuccess: function() {
-            var x, _i, _len, _ref;
+            var x, _i, _j, _len, _len1, _ref, _ref1;
             if (++count.success === count.total) {
               _ref = func.promises.success;
               for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 x = _ref[_i];
                 x();
               }
+              _ref1 = func.promises.then;
+              for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                x = _ref1[_j];
+                x();
+              }
             }
             return count.success;
           },
           validatedError: function() {
-            var x, _i, _len, _ref;
+            var x, _i, _j, _len, _len1, _ref, _ref1;
             if (count.error++ === 0) {
               _ref = func.promises.error;
               for (_i = 0, _len = _ref.length; _i < _len; _i++) {
                 x = _ref[_i];
+                x();
+              }
+              _ref1 = func.promises.then;
+              for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+                x = _ref1[_j];
                 x();
               }
             }
@@ -510,6 +521,10 @@
         };
         promise.error = function(fn) {
           func.promises.error.push(fn);
+          return promise;
+        };
+        promise.then = function(fn) {
+          func.promises.then.push(fn);
           return promise;
         };
         broadcastObject = {

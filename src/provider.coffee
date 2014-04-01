@@ -158,17 +158,20 @@ angular.module 'validator.provider', []
             promises:
                 success: []
                 error: []
+                then: []
             # accept callback function for directives
             accept: -> count.total++
             # success callback function for directives
             validatedSuccess: ->
                 if ++count.success is count.total
                     x() for x in func.promises.success
+                    x() for x in func.promises.then
                 count.success
             # error callback function for directives
             validatedError: ->
                 if count.error++ is 0
                     x() for x in func.promises.error
+                    x() for x in func.promises.then
                 count.error
         promise.success = (fn) ->
             # push success promises into func.promise.success
@@ -177,6 +180,9 @@ angular.module 'validator.provider', []
         promise.error = (fn) ->
             # push error promises into func.promise.error
             func.promises.error.push fn
+            promise
+        promise.then = (fn) ->
+            func.promises.then.push fn
             promise
 
         broadcastObject =

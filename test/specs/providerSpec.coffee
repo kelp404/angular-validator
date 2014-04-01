@@ -150,20 +150,30 @@ describe 'validator.provider', ->
                     error: -> spy.error()
             expect(spy.error).toHaveBeenCalled()
 
-        it 'check convertValidator(RegExp)', inject ($validator, $rootScope) ->
+        it 'check convertValidator(RegExp), validated success', inject ($validator, $rootScope) ->
             spy =
-                success: jasmine.createSpy('success')
-                error: jasmine.createSpy('error')
+                success: jasmine.createSpy 'success'
+                error: jasmine.createSpy 'error'
             validator = validatorProvider.convertValidator /^value$/
             $rootScope.$apply ->
                 validator 'value', null, null, null,
                     success: -> spy.success()
-                    error: ->
+                    error: -> spy.error()
+                    then: -> spy.then()
             expect(spy.success).toHaveBeenCalled()
+            expect(spy.error).not.toHaveBeenCalled()
+
+        it 'check convertValidator(RegExp), validated error', inject ($validator, $rootScope) ->
+            spy =
+                success: jasmine.createSpy 'success'
+                error: jasmine.createSpy 'error'
+            validator = validatorProvider.convertValidator /^value$/
             $rootScope.$apply ->
                 validator 'xx', null, null, null,
-                    success: ->
+                    success: -> spy.success()
                     error: -> spy.error()
+                    then: -> spy.then()
+            expect(spy.success).not.toHaveBeenCalled()
             expect(spy.error).toHaveBeenCalled()
 
 

@@ -31,28 +31,34 @@ describe 'validator.directive', ->
             spy =
                 success: jasmine.createSpy 'success'
                 error: jasmine.createSpy 'error'
+                then: jasmine.createSpy 'then'
             $compile($form) scope
             $rootScope.$digest()
-            v = $validator.validate scope
-            v.success -> spy.success()
-            v.error -> spy.error()
+            $validator.validate scope
+            .success -> spy.success()
+            .error -> spy.error()
+            .then -> spy.then()
             $timeout.flush()
             expect(spy.success).not.toHaveBeenCalled()
             expect(spy.error).toHaveBeenCalled()
+            expect(spy.then).toHaveBeenCalled()
 
         it 'check validator=[required] success', ->
             spy =
                 success: jasmine.createSpy 'success'
                 error: jasmine.createSpy 'error'
+                then: jasmine.createSpy 'then'
             $compile($form) scope
             $rootScope.$digest()
             scope.input = 'xx'
-            v = $validator.validate scope
-            v.success -> spy.success()
-            v.error -> spy.error()
+            $validator.validate scope
+            .success -> spy.success()
+            .error -> spy.error()
+            .then -> spy.then()
             $timeout.flush()
             expect(spy.success).toHaveBeenCalled()
             expect(spy.error).not.toHaveBeenCalled()
+            expect(spy.then).toHaveBeenCalled()
 
     describe 'validator=/regex/', ->
         $compile = null
@@ -80,28 +86,34 @@ describe 'validator.directive', ->
             spy =
                 success: jasmine.createSpy 'success'
                 error: jasmine.createSpy 'error'
+                then: jasmine.createSpy 'then'
             $compile($form) scope
             $rootScope.$digest()
-            v = $validator.validate scope
-            v.success -> spy.success()
-            v.error -> spy.error()
+            $validator.validate scope
+            .success -> spy.success()
+            .error -> spy.error()
+            .then -> spy.then()
             $timeout.flush()
             expect(spy.success).not.toHaveBeenCalled()
             expect(spy.error).toHaveBeenCalled()
+            expect(spy.then).toHaveBeenCalled()
 
         it 'check validator=/regex/ success', inject ($validator) ->
             spy =
                 success: jasmine.createSpy 'success'
                 error: jasmine.createSpy 'error'
+                then: jasmine.createSpy 'then'
             $compile($form) scope
             $rootScope.$digest()
             scope.input = 'regex'
-            v = $validator.validate scope
-            v.success -> spy.success()
-            v.error -> spy.error()
+            $validator.validate scope
+            .success -> spy.success()
+            .error -> spy.error()
+            .then -> spy.then()
             $timeout.flush()
             expect(spy.success).toHaveBeenCalled()
             expect(spy.error).not.toHaveBeenCalled()
+            expect(spy.then).toHaveBeenCalled()
 
 
     describe 'validator=[ruleA, ruleB]', ->
@@ -154,4 +166,3 @@ describe 'validator.directive', ->
             $timeout.flush()
             $label = $ $form.find('label')[1]
             expect($label.text()).toEqual 'This field should be the email.'
-

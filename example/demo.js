@@ -1,17 +1,13 @@
 (function() {
-  var a,
-    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
-  a = angular.module('app', ['validator', 'validator.rules']);
-
-  a.config(function($validatorProvider) {
+  angular.module('app', ['validator', 'validator.rules']).config(function($validatorProvider) {
     $validatorProvider.register('backendWatch', {
       invoke: 'watch',
       validator: function(value, scope, element, attrs, $injector) {
-        var $http, h;
+        var $http;
         $http = $injector.get('$http');
-        h = $http.get('example/data.json');
-        return h.then(function(response) {
+        return $http.get('example/data.json').then(function(response) {
           var x;
           if (response && response.data) {
             return !(__indexOf.call((function() {
@@ -33,10 +29,9 @@
     });
     $validatorProvider.register('backendSubmit', {
       validator: function(value, scope, element, attrs, $injector) {
-        var $http, h;
+        var $http;
         $http = $injector.get('$http');
-        h = $http.get('example/data.json');
-        return h.then(function(response) {
+        return $http.get('example/data.json').then(function(response) {
           var x;
           if (response && response.data) {
             return !(__indexOf.call((function() {
@@ -59,10 +54,9 @@
     $validatorProvider.register('backendBlur', {
       invoke: 'blur',
       validator: function(value, scope, element, attrs, $injector) {
-        var $http, h;
+        var $http;
         $http = $injector.get('$http');
-        h = $http.get('example/data.json');
-        return h.then(function(response) {
+        return $http.get('example/data.json').then(function(response) {
           var x;
           if (response && response.data) {
             return !(__indexOf.call((function() {
@@ -102,17 +96,13 @@
       },
       error: 'It should less than number 1.'
     });
-  });
-
-  a.run(function($validator) {
+  }).run(function($validator) {
     return $validator.register('requiredRun', {
       invoke: 'watch',
       validator: /^.+$/,
       error: 'This field is requrired.'
     });
-  });
-
-  a.controller('DemoController', function($scope, $validator) {
+  }).controller('DemoController', function($scope, $validator) {
     $scope.formWatch = {
       required: '',
       regexp: '',
@@ -127,13 +117,12 @@
       number: '',
       http: '',
       submit: function() {
-        var v;
-        v = $validator.validate($scope, 'formSubmit');
-        v.success(function() {
+        return $validator.validate($scope, 'formSubmit').success(function() {
           return console.log('success');
-        });
-        return v.error(function() {
+        }).error(function() {
           return console.log('error');
+        }).then(function() {
+          return console.log('then');
         });
       },
       reset: function() {
@@ -158,12 +147,9 @@
         }
       ],
       submit: function() {
-        var v;
-        v = $validator.validate($scope, 'formRepeat');
-        v.success(function() {
+        return $validator.validate($scope, 'formRepeat').success(function() {
           return console.log('success');
-        });
-        return v.error(function() {
+        }).error(function() {
           return console.log('error');
         });
       },

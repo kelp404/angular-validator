@@ -1,17 +1,17 @@
 
-a = angular.module 'app', ['validator', 'validator.rules']
+angular.module 'app', ['validator', 'validator.rules']
 
 # ----------------------------------------
 # config
 # ----------------------------------------
-a.config ($validatorProvider) ->
+.config ($validatorProvider) ->
     # backendWatch
     $validatorProvider.register 'backendWatch',
         invoke: 'watch'
         validator: (value, scope, element, attrs, $injector) ->
             $http = $injector.get '$http'
-            h = $http.get 'example/data.json'
-            h.then (response) ->
+            $http.get 'example/data.json'
+            .then (response) ->
                 if response and response.data
                     not (value in (x.name for x in response.data))
                 else
@@ -21,8 +21,8 @@ a.config ($validatorProvider) ->
     $validatorProvider.register 'backendSubmit',
         validator: (value, scope, element, attrs, $injector) ->
             $http = $injector.get '$http'
-            h = $http.get 'example/data.json'
-            h.then (response) ->
+            $http.get 'example/data.json'
+            .then (response) ->
                 if response and response.data
                     not (value in (x.name for x in response.data))
                 else
@@ -33,8 +33,8 @@ a.config ($validatorProvider) ->
         invoke: 'blur'
         validator: (value, scope, element, attrs, $injector) ->
             $http = $injector.get '$http'
-            h = $http.get 'example/data.json'
-            h.then (response) ->
+            $http.get 'example/data.json'
+            .then (response) ->
                 if response and response.data
                     not (value in (x.name for x in response.data))
                 else
@@ -66,7 +66,7 @@ a.config ($validatorProvider) ->
 # ----------------------------------------
 # run
 # ----------------------------------------
-a.run ($validator) ->
+.run ($validator) ->
     $validator.register 'requiredRun',
         invoke: 'watch'
         validator: /^.+$/
@@ -76,7 +76,7 @@ a.run ($validator) ->
 # ----------------------------------------
 # controller
 # ----------------------------------------
-a.controller 'DemoController', ($scope, $validator) ->
+.controller 'DemoController', ($scope, $validator) ->
     $scope.formWatch =
         required: ''
         regexp: ''
@@ -92,13 +92,15 @@ a.controller 'DemoController', ($scope, $validator) ->
         http: ''
         # the submit function
         submit: ->
-            v = $validator.validate $scope, 'formSubmit'
-            v.success ->
+            $validator.validate $scope, 'formSubmit'
+            .success ->
                 # validated success
                 console.log 'success'
-            v.error ->
+            .error ->
                 # validated error
                 console.log 'error'
+            .then ->
+                console.log 'then'
         reset: ->
             $validator.reset $scope, 'formSubmit'
 
@@ -116,8 +118,8 @@ a.controller 'DemoController', ($scope, $validator) ->
             value: ''
         ]
         submit: ->
-            v = $validator.validate $scope, 'formRepeat'
-            v.success -> console.log 'success'
-            v.error -> console.log 'error'
+            $validator.validate $scope, 'formRepeat'
+            .success -> console.log 'success'
+            .error -> console.log 'error'
         reset: ->
             $validator.reset $scope, 'formRepeat'
