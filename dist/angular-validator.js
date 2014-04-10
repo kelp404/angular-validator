@@ -15,7 +15,7 @@
           model = $parse(attrs.ngModel);
           rules = [];
           validate = function(from, args) {
-            var increaseSuccessCount, rule, successCount, _i, _len, _results;
+            var errorCount, increaseSuccessCount, rule, successCount, _i, _len, _results;
             if (args == null) {
               args = {};
             }
@@ -29,6 +29,7 @@
                 oldValue: the old value of $watch
              */
             successCount = 0;
+            errorCount = 0;
             increaseSuccessCount = function() {
               var rule, _i, _len;
               if (++successCount === rules.length) {
@@ -67,7 +68,7 @@
                     return increaseSuccessCount();
                   },
                   error: function() {
-                    if (rule.enableError) {
+                    if (rule.enableError && ++errorCount === 1) {
                       rule.error(model(scope), scope, element, attrs, $injector);
                     }
                     if ((typeof args.error === "function" ? args.error() : void 0) === 1) {

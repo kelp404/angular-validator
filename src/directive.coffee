@@ -30,6 +30,7 @@ angular.module 'validator.directive', ['validator.provider']
                 oldValue: the old value of $watch
             ###
             successCount = 0
+            errorCount = 0
             increaseSuccessCount = ->
                 if ++successCount is rules.length
                     rule.success model(scope), scope, element, attrs, $injector for rule in rules
@@ -55,7 +56,8 @@ angular.module 'validator.directive', ['validator.provider']
                         success: ->
                             increaseSuccessCount()
                         error: ->
-                            rule.error model(scope), scope, element, attrs, $injector if rule.enableError
+                            if rule.enableError and ++errorCount is 1
+                                rule.error model(scope), scope, element, attrs, $injector
                             if args.error?() is 1
                                 # scroll to the first element
                                 try element[0].scrollIntoViewIfNeeded()
