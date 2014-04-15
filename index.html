@@ -19,7 +19,8 @@
                 <div class="panel-heading">
                     <h3 class="panel-title">$watch</h3>
                 </div>
-                <form class="form-horizontal panel-body">
+                <form name='demoForm1' class="form-horizontal panel-body">
+                    <div class="alert alert-danger" ng-show="demoForm1.$invalid">Form Error!!</div>
                     <div class="form-group">
                         <label for="required0" class="col-md-2 control-label">Required</label>
                         <div class="col-md-10">

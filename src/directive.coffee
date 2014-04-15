@@ -4,7 +4,7 @@ angular.module 'validator.directive', ['validator.provider']
 .directive 'validator', ['$injector', ($injector) ->
     restrict: 'A'
     require: 'ngModel'
-    link: (scope, element, attrs) ->
+    link: (scope, element, attrs, ctrl) ->
         # ----------------------------------------
         # providers
         # ----------------------------------------
@@ -54,8 +54,10 @@ angular.module 'validator.directive', ['validator.provider']
                     # success() and error() call back will run in other thread
                     rule.validator model(scope), scope, element, attrs,
                         success: ->
+                            ctrl.$setValidity(rule.name, true)
                             increaseSuccessCount()
                         error: ->
+                            ctrl.$setValidity(rule.name, true)
                             if rule.enableError and ++errorCount is 1
                                 rule.error model(scope), scope, element, attrs, $injector
                             if args.error?() is 1
