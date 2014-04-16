@@ -57,7 +57,7 @@ angular.module 'validator.directive', ['validator.provider']
                             ctrl.$setValidity(rule.name, true)
                             increaseSuccessCount()
                         error: ->
-                            ctrl.$setValidity(rule.name, true)
+                            ctrl.$setValidity(rule.name, false)
                             if rule.enableError and ++errorCount is 1
                                 rule.error model(scope), scope, element, attrs, $injector
                             if args.error?() is 1
