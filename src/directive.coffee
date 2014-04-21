@@ -4,7 +4,7 @@ angular.module 'validator.directive', ['validator.provider']
 .directive 'validator', ['$injector', ($injector) ->
     restrict: 'A'
     require: 'ngModel'
-    link: (scope, element, attrs) ->
+    link: (scope, element, attrs, ctrl) ->
         # ----------------------------------------
         # providers
         # ----------------------------------------
@@ -33,6 +33,7 @@ angular.module 'validator.directive', ['validator.provider']
             errorCount = 0
             increaseSuccessCount = ->
                 if ++successCount is rules.length
+                    ctrl.$setValidity attrs.ngModel, yes
                     rule.success model(scope), scope, element, attrs, $injector for rule in rules
                     args.success?()
                 return
@@ -57,6 +58,7 @@ angular.module 'validator.directive', ['validator.provider']
                             increaseSuccessCount()
                         error: ->
                             if rule.enableError and ++errorCount is 1
+                                ctrl.$setValidity attrs.ngModel, no
                                 rule.error model(scope), scope, element, attrs, $injector
                             if args.error?() is 1
                                 # scroll to the first element

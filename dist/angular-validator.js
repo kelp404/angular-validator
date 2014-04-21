@@ -8,7 +8,7 @@
       return {
         restrict: 'A',
         require: 'ngModel',
-        link: function(scope, element, attrs) {
+        link: function(scope, element, attrs, ctrl) {
           var $parse, $validator, isAcceptTheBroadcast, model, observerRequired, registerRequired, removeRule, rules, validate;
           $validator = $injector.get('$validator');
           $parse = $injector.get('$parse');
@@ -33,6 +33,7 @@
             increaseSuccessCount = function() {
               var rule, _i, _len;
               if (++successCount === rules.length) {
+                ctrl.$setValidity(attrs.ngModel, true);
                 for (_i = 0, _len = rules.length; _i < _len; _i++) {
                   rule = rules[_i];
                   rule.success(model(scope), scope, element, attrs, $injector);
@@ -69,6 +70,7 @@
                   },
                   error: function() {
                     if (rule.enableError && ++errorCount === 1) {
+                      ctrl.$setValidity(attrs.ngModel, false);
                       rule.error(model(scope), scope, element, attrs, $injector);
                     }
                     if ((typeof args.error === "function" ? args.error() : void 0) === 1) {
