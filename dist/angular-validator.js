@@ -452,7 +452,7 @@
       @return rule / null
        */
       if (this.rules[name]) {
-        return this.rules[name];
+        return angular.copy(this.rules[name]);
       } else {
         return null;
       }

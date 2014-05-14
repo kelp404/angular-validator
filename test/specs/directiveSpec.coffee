@@ -166,3 +166,75 @@ describe 'validator.directive', ->
             $timeout.flush()
             $label = $ $form.find('label')[1]
             expect($label.text()).toEqual 'This field should be the email.'
+
+
+    describe 'given two fields having the same rule with invoke "blur"', ->
+
+        $compile = null
+        $timeout = null
+        $validator = null
+        $rootScope = null
+        scope = null
+        $form = null
+
+        describe 'when entering invalid data in the first input and switching to the second input and start typing', ->
+
+            beforeEach -> inject ($injector) ->
+                # providers
+                $compile = $injector.get '$compile'
+                $timeout = $injector.get '$timeout'
+                $validator = $injector.get '$validator'
+                $rootScope = $injector.get '$rootScope'
+
+                # scope
+                scope = $rootScope.$new()
+
+                # template
+                $form = $ """
+                  <div class="form-group">
+                      <div class="col-md-10">
+                        <input type="text" ng-model="input1" validator="[emailBlur]" name="name1" />
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <div class="col-md-10">
+                        <input type="text" ng-model="input2" validator="[emailBlur]" name="name2" />
+                      </div>
+                  </div>
+                  """
+
+                # rule
+                $validator.register 'emailBlur',
+                  invoke: 'blur'
+                  validator: (value) ->
+                    if value
+                      value.match /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                    else
+                      yes
+                  error: 'Valid e-mail required'
+
+
+                $compile($form) scope
+                $rootScope.$digest()
+
+                scope.input1 = 'x'
+                $($form.find('input')[0]).triggerHandler 'blur'
+                scope.input2 = 'y'
+                scope.$apply()
+                $timeout.flush()
+
+
+            it 'should show an error for the first input', ->
+                firstInput = $form.find('input')[0]
+                expect(firstInput.parentNode.querySelector('label')).toBeDefined()
+
+
+            it 'should not show an error for the second input', ->
+                secondInput = $form.find('input')[1]
+                expect(secondInput.parentNode.querySelector('label')).toBeNull()
+
+
+            it 'should show an error for the second input when it is blurred', ->
+                secondInput = $form.find('input')[1]
+                $(secondInput).triggerHandler 'blur'
+                expect(secondInput.parentNode.querySelector('label')).toBeDefined()

@@ -1,7 +1,7 @@
 
 # https://github.com/pivotal/jasmine/wiki/Matchers
 
-describe 'validator.provider', ->
+xdescribe 'validator.provider', ->
     $ = angular.element
     fakeModule = null
     validatorProvider = null
