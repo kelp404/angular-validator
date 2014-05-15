@@ -136,7 +136,7 @@ angular.module 'validator.provider', []
         Get the rule form $validator.rules by the name.
         @return rule / null
         ###
-        if @rules[name] then @rules[name] else null
+        if @rules[name] then angular.copy(@rules[name]) else null
 
     @validate = (scope, model) =>
         ###
