@@ -246,6 +246,7 @@
                 rule.enableError = false;
               }
             }
+            return ctrl.$setValidity(attrs.ngModel, true);
           });
           scope.$watch(attrs.ngModel, function(newValue, oldValue) {
             if (newValue === oldValue) {

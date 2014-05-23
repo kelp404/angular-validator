@@ -186,7 +186,7 @@ angular.module 'validator.directive', ['validator.provider']
             for rule in rules
                 rule.success model(scope), scope, element, attrs, $injector
                 rule.enableError = no if rule.invoke isnt 'watch'
-            return
+            ctrl.$setValidity attrs.ngModel, yes
 
         # ----------------------------------------
         # watch
