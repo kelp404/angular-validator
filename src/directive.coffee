@@ -101,7 +101,7 @@ angular.module 'validator.directive', ['validator.provider']
                 return
 
             # validat by rules
-            match = value.match /^\[(.*)\]$/
+            match = value.match /^\[(.+)\]$/
             if match
                 ruleNames = match[1].split ','
                 for name in ruleNames
