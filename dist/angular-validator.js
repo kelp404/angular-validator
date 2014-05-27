@@ -129,6 +129,15 @@
               rules.push(rule);
               return;
             }
+            match = value.match(/^\[\]$/);
+            if (match) {
+              rule = $validator.convertRule('dynamic', {
+                validator: /.*/,
+                invoke: attrs.validatorInvoke
+              });
+              rules.push(rule);
+              return;
+            }
             match = value.match(/^\[(.+)\]$/);
             if (match) {
               ruleNames = match[1].split(',');
