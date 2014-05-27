@@ -129,7 +129,7 @@
               rules.push(rule);
               return;
             }
-            match = value.match(/^\[(.*)\]$/);
+            match = value.match(/^\[(.+)\]$/);
             if (match) {
               ruleNames = match[1].split(',');
               _results = [];
