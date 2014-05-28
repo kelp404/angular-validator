@@ -15,7 +15,7 @@
           model = $parse(attrs.ngModel);
           rules = [];
           validate = function(from, args) {
-            var errorCount, increaseSuccessCount, rule, successCount, _i, _len, _results;
+            var errorCount, increaseSuccessCount, rule, successCount, _fn, _i, _len;
             if (args == null) {
               args = {};
             }
@@ -32,7 +32,7 @@
             errorCount = 0;
             increaseSuccessCount = function() {
               var rule, _i, _len;
-              if (++successCount === rules.length) {
+              if (++successCount >= rules.length) {
                 ctrl.$setValidity(attrs.ngModel, true);
                 for (_i = 0, _len = rules.length; _i < _len; _i++) {
                   rule = rules[_i];
@@ -43,7 +43,28 @@
                 }
               }
             };
-            _results = [];
+            if (rules.length === 0) {
+              return increaseSuccessCount();
+            }
+            _fn = function(rule) {
+              return rule.validator(model(scope), scope, element, attrs, {
+                success: function() {
+                  return increaseSuccessCount();
+                },
+                error: function() {
+                  if (rule.enableError && ++errorCount === 1) {
+                    ctrl.$setValidity(attrs.ngModel, false);
+                    rule.error(model(scope), scope, element, attrs, $injector);
+                  }
+                  if ((typeof args.error === "function" ? args.error() : void 0) === 1) {
+                    try {
+                      element[0].scrollIntoViewIfNeeded();
+                    } catch (_error) {}
+                    return element[0].select();
+                  }
+                }
+              });
+            };
             for (_i = 0, _len = rules.length; _i < _len; _i++) {
               rule = rules[_i];
               switch (from) {
@@ -63,27 +84,8 @@
                   rule.enableError = true;
                   break;
               }
-              _results.push((function(rule) {
-                return rule.validator(model(scope), scope, element, attrs, {
-                  success: function() {
-                    return increaseSuccessCount();
-                  },
-                  error: function() {
-                    if (rule.enableError && ++errorCount === 1) {
-                      ctrl.$setValidity(attrs.ngModel, false);
-                      rule.error(model(scope), scope, element, attrs, $injector);
-                    }
-                    if ((typeof args.error === "function" ? args.error() : void 0) === 1) {
-                      try {
-                        element[0].scrollIntoViewIfNeeded();
-                      } catch (_error) {}
-                      return element[0].select();
-                    }
-                  }
-                });
-              })(rule));
+              _fn(rule);
             }
-            return _results;
           };
           registerRequired = function() {
             var rule;
