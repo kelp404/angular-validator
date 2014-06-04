@@ -60,7 +60,9 @@
                     try {
                       element[0].scrollIntoViewIfNeeded();
                     } catch (_error) {}
-                    return element[0].select();
+                    try {
+                      return element[0].select();
+                    } catch (_error) {}
                   }
                 }
               });
