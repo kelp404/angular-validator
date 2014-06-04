@@ -303,13 +303,13 @@
       @param error: error messate (string) or function(value, scope, element, attrs, $injector)
       @return: function(value, scope, element, attrs, $injector)
        */
-      var errorMessage;
-      if (typeof error === 'function') {
-        return error;
-      }
-      errorMessage = error.constructor === String ? error : '';
       return function(value, scope, element, attrs) {
-        var $label, label, parent, _i, _len, _ref, _results;
+        var $label, errorMessage, label, parent, _i, _len, _ref, _results;
+        if (typeof error === 'function') {
+          errorMessage = error(value, scope, element, attrs);
+        } else {
+          errorMessage = error.constructor === String ? error : '';
+        }
         parent = $(element).parent();
         _results = [];
         while (parent.length !== 0) {
