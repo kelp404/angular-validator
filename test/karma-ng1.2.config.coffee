@@ -7,8 +7,8 @@ module.exports = (config) ->
 
         # list of files / patterns to load in the browser
         files: [
-            'test/lib/angular/angular.js'
-            'test/lib/angular-mocks/angular-mocks.js'
+            'bower_components/angular/angular.js'
+            'bower_components/angular-mocks/angular-mocks.js'
             'dist/angular-validator.js'
             'dist/angular-validator-rules.js'
             'test/specs/*.coffee'
