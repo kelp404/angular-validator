@@ -9,7 +9,7 @@ This is an AngularJS form validation written in [CoffeeScript](http://coffeescri
 
 
 ##Frameworks
-1. [AngularJS](http://angularjs.org/) 1.2.16
+1. [AngularJS](http://angularjs.org/) 1.2.18
 
 2. [Bootstrap 3](http://getbootstrap.com/)
 > If your `error` is `string` in rules you should include bootstrap3.css and use `form-group` to the input div.
