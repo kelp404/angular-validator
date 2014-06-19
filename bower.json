@@ -1,6 +1,6 @@
 {
   "name": "angular-validator",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "main": [
     "./dist/angular-validator.js",
     "./dist/angular-validator-rules.js"
