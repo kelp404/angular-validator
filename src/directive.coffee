@@ -16,6 +16,7 @@ angular.module 'validator.directive', ['validator.provider']
         # ----------------------------------------
         model = $parse attrs.ngModel
         rules = []
+        scrollOffset = 100
 
         # ----------------------------------------
         # private methods
@@ -63,7 +64,11 @@ angular.module 'validator.directive', ['validator.provider']
                                 rule.error model(scope), scope, element, attrs, $injector
                             if args.error?() is 1
                                 # scroll to the first element
-                                try element[0].scrollIntoViewIfNeeded()
+                                try 
+                                    element[0].scrollIntoView(true)
+                                    scrolledY = window.scrollY
+                                    if scrolledY and scrollOffset
+                                        window.scroll(0, scrolledY - scrollOffset)
                                 try element[0].select()
             return
 

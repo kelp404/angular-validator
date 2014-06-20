@@ -9,11 +9,12 @@
         restrict: 'A',
         require: 'ngModel',
         link: function(scope, element, attrs, ctrl) {
-          var $parse, $validator, isAcceptTheBroadcast, model, observerRequired, registerRequired, removeRule, rules, validate;
+          var $parse, $validator, isAcceptTheBroadcast, model, observerRequired, registerRequired, removeRule, rules, scrollOffset, validate;
           $validator = $injector.get('$validator');
           $parse = $injector.get('$parse');
           model = $parse(attrs.ngModel);
           rules = [];
+          scrollOffset = 100;
           validate = function(from, args) {
             var errorCount, increaseSuccessCount, rule, successCount, _fn, _i, _len;
             if (args == null) {
@@ -52,13 +53,18 @@
                   return increaseSuccessCount();
                 },
                 error: function() {
+                  var scrolledY;
                   if (rule.enableError && ++errorCount === 1) {
                     ctrl.$setValidity(attrs.ngModel, false);
                     rule.error(model(scope), scope, element, attrs, $injector);
                   }
                   if ((typeof args.error === "function" ? args.error() : void 0) === 1) {
                     try {
-                      element[0].scrollIntoViewIfNeeded();
+                      element[0].scrollIntoView(true);
+                      scrolledY = window.scrollY;
+                      if (scrolledY && scrollOffset) {
+                        window.scroll(0, scrolledY - scrollOffset);
+                      }
                     } catch (_error) {}
                     try {
                       return element[0].select();
