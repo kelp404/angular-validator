@@ -267,9 +267,13 @@
             });
           });
           return $(element).bind('blur', function() {
-            return scope.$apply(function() {
+            if (scope.$root.$$phase) {
               return validate('blur');
-            });
+            } else {
+              return scope.$apply(function() {
+                return validate('blur');
+              });
+            }
           });
         }
       };
