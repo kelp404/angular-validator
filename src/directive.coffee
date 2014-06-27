@@ -16,6 +16,8 @@ angular.module 'validator.directive', ['validator.provider']
         # ----------------------------------------
         model = $parse attrs.ngModel
         rules = []
+        groups = []
+        groupRules = {}
         scrollOffset = 100
 
         # ----------------------------------------
@@ -29,7 +31,25 @@ angular.module 'validator.directive', ['validator.provider']
                 success(): success callback (this callback will return success count)
                 error(): error callback (this callback will return error count)
                 oldValue: the old value of $watch
+                group: model/group passed into $provider.validate arguments
             ###
+
+            if args.group
+                # check to see if in one of multiple validator-groups
+                if args.group not in groups
+                    # single validator-group style
+                    if attrs.validatorGroup is args.group
+                        validateRules(rules, from, args)
+                        return
+                    # invalid group
+                    else
+                        return
+                rules = groupRules[args.group]
+                validateRules(rules, from, args)    
+            else
+                validateRules(rules, from, args)
+
+        validateRules = (rules, from, args) ->
             successCount = 0
             errorCount = 0
             increaseSuccessCount = ->
@@ -61,6 +81,7 @@ angular.module 'validator.directive', ['validator.provider']
                         error: ->
                             if rule.enableError and ++errorCount is 1
                                 ctrl.$setValidity attrs.ngModel, no
+                                # call the rule's error callback -> actually adds message, etc.
                                 rule.error model(scope), scope, element, attrs, $injector
                             if args.error?() is 1
                                 # scroll to the first element
@@ -70,7 +91,6 @@ angular.module 'validator.directive', ['validator.provider']
                                     if scrolledY and scrollOffset
                                         window.scroll(0, scrolledY - scrollOffset)
                                 try element[0].select()
-            return
 
         registerRequired = ->
             rule = $validator.getRule 'required'
@@ -88,34 +108,33 @@ angular.module 'validator.directive', ['validator.provider']
                 rules.splice index, 1
                 index--
 
-
         # ----------------------------------------
         # attrs.$observe
         # ----------------------------------------
-        attrs.$observe 'validator', (value) ->
-            # remove old rule
-            rules.length = 0
-            registerRequired() if observerRequired.validatorRequired or observerRequired.required
+        # attrs.$observe 'validator', (value) ->
+        #     # remove old rule
+        #     rules.length = 0
+        #     registerRequired() if observerRequired.validatorRequired or observerRequired.required
 
-            # validat by RegExp
-            match = value.match /^\/(.*)\/$/
-            if match
-                rule = $validator.convertRule 'dynamic',
-                    validator: RegExp match[1]
-                    invoke: attrs.validatorInvoke
-                    error: attrs.validatorError
-                rules.push rule
-                return
+        #     # validate by RegExp
+        #     match = value.match /^\/(.*)\/$/
+        #     if match
+        #         rule = $validator.convertRule 'dynamic',
+        #             validator: RegExp match[1]
+        #             invoke: attrs.validatorInvoke
+        #             error: attrs.validatorError
+        #         rules.push rule
+        #         return
 
-            # validat by rules
-            match = value.match /^\[(.+)\]$/
-            if match
-                ruleNames = match[1].split ','
-                for name in ruleNames
-                    # stupid browser has no .trim()
-                    rule = $validator.getRule name.replace(/^\s+|\s+$/g, '')
-                    rule.init? scope, element, attrs, $injector
-                    rules.push rule if rule
+        #     # validate by rules
+        #     match = value.match /^\[(.+)\]$/
+        #     if match
+        #         ruleNames = match[1].split ','
+        #         for name in ruleNames
+        #             # stupid browser has no .trim()
+        #             rule = $validator.getRule name.replace(/^\s+|\s+$/g, '')
+        #             rule.init? scope, element, attrs, $injector
+        #             rules.push rule if rule
 
         attrs.$observe 'validatorError', (value) ->
             match = attrs.validator.match /^\/(.*)\/$/
@@ -150,14 +169,67 @@ angular.module 'validator.directive', ['validator.provider']
                 removeRule 'required'
                 observerRequired.required = no
 
+        attrs.$observe 'validator', (value) ->
+            # remove old rules
+            groupRules.length = 0
+            rules.length = 0
+            
+            registerRequired() if observerRequired.validatorRequired or observerRequired.required
+
+            # multiple validator groups
+            # pattern: validator="[group-1: [ruleA, ruleB], group-2: [ruleA, ruleC]]"
+            match = value.match /[^\[\s]+:[\s,]{0,1}\[[^\]]*\]/g
+            if match
+                for group in match
+                    currentRules = []
+                    groupName = group.split(':')[0].trim()
+
+                    # get rules for this group
+                    ruleMatch = group.match /\[(.+)\]/
+                    if ruleMatch
+                        ruleNames = ruleMatch[1].split ','
+                        for name in ruleNames
+                            # stupid browser has no .trim()
+                            rule = $validator.getRule name.replace(/^\s+|\s+$/g, '')
+                            rule.init? scope, element, attrs, $injector
+                            if rule
+                                currentRules.push rule
+                                rules.push rule
+                    groupRules[groupName] = currentRules
+                    groups.push groupName
+                return
+
+            # validate by RegExp
+            match = value.match /^\/(.*)\/$/
+            if match
+                rule = $validator.convertRule 'dynamic',
+                    validator: RegExp match[1]
+                    invoke: attrs.validatorInvoke
+                    error: attrs.validatorError
+                rules.push rule
+                return
+
+            # validate by rules
+            match = value.match /^\[(.+)\]$/
+            if match
+                ruleNames = match[1].split ','
+                for name in ruleNames
+                    # stupid browser has no .trim()
+                    rule = $validator.getRule name.replace(/^\s+|\s+$/g, '')
+                    rule.init? scope, element, attrs, $injector
+                    rules.push rule if rule
+                return
+
 
         # ----------------------------------------
         # listen
         # ----------------------------------------
         isAcceptTheBroadcast = (broadcast, modelName) ->
             if modelName
-                # is match validator-group?
+                # matches validator-group
+                return yes if modelName in groups
                 return yes if attrs.validatorGroup is modelName
+
                 if broadcast.targetScope is scope
                     # check ngModel and validate model are same.
                     return attrs.ngModel.indexOf(modelName) is 0
@@ -188,6 +260,7 @@ angular.module 'validator.directive', ['validator.provider']
             validate 'broadcast',
                 success: object.success
                 error: object.error
+                group: object.model
         scope.$on $validator.broadcastChannel.reset, (self, object) ->
             return if not isAcceptTheBroadcast self, object.model
             for rule in rules

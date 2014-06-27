@@ -34,8 +34,10 @@ angular.module 'validator.provider', []
         @param error: error messate (string) or function(value, scope, element, attrs, $injector)
         @return: function(value, scope, element, attrs, $injector)
         ###
+
         #return error if typeof error is 'function'
         #errorMessage = if error.constructor is String then error else ''   
+
         (value, scope, element, attrs) ->
             if typeof error is 'function'
                 errorMessage = error(value, scope, element, attrs);

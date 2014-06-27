@@ -44,8 +44,9 @@ module.exports = (grunt) ->
         karma:
             ng1_2:
                 configFile: './test/karma-ng1.2.config.coffee'
-            ng1_2_min:
-                configFile: './test/karma-ng1.2.min.config.coffee'
+            # don't want to automatically test minified files since they aren't handled by grunt
+            # ng1_2_min:
+            #     configFile: './test/karma-ng1.2.min.config.coffee'
 
     # -----------------------------------
     # register task

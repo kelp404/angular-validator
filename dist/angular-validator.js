@@ -1,5 +1,6 @@
 (function() {
-  var $;
+  var $,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   $ = angular.element;
 
@@ -9,14 +10,16 @@
         restrict: 'A',
         require: 'ngModel',
         link: function(scope, element, attrs, ctrl) {
-          var $parse, $validator, isAcceptTheBroadcast, model, observerRequired, registerRequired, removeRule, rules, scrollOffset, validate;
+          var $parse, $validator, groupRules, groups, isAcceptTheBroadcast, model, observerRequired, registerRequired, removeRule, rules, scrollOffset, validate, validateRules;
           $validator = $injector.get('$validator');
           $parse = $injector.get('$parse');
           model = $parse(attrs.ngModel);
           rules = [];
+          groups = [];
+          groupRules = {};
           scrollOffset = 100;
           validate = function(from, args) {
-            var errorCount, increaseSuccessCount, rule, successCount, _fn, _i, _len;
+            var _ref;
             if (args == null) {
               args = {};
             }
@@ -28,7 +31,25 @@
                 success(): success callback (this callback will return success count)
                 error(): error callback (this callback will return error count)
                 oldValue: the old value of $watch
+                group: model/group passed into $provider.validate arguments
              */
+            if (args.group) {
+              if (_ref = args.group, __indexOf.call(groups, _ref) < 0) {
+                if (attrs.validatorGroup === args.group) {
+                  validateRules(rules, from, args);
+                  return;
+                } else {
+                  return;
+                }
+              }
+              rules = groupRules[args.group];
+              return validateRules(rules, from, args);
+            } else {
+              return validateRules(rules, from, args);
+            }
+          };
+          validateRules = function(rules, from, args) {
+            var errorCount, increaseSuccessCount, rule, successCount, _i, _len, _results;
             successCount = 0;
             errorCount = 0;
             increaseSuccessCount = function() {
@@ -47,32 +68,7 @@
             if (rules.length === 0) {
               return increaseSuccessCount();
             }
-            _fn = function(rule) {
-              return rule.validator(model(scope), scope, element, attrs, {
-                success: function() {
-                  return increaseSuccessCount();
-                },
-                error: function() {
-                  var scrolledY;
-                  if (rule.enableError && ++errorCount === 1) {
-                    ctrl.$setValidity(attrs.ngModel, false);
-                    rule.error(model(scope), scope, element, attrs, $injector);
-                  }
-                  if ((typeof args.error === "function" ? args.error() : void 0) === 1) {
-                    try {
-                      element[0].scrollIntoView(true);
-                      scrolledY = window.scrollY;
-                      if (scrolledY && scrollOffset) {
-                        window.scroll(0, scrolledY - scrollOffset);
-                      }
-                    } catch (_error) {}
-                    try {
-                      return element[0].select();
-                    } catch (_error) {}
-                  }
-                }
-              });
-            };
+            _results = [];
             for (_i = 0, _len = rules.length; _i < _len; _i++) {
               rule = rules[_i];
               switch (from) {
@@ -92,8 +88,34 @@
                   rule.enableError = true;
                   break;
               }
-              _fn(rule);
+              _results.push((function(rule) {
+                return rule.validator(model(scope), scope, element, attrs, {
+                  success: function() {
+                    return increaseSuccessCount();
+                  },
+                  error: function() {
+                    var scrolledY;
+                    if (rule.enableError && ++errorCount === 1) {
+                      ctrl.$setValidity(attrs.ngModel, false);
+                      rule.error(model(scope), scope, element, attrs, $injector);
+                    }
+                    if ((typeof args.error === "function" ? args.error() : void 0) === 1) {
+                      try {
+                        element[0].scrollIntoView(true);
+                        scrolledY = window.scrollY;
+                        if (scrolledY && scrollOffset) {
+                          window.scroll(0, scrolledY - scrollOffset);
+                        }
+                      } catch (_error) {}
+                      try {
+                        return element[0].select();
+                      } catch (_error) {}
+                    }
+                  }
+                });
+              })(rule));
             }
+            return _results;
           };
           registerRequired = function() {
             var rule;
@@ -123,41 +145,6 @@
             }
             return _results;
           };
-          attrs.$observe('validator', function(value) {
-            var match, name, rule, ruleNames, _i, _len, _results;
-            rules.length = 0;
-            if (observerRequired.validatorRequired || observerRequired.required) {
-              registerRequired();
-            }
-            match = value.match(/^\/(.*)\/$/);
-            if (match) {
-              rule = $validator.convertRule('dynamic', {
-                validator: RegExp(match[1]),
-                invoke: attrs.validatorInvoke,
-                error: attrs.validatorError
-              });
-              rules.push(rule);
-              return;
-            }
-            match = value.match(/^\[(.+)\]$/);
-            if (match) {
-              ruleNames = match[1].split(',');
-              _results = [];
-              for (_i = 0, _len = ruleNames.length; _i < _len; _i++) {
-                name = ruleNames[_i];
-                rule = $validator.getRule(name.replace(/^\s+|\s+$/g, ''));
-                if (typeof rule.init === "function") {
-                  rule.init(scope, element, attrs, $injector);
-                }
-                if (rule) {
-                  _results.push(rules.push(rule));
-                } else {
-                  _results.push(void 0);
-                }
-              }
-              return _results;
-            }
-          });
           attrs.$observe('validatorError', function(value) {
             var match, rule;
             match = attrs.validator.match(/^\/(.*)\/$/);
@@ -193,9 +180,70 @@
               return observerRequired.required = false;
             }
           });
+          attrs.$observe('validator', function(value) {
+            var currentRules, group, groupName, match, name, rule, ruleMatch, ruleNames, _i, _j, _k, _len, _len1, _len2;
+            groupRules.length = 0;
+            rules.length = 0;
+            if (observerRequired.validatorRequired || observerRequired.required) {
+              registerRequired();
+            }
+            match = value.match(/[^\[\s]+:[\s,]{0,1}\[[^\]]*\]/g);
+            if (match) {
+              for (_i = 0, _len = match.length; _i < _len; _i++) {
+                group = match[_i];
+                currentRules = [];
+                groupName = group.split(':')[0].trim();
+                ruleMatch = group.match(/\[(.+)\]/);
+                if (ruleMatch) {
+                  ruleNames = ruleMatch[1].split(',');
+                  for (_j = 0, _len1 = ruleNames.length; _j < _len1; _j++) {
+                    name = ruleNames[_j];
+                    rule = $validator.getRule(name.replace(/^\s+|\s+$/g, ''));
+                    if (typeof rule.init === "function") {
+                      rule.init(scope, element, attrs, $injector);
+                    }
+                    if (rule) {
+                      currentRules.push(rule);
+                      rules.push(rule);
+                    }
+                  }
+                }
+                groupRules[groupName] = currentRules;
+                groups.push(groupName);
+              }
+              return;
+            }
+            match = value.match(/^\/(.*)\/$/);
+            if (match) {
+              rule = $validator.convertRule('dynamic', {
+                validator: RegExp(match[1]),
+                invoke: attrs.validatorInvoke,
+                error: attrs.validatorError
+              });
+              rules.push(rule);
+              return;
+            }
+            match = value.match(/^\[(.+)\]$/);
+            if (match) {
+              ruleNames = match[1].split(',');
+              for (_k = 0, _len2 = ruleNames.length; _k < _len2; _k++) {
+                name = ruleNames[_k];
+                rule = $validator.getRule(name.replace(/^\s+|\s+$/g, ''));
+                if (typeof rule.init === "function") {
+                  rule.init(scope, element, attrs, $injector);
+                }
+                if (rule) {
+                  rules.push(rule);
+                }
+              }
+            }
+          });
           isAcceptTheBroadcast = function(broadcast, modelName) {
             var anyHashKey, dotIndex, itemExpression, itemModel;
             if (modelName) {
+              if (__indexOf.call(groups, modelName) >= 0) {
+                return true;
+              }
               if (attrs.validatorGroup === modelName) {
                 return true;
               }
@@ -241,7 +289,8 @@
             }
             return validate('broadcast', {
               success: object.success,
-              error: object.error
+              error: object.error,
+              group: object.model
             });
           });
           scope.$on($validator.broadcastChannel.reset, function(self, object) {
