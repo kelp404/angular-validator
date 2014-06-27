@@ -34,19 +34,17 @@
                 group: model/group passed into $provider.validate arguments
              */
             if (args.group) {
-              if (_ref = args.group, __indexOf.call(groups, _ref) < 0) {
-                if (attrs.validatorGroup === args.group) {
-                  validateRules(rules, from, args);
-                  return;
-                } else {
-                  return;
-                }
+              if (_ref = args.group, __indexOf.call(groups, _ref) >= 0) {
+                rules = groupRules[args.group];
+                validateRules(rules, from, args);
+                return;
               }
-              rules = groupRules[args.group];
-              return validateRules(rules, from, args);
-            } else {
-              return validateRules(rules, from, args);
+              if (attrs.validatorGroup === args.group) {
+                validateRules(rules, from, args);
+                return;
+              }
             }
+            return validateRules(rules, from, args);
           };
           validateRules = function(rules, from, args) {
             var errorCount, increaseSuccessCount, rule, successCount, _i, _len, _results;

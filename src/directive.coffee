@@ -36,18 +36,16 @@ angular.module 'validator.directive', ['validator.provider']
 
             if args.group
                 # check to see if in one of multiple validator-groups
-                if args.group not in groups
-                    # single validator-group style
-                    if attrs.validatorGroup is args.group
-                        validateRules(rules, from, args)
-                        return
-                    # invalid group
-                    else
-                        return
-                rules = groupRules[args.group]
-                validateRules(rules, from, args)    
-            else
-                validateRules(rules, from, args)
+                if args.group in groups
+                    rules = groupRules[args.group]
+                    validateRules(rules, from, args)  
+                    return
+                # single validator-group style
+                if attrs.validatorGroup is args.group
+                    validateRules(rules, from, args)
+                    return
+
+            validateRules(rules, from, args)
 
         validateRules = (rules, from, args) ->
             successCount = 0
