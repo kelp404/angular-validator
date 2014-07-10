@@ -330,7 +330,7 @@
             if (attrs.id) {
               $label.attr('for', attrs.id);
             }
-            $(element).parent().append($label);
+            parent.append($label);
             break;
           }
           _results.push(parent = parent.parent());

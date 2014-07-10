@@ -46,7 +46,7 @@ angular.module 'validator.provider', []
                         $(label).remove()
                     $label = $ "<label class='control-label error'>#{errorMessage}</label>"
                     $label.attr 'for', attrs.id if attrs.id
-                    $(element).parent().append $label
+                    parent.append $label
                     break
                 parent = parent.parent()
 
