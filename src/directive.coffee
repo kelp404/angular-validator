@@ -85,7 +85,7 @@ angular.module 'validator.directive', ['validator.provider']
                                 # scroll to the first element
                                 try 
                                     element[0].scrollIntoView(true)
-                                    scrolledY = window.scrollY
+                                    scrolledY = window.pageYOffset
                                     if scrolledY and scrollOffset
                                         window.scroll(0, scrolledY - scrollOffset)
                                 try element[0].select()

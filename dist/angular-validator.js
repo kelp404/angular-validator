@@ -100,7 +100,7 @@
                     if ((typeof args.error === "function" ? args.error() : void 0) === 1) {
                       try {
                         element[0].scrollIntoView(true);
-                        scrolledY = window.scrollY;
+                        scrolledY = window.pageYOffset;
                         if (scrolledY && scrollOffset) {
                           window.scroll(0, scrolledY - scrollOffset);
                         }
