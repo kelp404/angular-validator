@@ -12,3 +12,4 @@ bower_components
 
 # compass
 .sass-cache
+.project
