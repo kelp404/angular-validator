@@ -1,6 +1,6 @@
 {
   "name": "angular-validator",
-  "version": "0.2.3",
+  "version": "0.2.5",
   "description": "AngularJS validator.",
   "homepage": "https://github.com/kelp404/angular-validator",
   "repository": {
@@ -17,10 +17,6 @@
   },
   "contributors": [
     {
-      "name": "Jia-Yu",
-      "url": "https://github.com/Jia-Yu"
-    },
-    {
       "name": "others",
       "url": "https://github.com/kelp404/angular-validator/graphs/contributors"
     }
@@ -36,10 +32,10 @@
   },
   "devDependencies": {
     "grunt": "~0.4.2",
-    "grunt-contrib-coffee": "~0.10.0",
-    "grunt-contrib-compass": "^0.9.0",
+    "grunt-contrib-coffee": "^0.11.1",
+    "grunt-contrib-compass": "^0.9.1",
     "grunt-contrib-connect": "^0.8.0",
-    "grunt-contrib-uglify": "^0.5.0",
+    "grunt-contrib-uglify": "^0.5.1",
     "grunt-contrib-watch": "~0.6.1",
     "grunt-karma": "^0.8.3",
     "karma": "^0.12.16",
