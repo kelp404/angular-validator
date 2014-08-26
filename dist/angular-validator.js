@@ -10,14 +10,13 @@
         restrict: 'A',
         require: 'ngModel',
         link: function(scope, element, attrs, ctrl) {
-          var $parse, $validator, groupRules, groups, isAcceptTheBroadcast, model, observerRequired, registerRequired, removeRule, rules, scrollOffset, validate, validateRules;
+          var $parse, $validator, groupRules, groups, isAcceptTheBroadcast, model, observerRequired, registerRequired, removeRule, rules, validate, validateRules;
           $validator = $injector.get('$validator');
           $parse = $injector.get('$parse');
           model = $parse(attrs.ngModel);
           rules = [];
           groups = [];
           groupRules = {};
-          scrollOffset = 100;
           validate = function(from, args) {
             var _ref;
             if (args == null) {
@@ -47,7 +46,7 @@
             return validateRules(rules, from, args);
           };
           validateRules = function(rules, from, args) {
-            var errorCount, increaseSuccessCount, rule, successCount, _i, _len, _results;
+            var errorCount, increaseSuccessCount, rule, successCount, _fn, _i, _len;
             successCount = 0;
             errorCount = 0;
             increaseSuccessCount = function() {
@@ -66,7 +65,27 @@
             if (rules.length === 0) {
               return increaseSuccessCount();
             }
-            _results = [];
+            _fn = function(rule) {
+              return rule.validator(model(scope), scope, element, attrs, {
+                success: function() {
+                  return increaseSuccessCount();
+                },
+                error: function() {
+                  if (rule.enableError && ++errorCount === 1) {
+                    ctrl.$setValidity(attrs.ngModel, false);
+                    rule.error(model(scope), scope, element, attrs, $injector);
+                  }
+                  if ((typeof args.error === "function" ? args.error() : void 0) === 1) {
+                    try {
+                      element[0].scrollIntoViewIfNeeded();
+                    } catch (_error) {}
+                    try {
+                      return element[0].select();
+                    } catch (_error) {}
+                  }
+                }
+              });
+            };
             for (_i = 0, _len = rules.length; _i < _len; _i++) {
               rule = rules[_i];
               switch (from) {
@@ -86,34 +105,8 @@
                   rule.enableError = true;
                   break;
               }
-              _results.push((function(rule) {
-                return rule.validator(model(scope), scope, element, attrs, {
-                  success: function() {
-                    return increaseSuccessCount();
-                  },
-                  error: function() {
-                    var scrolledY;
-                    if (rule.enableError && ++errorCount === 1) {
-                      ctrl.$setValidity(attrs.ngModel, false);
-                      rule.error(model(scope), scope, element, attrs, $injector);
-                    }
-                    if ((typeof args.error === "function" ? args.error() : void 0) === 1) {
-                      try {
-                        element[0].scrollIntoView(true);
-                        scrolledY = window.pageYOffset;
-                        if (scrolledY && scrollOffset) {
-                          window.scroll(0, scrolledY - scrollOffset);
-                        }
-                      } catch (_error) {}
-                      try {
-                        return element[0].select();
-                      } catch (_error) {}
-                    }
-                  }
-                });
-              })(rule));
+              _fn(rule);
             }
-            return _results;
           };
           registerRequired = function() {
             var rule;
