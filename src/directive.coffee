@@ -105,64 +105,6 @@ angular.module 'validator.directive', ['validator.provider']
         # ----------------------------------------
         # attrs.$observe
         # ----------------------------------------
-        # attrs.$observe 'validator', (value) ->
-        #     # remove old rule
-        #     rules.length = 0
-        #     registerRequired() if observerRequired.validatorRequired or observerRequired.required
-
-        #     # validate by RegExp
-        #     match = value.match /^\/(.*)\/$/
-        #     if match
-        #         rule = $validator.convertRule 'dynamic',
-        #             validator: RegExp match[1]
-        #             invoke: attrs.validatorInvoke
-        #             error: attrs.validatorError
-        #         rules.push rule
-        #         return
-
-        #     # validate by rules
-        #     match = value.match /^\[(.+)\]$/
-        #     if match
-        #         ruleNames = match[1].split ','
-        #         for name in ruleNames
-        #             # stupid browser has no .trim()
-        #             rule = $validator.getRule name.replace(/^\s+|\s+$/g, '')
-        #             rule.init? scope, element, attrs, $injector
-        #             rules.push rule if rule
-
-        attrs.$observe 'validatorError', (value) ->
-            match = attrs.validator.match /^\/(.*)\/$/
-            if match
-                removeRule 'dynamic'
-                rule = $validator.convertRule 'dynamic',
-                    validator: RegExp match[1]
-                    invoke: attrs.validatorInvoke
-                    error: value
-                rules.push rule
-
-        # validate by required attribute
-        observerRequired =
-            validatorRequired: no
-            required: no
-        attrs.$observe 'validatorRequired', (value) ->
-            if value and value isnt 'false'
-                # register required
-                registerRequired()
-                observerRequired.validatorRequired = yes
-            else if observerRequired.validatorRequired
-                # remove required
-                removeRule 'required'
-                observerRequired.validatorRequired = no
-        attrs.$observe 'required', (value) ->
-            if value and value isnt 'false'
-                # register required
-                registerRequired()
-                observerRequired.required = yes
-            else if observerRequired.required
-                # remove required
-                removeRule 'required'
-                observerRequired.required = no
-
         attrs.$observe 'validator', (value) ->
             # remove old rules
             groupRules.length = 0
@@ -213,7 +155,39 @@ angular.module 'validator.directive', ['validator.provider']
                     rule.init? scope, element, attrs, $injector
                     rules.push rule if rule
                 return
+        
+        attrs.$observe 'validatorError', (value) ->
+            match = attrs.validator.match /^\/(.*)\/$/
+            if match
+                removeRule 'dynamic'
+                rule = $validator.convertRule 'dynamic',
+                    validator: RegExp match[1]
+                    invoke: attrs.validatorInvoke
+                    error: value
+                rules.push rule
 
+        # validate by required attribute
+        observerRequired =
+            validatorRequired: no
+            required: no
+        attrs.$observe 'validatorRequired', (value) ->
+            if value and value isnt 'false'
+                # register required
+                registerRequired()
+                observerRequired.validatorRequired = yes
+            else if observerRequired.validatorRequired
+                # remove required
+                removeRule 'required'
+                observerRequired.validatorRequired = no
+        attrs.$observe 'required', (value) ->
+            if value and value isnt 'false'
+                # register required
+                registerRequired()
+                observerRequired.required = yes
+            else if observerRequired.required
+                # remove required
+                removeRule 'required'
+                observerRequired.required = no
 
         # ----------------------------------------
         # listen

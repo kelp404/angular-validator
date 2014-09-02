@@ -136,41 +136,6 @@
             }
             return _results;
           };
-          attrs.$observe('validatorError', function(value) {
-            var match, rule;
-            match = attrs.validator.match(/^\/(.*)\/$/);
-            if (match) {
-              removeRule('dynamic');
-              rule = $validator.convertRule('dynamic', {
-                validator: RegExp(match[1]),
-                invoke: attrs.validatorInvoke,
-                error: value
-              });
-              return rules.push(rule);
-            }
-          });
-          observerRequired = {
-            validatorRequired: false,
-            required: false
-          };
-          attrs.$observe('validatorRequired', function(value) {
-            if (value && value !== 'false') {
-              registerRequired();
-              return observerRequired.validatorRequired = true;
-            } else if (observerRequired.validatorRequired) {
-              removeRule('required');
-              return observerRequired.validatorRequired = false;
-            }
-          });
-          attrs.$observe('required', function(value) {
-            if (value && value !== 'false') {
-              registerRequired();
-              return observerRequired.required = true;
-            } else if (observerRequired.required) {
-              removeRule('required');
-              return observerRequired.required = false;
-            }
-          });
           attrs.$observe('validator', function(value) {
             var currentRules, group, groupName, match, name, rule, ruleMatch, ruleNames, _i, _j, _k, _len, _len1, _len2;
             groupRules.length = 0;
@@ -227,6 +192,41 @@
                   rules.push(rule);
                 }
               }
+            }
+          });
+          attrs.$observe('validatorError', function(value) {
+            var match, rule;
+            match = attrs.validator.match(/^\/(.*)\/$/);
+            if (match) {
+              removeRule('dynamic');
+              rule = $validator.convertRule('dynamic', {
+                validator: RegExp(match[1]),
+                invoke: attrs.validatorInvoke,
+                error: value
+              });
+              return rules.push(rule);
+            }
+          });
+          observerRequired = {
+            validatorRequired: false,
+            required: false
+          };
+          attrs.$observe('validatorRequired', function(value) {
+            if (value && value !== 'false') {
+              registerRequired();
+              return observerRequired.validatorRequired = true;
+            } else if (observerRequired.validatorRequired) {
+              removeRule('required');
+              return observerRequired.validatorRequired = false;
+            }
+          });
+          attrs.$observe('required', function(value) {
+            if (value && value !== 'false') {
+              registerRequired();
+              return observerRequired.required = true;
+            } else if (observerRequired.required) {
+              removeRule('required');
+              return observerRequired.required = false;
             }
           });
           isAcceptTheBroadcast = function(broadcast, modelName) {
