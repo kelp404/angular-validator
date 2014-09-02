@@ -378,7 +378,11 @@
             if (attrs.id) {
               $label.attr('for', attrs.id);
             }
-            $(element).parent().append($label);
+            if ($(element).parent().hasClass('input-group')) {
+              $(element).parent().parent().append($label);
+            } else {
+              $(element).parent().append($label);
+            }
             break;
           } else if (parent.hasClass('input-group')) {
             parent.parent().addClass('has-error');
