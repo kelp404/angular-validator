@@ -56,14 +56,6 @@ angular.module 'validator.provider', []
                     else
                         $(element).parent().append $label
                     break
-                else if parent.hasClass 'input-group'
-                    parent.parent().addClass 'has-error'
-                    for label in parent.parent().find('label') when $(label).hasClass 'error'
-                        $(label).remove()
-                    $label = $ "<label class='control-label error'>#{errorMessage}</label>"
-                    $label.attr 'for', attrs.id if attrs.id
-                    $(element).parent().parent().append $label
-                    break
                 parent = parent.parent()
 
     @convertSuccess = (success) ->

@@ -356,7 +356,7 @@
       @return: function(value, scope, element, attrs, $injector)
        */
       return function(value, scope, element, attrs) {
-        var $label, errorMessage, label, parent, _i, _j, _len, _len1, _ref, _ref1, _results;
+        var $label, errorMessage, label, parent, _i, _len, _ref, _results;
         if (typeof error === 'function') {
           errorMessage = error(value, scope, element, attrs);
         } else {
@@ -383,21 +383,6 @@
             } else {
               $(element).parent().append($label);
             }
-            break;
-          } else if (parent.hasClass('input-group')) {
-            parent.parent().addClass('has-error');
-            _ref1 = parent.parent().find('label');
-            for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-              label = _ref1[_j];
-              if ($(label).hasClass('error')) {
-                $(label).remove();
-              }
-            }
-            $label = $("<label class='control-label error'>" + errorMessage + "</label>");
-            if (attrs.id) {
-              $label.attr('for', attrs.id);
-            }
-            $(element).parent().parent().append($label);
             break;
           }
           _results.push(parent = parent.parent());
