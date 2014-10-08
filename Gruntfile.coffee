@@ -1,4 +1,6 @@
 module.exports = (grunt) ->
+    require('time-grunt') grunt
+    
     grunt.config.init
         compass:
             dev:
