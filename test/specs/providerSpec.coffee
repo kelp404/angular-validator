@@ -65,21 +65,23 @@ describe 'validator.provider', ->
             expect($errorLabel.text()).toEqual ''
 
         it 'check convertError(function)', ->
+            $element = $ "<div class='form-group'><input type='text' id='input'/></div>"
+            $input = $element.find 'input'
+            attrs = 
+                id: 'input'
+                message: '123'
             func = (value, scope, element, attrs, $injector) ->
-                value: value
-                scope: scope
-                element: element
-                attrs: attrs
-                $injector: $injector
+                "test" + attrs.message
             error = validatorProvider.convertError func
-            expect
-                value: 'value'
-                scope: 'scope'
-                element: 'element'
-                attrs: 'attrs'
-                $injector: '$injector'
-            .toEqual error('value', 'scope', 'element', 'attrs', '$injector')
-
+            expect('function').toEqual typeof error
+            # execute error
+            error(null, null, $input, attrs)
+            $errorLabel = $element.find 'label'
+            expect($element.hasClass('has-error')).toBe true
+            expect($errorLabel.hasClass('control-label')).toBe yes
+            expect($errorLabel.hasClass('error')).toBe yes
+            expect($errorLabel.attr('for')).toEqual 'input'
+            expect($errorLabel.text()).toEqual 'test123'
 
     describe '$validatorProvider.convertSuccess()', ->
         it 'convertSuccess(string) is work on the form-group element', ->

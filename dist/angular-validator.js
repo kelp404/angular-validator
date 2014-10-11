@@ -1,5 +1,6 @@
 (function() {
-  var $;
+  var $,
+    __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   $ = angular.element;
 
@@ -9,13 +10,15 @@
         restrict: 'A',
         require: 'ngModel',
         link: function(scope, element, attrs, ctrl) {
-          var $parse, $validator, isAcceptTheBroadcast, model, observerRequired, registerRequired, removeRule, rules, validate;
+          var $parse, $validator, groupRules, groups, isAcceptTheBroadcast, model, observerRequired, registerRequired, removeRule, rules, validate, validateRules;
           $validator = $injector.get('$validator');
           $parse = $injector.get('$parse');
           model = $parse(attrs.ngModel);
           rules = [];
+          groups = [];
+          groupRules = {};
           validate = function(from, args) {
-            var errorCount, increaseSuccessCount, rule, successCount, _fn, _i, _len;
+            var _ref;
             if (args == null) {
               args = {};
             }
@@ -27,7 +30,23 @@
                 success(): success callback (this callback will return success count)
                 error(): error callback (this callback will return error count)
                 oldValue: the old value of $watch
+                group: model/group passed into $provider.validate arguments
              */
+            if (args.group) {
+              if (_ref = args.group, __indexOf.call(groups, _ref) >= 0) {
+                rules = groupRules[args.group];
+                validateRules(rules, from, args);
+                return;
+              }
+              if (attrs.validatorGroup === args.group) {
+                validateRules(rules, from, args);
+                return;
+              }
+            }
+            return validateRules(rules, from, args);
+          };
+          validateRules = function(rules, from, args) {
+            var errorCount, increaseSuccessCount, rule, successCount, _fn, _i, _len;
             successCount = 0;
             errorCount = 0;
             increaseSuccessCount = function() {
@@ -60,7 +79,9 @@
                     try {
                       element[0].scrollIntoViewIfNeeded();
                     } catch (_error) {}
-                    return element[0].select();
+                    try {
+                      return element[0].select();
+                    } catch (_error) {}
                   }
                 }
               });
@@ -116,10 +137,37 @@
             return _results;
           };
           attrs.$observe('validator', function(value) {
-            var match, name, rule, ruleNames, _i, _len, _results;
+            var currentRules, group, groupName, match, name, rule, ruleMatch, ruleNames, _i, _j, _k, _len, _len1, _len2;
+            groupRules.length = 0;
             rules.length = 0;
             if (observerRequired.validatorRequired || observerRequired.required) {
               registerRequired();
+            }
+            match = value.match(/[^\[\s]+:[\s,]{0,1}\[[^\]]*\]/g);
+            if (match) {
+              for (_i = 0, _len = match.length; _i < _len; _i++) {
+                group = match[_i];
+                currentRules = [];
+                groupName = group.split(':')[0].trim();
+                ruleMatch = group.match(/\[(.+)\]/);
+                if (ruleMatch) {
+                  ruleNames = ruleMatch[1].split(',');
+                  for (_j = 0, _len1 = ruleNames.length; _j < _len1; _j++) {
+                    name = ruleNames[_j];
+                    rule = $validator.getRule(name.replace(/^\s+|\s+$/g, ''));
+                    if (typeof rule.init === "function") {
+                      rule.init(scope, element, attrs, $injector);
+                    }
+                    if (rule) {
+                      currentRules.push(rule);
+                      rules.push(rule);
+                    }
+                  }
+                }
+                groupRules[groupName] = currentRules;
+                groups.push(groupName);
+              }
+              return;
             }
             match = value.match(/^\/(.*)\/$/);
             if (match) {
@@ -134,20 +182,16 @@
             match = value.match(/^\[(.+)\]$/);
             if (match) {
               ruleNames = match[1].split(',');
-              _results = [];
-              for (_i = 0, _len = ruleNames.length; _i < _len; _i++) {
-                name = ruleNames[_i];
+              for (_k = 0, _len2 = ruleNames.length; _k < _len2; _k++) {
+                name = ruleNames[_k];
                 rule = $validator.getRule(name.replace(/^\s+|\s+$/g, ''));
                 if (typeof rule.init === "function") {
                   rule.init(scope, element, attrs, $injector);
                 }
                 if (rule) {
-                  _results.push(rules.push(rule));
-                } else {
-                  _results.push(void 0);
+                  rules.push(rule);
                 }
               }
-              return _results;
             }
           });
           attrs.$observe('validatorError', function(value) {
@@ -188,6 +232,9 @@
           isAcceptTheBroadcast = function(broadcast, modelName) {
             var anyHashKey, dotIndex, itemExpression, itemModel;
             if (modelName) {
+              if (__indexOf.call(groups, modelName) >= 0) {
+                return true;
+              }
               if (attrs.validatorGroup === modelName) {
                 return true;
               }
@@ -233,7 +280,8 @@
             }
             return validate('broadcast', {
               success: object.success,
-              error: object.error
+              error: object.error,
+              group: object.model
             });
           });
           scope.$on($validator.broadcastChannel.reset, function(self, object) {
@@ -307,13 +355,13 @@
       @param error: error messate (string) or function(value, scope, element, attrs, $injector)
       @return: function(value, scope, element, attrs, $injector)
        */
-      var errorMessage;
-      if (typeof error === 'function') {
-        return error;
-      }
-      errorMessage = error.constructor === String ? error : '';
       return function(value, scope, element, attrs) {
-        var $label, label, parent, _i, _len, _ref, _results;
+        var $label, errorMessage, label, parent, _i, _len, _ref, _results;
+        if (typeof error === 'function') {
+          errorMessage = error(value, scope, element, attrs);
+        } else {
+          errorMessage = error.constructor === String ? error : '';
+        }
         parent = $(element).parent();
         _results = [];
         while (parent.length !== 0) {
