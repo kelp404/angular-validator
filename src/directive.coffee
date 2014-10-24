@@ -173,6 +173,7 @@ angular.module 'validator.directive', ['validator.provider']
                     dotIndex = attrs.ngModel.indexOf '.'
                     itemExpression = if dotIndex >= 0 then attrs.ngModel.substr(0, dotIndex) else attrs.ngModel
                     itemModel = $parse(itemExpression) scope
+                    if (!itemModel) return false
                     return anyHashKey $parse(modelName)(broadcast.targetScope), itemModel.$$hashKey
             yes
         scope.$on $validator.broadcastChannel.prepare, (self, object) ->
