@@ -216,6 +216,9 @@
                 dotIndex = attrs.ngModel.indexOf('.');
                 itemExpression = dotIndex >= 0 ? attrs.ngModel.substr(0, dotIndex) : attrs.ngModel;
                 itemModel = $parse(itemExpression)(scope);
+                if (!itemModel) {
+                  return false;
+                }
                 return anyHashKey($parse(modelName)(broadcast.targetScope), itemModel.$$hashKey);
               }
             }
