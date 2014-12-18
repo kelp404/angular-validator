@@ -9,7 +9,7 @@
         restrict: 'A',
         require: 'ngModel',
         link: function(scope, element, attrs, ctrl) {
-          var $parse, $validator, isAcceptTheBroadcast, model, observerRequired, registerRequired, removeRule, rules, validate;
+          var $parse, $validator, isAcceptTheBroadcast, model, observerRequired, onBlur, registerRequired, removeRule, rules, validate;
           $validator = $injector.get('$validator');
           $parse = $injector.get('$parse');
           model = $parse(attrs.ngModel);
@@ -258,7 +258,7 @@
               oldValue: oldValue
             });
           });
-          return $(element).bind('blur', function() {
+          onBlur = function() {
             if (scope.$root.$$phase) {
               return validate('blur');
             } else {
@@ -266,6 +266,10 @@
                 return validate('blur');
               });
             }
+          };
+          $(element).bind('blur', onBlur);
+          return scope.$on('$destroy', function() {
+            return $(element).unbind('blur', onBlur);
           });
         }
       };

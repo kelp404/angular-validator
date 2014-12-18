@@ -200,9 +200,13 @@ angular.module 'validator.directive', ['validator.provider']
         # ----------------------------------------
         # blur
         # ----------------------------------------
-        $(element).bind 'blur', ->
+        onBlur = ->
             if scope.$root.$$phase
                 validate 'blur'
             else
                 scope.$apply -> validate 'blur'
+        $(element).bind 'blur', onBlur
+
+        scope.$on '$destroy', ->
+            $(element).unbind 'blur', onBlur
 ]
