@@ -109,7 +109,7 @@ angular.module 'validator.directive', ['validator.provider']
                 for name in ruleNames
                     # stupid browser has no .trim()
                     rule = $validator.getRule name.replace(/^\s+|\s+$/g, '')
-                    rule.init? scope, element, attrs, $injector
+                    rule? && rule.init? scope, element, attrs, $injector
                     rules.push rule if rule
 
         attrs.$observe 'validatorError', (value) ->
