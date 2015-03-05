@@ -191,7 +191,7 @@
               if (attrs.validatorGroup === modelName) {
                 return true;
               }
-              if (broadcast.targetScope === scope) {
+              if (broadcast.targetScope === scope || broadcast.currentScope === scope) {
                 return attrs.ngModel.indexOf(modelName) === 0;
               } else {
                 anyHashKey = function(targetModel, hashKey) {
