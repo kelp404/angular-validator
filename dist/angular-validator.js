@@ -60,7 +60,11 @@
                     try {
                       element[0].scrollIntoViewIfNeeded();
                     } catch (_error) {}
-                    return element[0].select();
+                    if (element[0].select) {
+                      return element[0].select();
+                    } else {
+                      return element[0].focus();
+                    }
                   }
                 }
               });
