@@ -38,20 +38,17 @@ angular.module 'validator.provider', []
 
         errorMessage = if error.constructor is String then error else ''
         (value, scope, element, attrs) ->
-            parent = $(element).parent()
-            until parent.length is 0
-                if parent.hasClass 'form-group'
-                    parent.addClass 'has-error'
-                    for label in parent.find('label') when $(label).hasClass 'error'
-                        $(label).remove()
-                    $label = $ "<label class='control-label error'>#{errorMessage}</label>"
-                    $label.attr('for', attrs.id) if attrs.id
-                    if $(element).parent().hasClass 'input-group'
-                        $(element).parent().parent().append $label
-                    else
-                        $(element).parent().append $label
-                    break
-                parent = parent.parent()
+            parent = element.closest '.form-group'
+            if parent.length
+                parent.addClass 'has-error'
+                for label in parent.find('label') when $(label).hasClass 'error'
+                    $(label).remove()
+                $label = $ "<label class='control-label error'>#{errorMessage}</label>"
+                $label.attr('for', attrs.id) if attrs.id
+                if element.parent().hasClass 'input-group'
+                    element.parent().parent().append $label
+                else
+                    element.parent().append $label
 
     @convertSuccess = (success) ->
         ###
@@ -62,7 +59,7 @@ angular.module 'validator.provider', []
         return success if typeof success is 'function'
 
         (value, scope, element) ->
-            parent = $(element).parent()
+            parent = element.parent()
             until parent.length is 0
                 if parent.hasClass 'has-error'
                     parent.removeClass 'has-error'
