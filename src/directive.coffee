@@ -105,6 +105,15 @@ angular.module 'validator.directive', ['validator.provider']
                 rules.push rule
                 return
 
+            # validat by []
+            match = value.match /^\[\]$/
+            if match
+                rule = $validator.convertRule 'dynamic',
+                    validator: /.*/
+                    invoke: attrs.validatorInvoke
+                rules.push rule
+                return
+
             # validat by rules
             match = value.match /^\[(.+)\]$/
             if match
