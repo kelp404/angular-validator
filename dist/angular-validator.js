@@ -142,7 +142,7 @@
               for (_i = 0, _len = ruleNames.length; _i < _len; _i++) {
                 name = ruleNames[_i];
                 rule = $validator.getRule(name.replace(/^\s+|\s+$/g, ''));
-                if (typeof rule.init === "function") {
+                if (rule && typeof rule.init === "function") {
                   rule.init(scope, element, attrs, $injector);
                 }
                 if (rule) {
