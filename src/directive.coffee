@@ -65,9 +65,9 @@ angular.module 'validator.directive', ['validator.provider']
                                 # scroll to the first element
                                 try element[0].scrollIntoViewIfNeeded()
                                 if element[0].select
-                                    element[0].select()
+                                    element[0].select?()
                                 else
-                                    element[0].focus()
+                                    element[0].focus?()
             return
 
         registerRequired = ->
