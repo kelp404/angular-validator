@@ -2,10 +2,14 @@
   "name": "angular-validator",
   "version": "0.2.5",
   "description": "AngularJS validator.",
+  "main": "dist/angular-validator.js",
   "homepage": "https://github.com/kelp404/angular-validator",
   "repository": {
     "type": "git",
     "url": "git://github.com/kelp404/angular-validator.git"
+  },
+  "scripts": {
+    "test": "grunt karma"
   },
   "keywords": [
     "AngularJS",
@@ -40,11 +44,12 @@
     "grunt-contrib-watch": "1.0.0",
     "grunt-karma": "2.0.0",
     "jasmine-core": "2.9.1",
-    "jquery": "^2.1.4",
+    "jquery": "3.3.1",
     "karma": "2.0.0",
     "karma-coffee-preprocessor": "1.0.1",
     "karma-jasmine": "1.1.1",
     "karma-phantomjs-launcher": "1.0.4",
+    "npm-check-updates": "2.14.0",
     "phantomjs-prebuilt": "2.1.16",
     "time-grunt": "1.4.0"
   }

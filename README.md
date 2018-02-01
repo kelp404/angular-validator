@@ -6,6 +6,11 @@
 This is an AngularJS form validation written in [CoffeeScript](http://coffeescript.org) and **thinking in AngularJS not jQuery**.
 
 
+## Installation
+**bower**
+```bash
+$ bower install https://github.com/kelp404/angular-validator.git\#0.2.8 -S
+```
 
 
 ## Frameworks
