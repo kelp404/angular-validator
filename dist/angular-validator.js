@@ -52,6 +52,7 @@
                   return increaseSuccessCount();
                 },
                 error: function() {
+                  var base, base1;
                   if (rule.enableError && ++errorCount === 1) {
                     ctrl.$setValidity(attrs.ngModel, false);
                     rule.error(model(scope), scope, element, attrs, $injector);
@@ -61,9 +62,9 @@
                       element[0].scrollIntoViewIfNeeded();
                     } catch (undefined) {}
                     if (element[0].select) {
-                      return element[0].select();
+                      return typeof (base = element[0]).select === "function" ? base.select() : void 0;
                     } else {
-                      return element[0].focus();
+                      return typeof (base1 = element[0]).focus === "function" ? base1.focus() : void 0;
                     }
                   }
                 }
@@ -220,6 +221,9 @@
                 dotIndex = attrs.ngModel.indexOf('.');
                 itemExpression = dotIndex >= 0 ? attrs.ngModel.substr(0, dotIndex) : attrs.ngModel;
                 itemModel = $parse(itemExpression)(scope);
+                if (itemModel == null) {
+                  return false;
+                }
                 return anyHashKey($parse(modelName)(broadcast.targetScope), itemModel.$$hashKey);
               }
             }
