@@ -1,14 +1,12 @@
 # OS X noise
 .DS_Store
 
-# PyCharm
+# WebStorm
 .idea
 
 # node modules
 node_modules
-
-# bower components
-bower_components
+package-lock.json
 
 # compass
 .sass-cache

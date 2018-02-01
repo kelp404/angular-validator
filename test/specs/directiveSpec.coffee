@@ -34,10 +34,10 @@ describe 'validator.directive', ->
                 then: jasmine.createSpy 'then'
             $compile($form) scope
             $rootScope.$digest()
-            $validator.validate scope
-            .success -> spy.success()
-            .error -> spy.error()
-            .then -> spy.then()
+            result = $validator.validate scope
+            result.success -> spy.success()
+            result.error -> spy.error()
+            result.then -> spy.then()
             $timeout.flush()
             expect(spy.success).not.toHaveBeenCalled()
             expect(spy.error).toHaveBeenCalled()
@@ -51,10 +51,10 @@ describe 'validator.directive', ->
             $compile($form) scope
             $rootScope.$digest()
             scope.input = 'xx'
-            $validator.validate scope
-            .success -> spy.success()
-            .error -> spy.error()
-            .then -> spy.then()
+            result = $validator.validate scope
+            result.success -> spy.success()
+            result.error -> spy.error()
+            result.then -> spy.then()
             $timeout.flush()
             expect(spy.success).toHaveBeenCalled()
             expect(spy.error).not.toHaveBeenCalled()
@@ -89,10 +89,10 @@ describe 'validator.directive', ->
                 then: jasmine.createSpy 'then'
             $compile($form) scope
             $rootScope.$digest()
-            $validator.validate scope
-            .success -> spy.success()
-            .error -> spy.error()
-            .then -> spy.then()
+            result = $validator.validate scope
+            result.success -> spy.success()
+            result.error -> spy.error()
+            result.then -> spy.then()
             $timeout.flush()
             expect(spy.success).not.toHaveBeenCalled()
             expect(spy.error).toHaveBeenCalled()
@@ -106,10 +106,10 @@ describe 'validator.directive', ->
             $compile($form) scope
             $rootScope.$digest()
             scope.input = 'regex'
-            $validator.validate scope
-            .success -> spy.success()
-            .error -> spy.error()
-            .then -> spy.then()
+            result = $validator.validate scope
+            result.success -> spy.success()
+            result.error -> spy.error()
+            result.then -> spy.then()
             $timeout.flush()
             expect(spy.success).toHaveBeenCalled()
             expect(spy.error).not.toHaveBeenCalled()

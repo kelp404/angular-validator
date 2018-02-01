@@ -1,12 +1,7 @@
 module.exports = (grunt) ->
+    require('time-grunt') grunt
+    
     grunt.config.init
-        compass:
-            dev:
-                options:
-                    sassDir: 'example'
-                    cssDir: 'example'
-                    outputStyle: 'compressed'
-
         coffee:
             source:
                 files:
@@ -25,11 +20,6 @@ module.exports = (grunt) ->
                     'dist/angular-validator-rules.min.js': 'dist/angular-validator-rules.js'
 
         watch:
-            compass:
-                files: ['example/*.scss']
-                tasks: ['compass']
-                options:
-                    spawn: no
             coffee:
                 files: ['src/*.coffee', 'rules/*.coffee', 'example/*.coffee']
                 tasks: ['coffee']
@@ -47,20 +37,16 @@ module.exports = (grunt) ->
         karma:
             ng1_2:
                 configFile: 'test/karma-ng1.2.config.coffee'
-            ng1_2_min:
-                configFile: 'test/karma-ng1.2.min.config.coffee'
 
     # -----------------------------------
     # register task
     # -----------------------------------
     grunt.registerTask 'dev', [
-        'compass'
         'coffee'
         'connect'
         'watch'
     ]
     grunt.registerTask 'build', [
-        'compass'
         'coffee'
         'uglify'
     ]
@@ -69,7 +55,6 @@ module.exports = (grunt) ->
     # -----------------------------------
     # Plugins
     # -----------------------------------
-    grunt.loadNpmTasks 'grunt-contrib-compass'
     grunt.loadNpmTasks 'grunt-contrib-coffee'
     grunt.loadNpmTasks 'grunt-contrib-watch'
     grunt.loadNpmTasks 'grunt-contrib-connect'
