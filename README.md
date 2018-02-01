@@ -1,4 +1,4 @@
-#angular-validator [![Build Status](https://secure.travis-ci.org/kelp404/angular-validator.png?branch=master)](http://travis-ci.org/kelp404/angular-validator) [![devDependency Status](https://david-dm.org/kelp404/angular-validator/dev-status.png?branch=master)](https://david-dm.org/kelp404/angular-validator#info=devDependencies)
+# angular-validator [![Build Status](https://secure.travis-ci.org/kelp404/angular-validator.png?branch=master)](http://travis-ci.org/kelp404/angular-validator) [![devDependency Status](https://david-dm.org/kelp404/angular-validator/dev-status.png?branch=master)](https://david-dm.org/kelp404/angular-validator#info=devDependencies)
 
 [MIT License](http://www.opensource.org/licenses/mit-license.php)  
 
@@ -8,21 +8,22 @@ This is an AngularJS form validation written in [CoffeeScript](http://coffeescri
 
 
 
-##Frameworks
-1. [AngularJS](http://angularjs.org/) 1.2.18
+## Frameworks
+1. [jQuery](https://jquery.com/) 2.1.4
 
-2. [Bootstrap 3](http://getbootstrap.com/)
+2. [AngularJS](http://angularjs.org/) 1.2.32
+
+3. [Bootstrap 3](http://getbootstrap.com/)
 > If your `error` is `string` in rules you should include bootstrap3.css and use `form-group` to the input div.
 
 
 
 
-##$validator
+## $validator
 ```coffee
 angular.module 'yourApp', ['validator']
 ```
-####register
->
+#### register
 ```coffee
 # .config
 $validatorProvider.register = (name, object={}) ->
@@ -40,8 +41,7 @@ $validatorProvider.register = (name, object={}) ->
 $validator.register = (name, object={}) ->
 ```
 
-####validate
->
+#### validate
 ```coffee
 $validate.validate = (scope, model) =>
     ###
@@ -54,8 +54,7 @@ $validate.validate = (scope, model) =>
     ###
 ```
 
-####reset
->
+#### reset
 ```coffee
 $validate.reset = (scope, model) =>
     ###
@@ -68,8 +67,7 @@ $validate.reset = (scope, model) =>
 
 
 
-##validator.directive
->
+## validator.directive
 ```coffee
 a = angular.module 'validator.directive', ['validator.provider']
 validator = ($injector) ->
@@ -84,8 +82,7 @@ validator.$inject = ['$injector']
 a.directive 'validator', validator
 ```
 
-####validator="[rule, rule]", [required], [validator-required="true/false"], [validator-group="group"]
->
+#### validator="[rule, rule]", [required], [validator-required="true/false"], [validator-group="group"]
 ```html
 <div class="form-group">
     <label for="required0" class="col-md-2 control-label">Required</label>
@@ -96,8 +93,7 @@ a.directive 'validator', validator
 </div>
 ```
 
-####validator="/^regex$/", [validator-error="msg"], [validator-invoke="watch"], [required], [validator-required="true/false"], [validator-group="group"]
->
+#### validator="/^regex$/", [validator-error="msg"], [validator-invoke="watch"], [required], [validator-required="true/false"], [validator-group="group"]
 ```html
 <div class="form-group">
     <label for="regexp0" class="col-md-2 control-label">RegExp [a-z]</label>
@@ -109,18 +105,18 @@ a.directive 'validator', validator
 </div>
 ```
 
-####[required], [validator-required="true/false"]
->
+#### [required], [validator-required="true/false"]
 If the element has this attribute, $validator will add the rule `required` into rules of the element.
 
 
 
 
-##validator.rules
+## validator.rules
 ```coffee
 angular.module 'yourApp', ['validator.rules']
 ```
->There are default rules in this module.
+
+There are default rules in this module.
 + required
 + number
 + email
@@ -129,19 +125,20 @@ angular.module 'yourApp', ['validator.rules']
 
 
 
-##Example
->
+## Example
 ```html
 <!-- Bootstrap3 (not required) -->
 <link type="text/css" rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css"/>
+<!-- jQuery -->
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 <!-- AngularJS -->
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.32/angular.min.js"></script>
 <!-- $validator -->
 <script type="text/javascript" src="dist/angular-validator.js"></script>
 <!-- basic rules (not required) -->
 <script type="text/javascript" src="dist/angular-validator-rules.js"></script>
 ```
->
+
 ```html
 <!-- submit -->
 <div class="panel panel-default">
@@ -176,7 +173,7 @@ angular.module 'yourApp', ['validator.rules']
     <div class="panel-footer">{{formSubmit}}</div>
 </div>
 ```
->
+
 ```coffee
 a = angular.module 'app', ['validator', 'validator.rules']
 a.config ($validatorProvider) ->    
@@ -196,7 +193,7 @@ a.config ($validatorProvider) ->
         validator: RegExp "^.+$"
         error: 'This field is required.'
 ```
->
+
 ```coffee
 # CoffeeScript
 # the form model
@@ -214,6 +211,7 @@ $scope.submit = ->
         # validated error
         console.log 'error'
 ```
+
 ```js
 // JavaScript
 // the form model
@@ -239,8 +237,7 @@ $scope.submit = function () {
 
 
 
-##Unit Test
->
+## Unit Test
 ```bash
 $ grunt test
 ```
@@ -248,7 +245,7 @@ $ grunt test
 
 
 
-##Development
+## Development
 ```bash
 # install node modules
 $ npm install

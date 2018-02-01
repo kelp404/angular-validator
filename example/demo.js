@@ -1,5 +1,5 @@
 (function() {
-  var __indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
+  var indexOf = [].indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (i in this && this[i] === item) return i; } return -1; };
 
   angular.module('app', ['validator', 'validator.rules']).config(function($validatorProvider) {
     $validatorProvider.register('backendWatch', {
@@ -10,15 +10,15 @@
         return $http.get('example/data.json').then(function(response) {
           var x;
           if (response && response.data) {
-            return !(__indexOf.call((function() {
-              var _i, _len, _ref, _results;
-              _ref = response.data;
-              _results = [];
-              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                x = _ref[_i];
-                _results.push(x.name);
+            return !(indexOf.call((function() {
+              var i, len, ref, results;
+              ref = response.data;
+              results = [];
+              for (i = 0, len = ref.length; i < len; i++) {
+                x = ref[i];
+                results.push(x.name);
               }
-              return _results;
+              return results;
             })(), value) >= 0);
           } else {
             return false;
@@ -34,15 +34,15 @@
         return $http.get('example/data.json').then(function(response) {
           var x;
           if (response && response.data) {
-            return !(__indexOf.call((function() {
-              var _i, _len, _ref, _results;
-              _ref = response.data;
-              _results = [];
-              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                x = _ref[_i];
-                _results.push(x.name);
+            return !(indexOf.call((function() {
+              var i, len, ref, results;
+              ref = response.data;
+              results = [];
+              for (i = 0, len = ref.length; i < len; i++) {
+                x = ref[i];
+                results.push(x.name);
               }
-              return _results;
+              return results;
             })(), value) >= 0);
           } else {
             return false;
@@ -59,15 +59,15 @@
         return $http.get('example/data.json').then(function(response) {
           var x;
           if (response && response.data) {
-            return !(__indexOf.call((function() {
-              var _i, _len, _ref, _results;
-              _ref = response.data;
-              _results = [];
-              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                x = _ref[_i];
-                _results.push(x.name);
+            return !(indexOf.call((function() {
+              var i, len, ref, results;
+              ref = response.data;
+              results = [];
+              for (i = 0, len = ref.length; i < len; i++) {
+                x = ref[i];
+                results.push(x.name);
               }
-              return _results;
+              return results;
             })(), value) >= 0);
           } else {
             return false;

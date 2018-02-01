@@ -1,11 +1,10 @@
 language: node_js
 node_js:
-  - 0.10
+  - 8.9.4
 
 before_script:
   - npm install -g grunt-cli
-  - npm install -g bower
-  - bower install
+  - npm install
 
 script:
   - grunt test

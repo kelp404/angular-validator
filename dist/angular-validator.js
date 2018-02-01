@@ -15,7 +15,7 @@
           model = $parse(attrs.ngModel);
           rules = [];
           validate = function(from, args) {
-            var errorCount, increaseSuccessCount, rule, successCount, _fn, _i, _len;
+            var errorCount, fn, i, increaseSuccessCount, len, rule, successCount;
             if (args == null) {
               args = {};
             }
@@ -31,11 +31,11 @@
             successCount = 0;
             errorCount = 0;
             increaseSuccessCount = function() {
-              var rule, _i, _len;
+              var i, len, rule;
               if (++successCount >= rules.length) {
                 ctrl.$setValidity(attrs.ngModel, true);
-                for (_i = 0, _len = rules.length; _i < _len; _i++) {
-                  rule = rules[_i];
+                for (i = 0, len = rules.length; i < len; i++) {
+                  rule = rules[i];
                   rule.success(model(scope), scope, element, attrs, $injector);
                 }
                 if (typeof args.success === "function") {
@@ -46,7 +46,7 @@
             if (rules.length === 0) {
               return increaseSuccessCount();
             }
-            _fn = function(rule) {
+            fn = function(rule) {
               return rule.validator(model(scope), scope, element, attrs, {
                 success: function() {
                   return increaseSuccessCount();
@@ -59,7 +59,7 @@
                   if ((typeof args.error === "function" ? args.error() : void 0) === 1) {
                     try {
                       element[0].scrollIntoViewIfNeeded();
-                    } catch (_error) {}
+                    } catch (undefined) {}
                     if (element[0].select) {
                       return element[0].select();
                     } else {
@@ -69,8 +69,8 @@
                 }
               });
             };
-            for (_i = 0, _len = rules.length; _i < _len; _i++) {
-              rule = rules[_i];
+            for (i = 0, len = rules.length; i < len; i++) {
+              rule = rules[i];
               switch (from) {
                 case 'blur':
                   if (rule.invoke !== 'blur') {
@@ -88,7 +88,7 @@
                   rule.enableError = true;
                   break;
               }
-              _fn(rule);
+              fn(rule);
             }
           };
           registerRequired = function() {
@@ -107,20 +107,20 @@
             /*
             Remove the rule in rules by the name.
              */
-            var index, _i, _ref, _ref1, _results;
-            _results = [];
-            for (index = _i = 0, _ref = rules.length; _i < _ref; index = _i += 1) {
-              if (!(((_ref1 = rules[index]) != null ? _ref1.name : void 0) === name)) {
+            var i, index, ref, ref1, results;
+            results = [];
+            for (index = i = 0, ref = rules.length; i < ref; index = i += 1) {
+              if (!(((ref1 = rules[index]) != null ? ref1.name : void 0) === name)) {
                 continue;
               }
               rules[index].success(model(scope), scope, element, attrs, $injector);
               rules.splice(index, 1);
-              _results.push(index--);
+              results.push(index--);
             }
-            return _results;
+            return results;
           };
           attrs.$observe('validator', function(value) {
-            var match, name, rule, ruleNames, _i, _len, _results;
+            var i, len, match, name, results, rule, ruleNames;
             rules.length = 0;
             if (observerRequired.validatorRequired || observerRequired.required) {
               registerRequired();
@@ -138,20 +138,20 @@
             match = value.match(/^\[(.+)\]$/);
             if (match) {
               ruleNames = match[1].split(',');
-              _results = [];
-              for (_i = 0, _len = ruleNames.length; _i < _len; _i++) {
-                name = ruleNames[_i];
+              results = [];
+              for (i = 0, len = ruleNames.length; i < len; i++) {
+                name = ruleNames[i];
                 rule = $validator.getRule(name.replace(/^\s+|\s+$/g, ''));
                 if (typeof rule.init === "function") {
                   rule.init(scope, element, attrs, $injector);
                 }
                 if (rule) {
-                  _results.push(rules.push(rule));
+                  results.push(rules.push(rule));
                 } else {
-                  _results.push(void 0);
+                  results.push(void 0);
                 }
               }
-              return _results;
+              return results;
             }
           });
           attrs.$observe('validatorError', function(value) {
@@ -241,12 +241,12 @@
             });
           });
           scope.$on($validator.broadcastChannel.reset, function(self, object) {
-            var rule, _i, _len;
+            var i, len, rule;
             if (!isAcceptTheBroadcast(self, object.model)) {
               return;
             }
-            for (_i = 0, _len = rules.length; _i < _len; _i++) {
-              rule = rules[_i];
+            for (i = 0, len = rules.length; i < len; i++) {
+              rule = rules[i];
               rule.success(model(scope), scope, element, attrs, $injector);
               if (rule.invoke !== 'watch') {
                 rule.enableError = false;
@@ -321,13 +321,13 @@
       }
       errorMessage = error.constructor === String ? error : '';
       return function(value, scope, element, attrs) {
-        var $label, label, parent, _i, _len, _ref;
+        var $label, i, label, len, parent, ref;
         parent = element.closest('.form-group');
         if (parent.length) {
           parent.addClass('has-error');
-          _ref = parent.find('label');
-          for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-            label = _ref[_i];
+          ref = parent.find('label');
+          for (i = 0, len = ref.length; i < len; i++) {
+            label = ref[i];
             if ($(label).hasClass('error')) {
               $(label).remove();
             }
@@ -355,24 +355,24 @@
         return success;
       }
       return function(value, scope, element) {
-        var label, parent, _i, _len, _ref, _results;
+        var i, label, len, parent, ref, results;
         parent = element.parent();
-        _results = [];
+        results = [];
         while (parent.length !== 0) {
           if (parent.hasClass('has-error')) {
             parent.removeClass('has-error');
-            _ref = parent.find('label');
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              label = _ref[_i];
+            ref = parent.find('label');
+            for (i = 0, len = ref.length; i < len; i++) {
+              label = ref[i];
               if ($(label).hasClass('error')) {
                 $(label).remove();
               }
             }
             break;
           }
-          _results.push(parent = parent.parent());
+          results.push(parent = parent.parent());
         }
-        return _results;
+        return results;
       };
     };
     this.convertValidator = function(validator) {
@@ -416,7 +416,7 @@
     };
     this.convertRule = (function(_this) {
       return function(name, object) {
-        var result, _ref, _ref1;
+        var ref, ref1, result;
         if (object == null) {
           object = {};
         }
@@ -429,10 +429,10 @@
           enableError: object.invoke === 'watch',
           invoke: object.invoke,
           init: object.init,
-          validator: (_ref = object.validator) != null ? _ref : function() {
+          validator: (ref = object.validator) != null ? ref : function() {
             return true;
           },
-          error: (_ref1 = object.error) != null ? _ref1 : '',
+          error: (ref1 = object.error) != null ? ref1 : '',
           success: object.success
         };
         result.error = _this.convertError(result.error);
@@ -499,32 +499,32 @@
             return count.total++;
           },
           validatedSuccess: function() {
-            var x, _i, _j, _len, _len1, _ref, _ref1;
+            var i, j, len, len1, ref, ref1, x;
             if (++count.success === count.total) {
-              _ref = func.promises.success;
-              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                x = _ref[_i];
+              ref = func.promises.success;
+              for (i = 0, len = ref.length; i < len; i++) {
+                x = ref[i];
                 x();
               }
-              _ref1 = func.promises.then;
-              for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-                x = _ref1[_j];
+              ref1 = func.promises.then;
+              for (j = 0, len1 = ref1.length; j < len1; j++) {
+                x = ref1[j];
                 x();
               }
             }
             return count.success;
           },
           validatedError: function() {
-            var x, _i, _j, _len, _len1, _ref, _ref1;
+            var i, j, len, len1, ref, ref1, x;
             if (count.error++ === 0) {
-              _ref = func.promises.error;
-              for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-                x = _ref[_i];
+              ref = func.promises.error;
+              for (i = 0, len = ref.length; i < len; i++) {
+                x = ref[i];
                 x();
               }
-              _ref1 = func.promises.then;
-              for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
-                x = _ref1[_j];
+              ref1 = func.promises.then;
+              for (j = 0, len1 = ref1.length; j < len1; j++) {
+                x = ref1[j];
                 x();
               }
             }
@@ -551,11 +551,11 @@
         };
         scope.$broadcast(_this.broadcastChannel.prepare, broadcastObject);
         $timeout(function() {
-          var $validator, x, _i, _len, _ref;
+          var $validator, i, len, ref, x;
           if (count.total === 0) {
-            _ref = func.promises.success;
-            for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-              x = _ref[_i];
+            ref = func.promises.success;
+            for (i = 0, len = ref.length; i < len; i++) {
+              x = ref[i];
               x();
             }
             return;
