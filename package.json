@@ -25,12 +25,7 @@
       "url": "https://github.com/kelp404/angular-validator/graphs/contributors"
     }
   ],
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "http://opensource.org/licenses/mit-license.php"
-    }
-  ],
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/kelp404/angular-validator/issues"
   },
