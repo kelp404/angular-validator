@@ -14,9 +14,9 @@ $ bower install https://github.com/kelp404/angular-validator.git\#0.2.8 -S
 
 
 ## Frameworks
-1. [jQuery](https://jquery.com/) 2.1.4
+1. [jQuery](https://jquery.com/) 3.3.1
 
-2. [AngularJS](http://angularjs.org/) 1.2.32
+2. [AngularJS](http://angularjs.org/) 1.5.11
 
 3. [Bootstrap 3](http://getbootstrap.com/)
 > If your `error` is `string` in rules you should include bootstrap3.css and use `form-group` to the input div.
@@ -133,11 +133,11 @@ There are default rules in this module.
 ## Example
 ```html
 <!-- Bootstrap3 (not required) -->
-<link type="text/css" rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css"/>
+<link type="text/css" rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
 <!-- jQuery -->
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <!-- AngularJS -->
-<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.32/angular.min.js"></script>
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.11/angular.min.js"></script>
 <!-- $validator -->
 <script type="text/javascript" src="dist/angular-validator.js"></script>
 <!-- basic rules (not required) -->

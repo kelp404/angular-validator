@@ -35,8 +35,8 @@ module.exports = (grunt) ->
                     base: '.'
 
         karma:
-            ng1_2:
-                configFile: 'test/karma-ng1.2.config.coffee'
+            angular:
+                configFile: 'test/karma.config.coffee'
 
     # -----------------------------------
     # register task
