@@ -9,7 +9,7 @@ This is an AngularJS form validation written in [CoffeeScript](http://coffeescri
 ## Installation
 **bower**
 ```bash
-$ bower install https://github.com/kelp404/angular-validator.git\#0.2.8 -S
+$ bower install https://github.com/kelp404/angular-validator.git\#0.2.9 -S
 ```
 
 
